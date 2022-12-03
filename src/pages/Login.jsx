@@ -7,7 +7,6 @@ const Login = () => {
         <div className='login-container'>
             <h2 className='title'>Divisas</h2>
             <div className='inputs-container'>
-                <span>Iniciar sesión</span>
                 <div className='inputs'>
                     <span>Nombre de usuario</span>
                     <input type="text" />
@@ -15,7 +14,7 @@ const Login = () => {
                     <input type="password" />
                 </div>
                 <Link className='login-btn' to='/home'>
-                    Log in
+                    Iniciar sesión
                 </Link>
             </div>
         </div>
