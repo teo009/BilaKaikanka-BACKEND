@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto, LoginUserDto } from './dto/';
 import { User } from './entities/user.entity';
+import { JwtPayload } from './interfaces/jwt.payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,11 @@ export class AuthService {
         password: bcrypt.hashSync(password, 10)
       });
       const response = await this.userRepository.save(userToSave);
-      return response;
+      delete response.password;
+      return {
+        ...response,
+        token: this.getJwtToken({ id: response.id })
+      };
     } catch(error) {
       this.handleDBerrors(error);
     }
@@ -43,7 +48,7 @@ export class AuthService {
 
     return {
       ...user, 
-      //token: this.getJwtToken({ id: user.id });
+      token: this.getJwtToken({ id: user.id })
     };
   }
 
@@ -64,8 +69,8 @@ export class AuthService {
     if(error.code === '23505') throw new BadRequestException(error.detail);
     throw new InternalServerErrorException('Error 500, please check server logs');
   }
-  private getJwtToken(payload: string) {
-    return 
+  private getJwtToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
   }
 
 }
