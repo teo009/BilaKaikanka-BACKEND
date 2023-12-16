@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto/';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/user.entity';
 //import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('auth')
@@ -18,7 +20,14 @@ export class AuthController {
     return this.authService.login(LoginUserDto);
   }
 
-  @Get()
+  @Get('private')
+  testingPrivateRoutes(
+    @GetUser() user: User
+  ) {
+    return `Bienvenido ${ user.fullName }`;
+  }
+
+  /*@Get()
   findAll() {
     return this.authService.findAll();
   }
@@ -26,10 +35,5 @@ export class AuthController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
+  }*/
 }

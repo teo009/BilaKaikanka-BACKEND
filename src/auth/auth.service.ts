@@ -46,6 +46,7 @@ export class AuthService {
     if(!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException(`Credenciales inválidas para (contraseña)`);
 
+    delete user.id;
     return {
       ...user, 
       token: this.getJwtToken({ id: user.id })
@@ -58,10 +59,6 @@ export class AuthService {
 
   findOne(id: number) {
     return `This action returns a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
   }
 
   //Own methods
