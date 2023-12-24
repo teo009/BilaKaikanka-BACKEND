@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CasesModule } from './cases/cases.module';
-import { CasesModule } from './cases/cases.module';
 
 @Module({
   imports: [

@@ -1,0 +1,25 @@
+import { Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Case } from "./case.entity";
+
+@Entity('cases-people')
+export class CasePerson {
+
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+  
+  @OneToMany(
+    () => Case, Case => Case.casePerson, { eager: true }
+  )
+  case_id: Case;
+  /* 
+  FOREIGN KEYS
+  person_id
+  rol_id
+  relationship_id
+  career_id (optional)
+  work_place_id (optional)
+  cargo_id (optional)
+  nivel_académico_id
+  */
+
+}
