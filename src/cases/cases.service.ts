@@ -1,11 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { Case, CasePerson } from './entities/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 
 @Injectable()
 export class CasesService {
-  create(createCaseDto: CreateCaseDto) {
-    return 'This action adds a new case';
+
+  constructor(
+    @InjectRepository(Case)
+    private readonly CaseRepository: Repository<Case>,
+
+    @InjectRepository(CasePerson)
+    private readonly CasePersonRepository: Repository<CasePerson>
+  ) {}
+
+  async create(createCaseDto: CreateCaseDto) {
+    try {
+      const caseResponse = this.CaseRepository.create(createCaseDto);
+      await this.CaseRepository.save(caseResponse)
+      return caseResponse;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findAll() {

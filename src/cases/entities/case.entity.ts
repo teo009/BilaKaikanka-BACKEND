@@ -7,11 +7,11 @@ export class Case {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('number',  { unique: true })
+  @Column('int',  { unique: true })
   code: number;
 
-  @Column('number', { unique: true }) 
-  case_number: number
+  @Column('int', { unique: true }) 
+  case_number: number;
 
   @Column('text')
   narration: string; 
@@ -23,14 +23,14 @@ export class Case {
   occurrence_time: string; //Check this type later
 
   @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIME'
+    type: 'timestamptz',
+    //default: () => 'CURRENT_TIME'
   })
   occurrence_date: Date //save occurrence_hour too
 
   @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIME'
+    type: 'timestamptz',
+    //default: () => 'CURRENT_TIME'
   })
   reception_date: Date; //save reception_hour too
 
