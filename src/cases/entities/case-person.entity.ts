@@ -1,4 +1,4 @@
-import { Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Case } from "./case.entity";
 
 @Entity('cases-people')
@@ -11,6 +11,19 @@ export class CasePerson {
     () => Case, Case => Case.casePerson, { eager: true }
   )
   case_id: Case;
+
+  @CreateDateColumn({
+    type: 'timestamp', 
+    default: () => 'CURRENT_TIMESTAMP' 
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP'
+  })
+  updated_at: Date;
+
   /* 
   FOREIGN KEYS
   person_id
