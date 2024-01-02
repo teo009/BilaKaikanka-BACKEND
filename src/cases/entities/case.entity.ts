@@ -36,7 +36,7 @@ export class Case {
 
   @ManyToOne(
     () => CasePerson,
-    casePerson => casePerson.case_id,
+    (casePerson) => casePerson.case_id,
   )
   casePerson: CasePerson;
 

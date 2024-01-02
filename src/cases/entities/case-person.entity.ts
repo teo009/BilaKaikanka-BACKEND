@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Case } from "./case.entity";
 
 @Entity('cases-people')
@@ -6,9 +6,12 @@ export class CasePerson {
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column('text')
+  text: string;
   
   @OneToMany(
-    () => Case, Case => Case.casePerson, { eager: true }
+    () => Case, (Case) => Case.casePerson, { eager: true, cascade: true }
   )
   case_id: Case;
 

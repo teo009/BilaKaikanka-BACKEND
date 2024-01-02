@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 import { Case, CasePerson } from './entities/';
 import { CreateCaseDto } from './dto/create-case.dto';
@@ -18,13 +19,28 @@ export class CasesService {
   ) {}
 
   async create(createCaseDto: CreateCaseDto) {
+    const { ...caseDetails } = createCaseDto;
     try {
-      const caseResponse = this.CaseRepository.create(createCaseDto);
+      const caseResponse = this.CaseRepository.create({
+        ...caseDetails,
+        casePerson: this.CasePersonRepository.create({ text: 'Pruebaaaa' })
+      });
       await this.CaseRepository.save(caseResponse)
       return caseResponse;
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async createCasePerson(caseId: string) {
+    try {
+      const caseHasPersonResponse = this.CasePersonRepository.create()
+      await this.CasePersonRepository.save(caseHasPersonResponse);
+      return { status: 'ok' }
+    } catch (error) {
+      console.log(error);
+    }
+    //return {caseId, status: 'Ok'};
   }
 
   findAll() {

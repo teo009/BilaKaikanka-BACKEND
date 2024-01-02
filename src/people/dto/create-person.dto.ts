@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsDate, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { IsArray, IsDate, IsString, MinLength } from "class-validator";
 
 export class CreatePersonDto {
 
@@ -14,6 +14,7 @@ export class CreatePersonDto {
   birthDate: Date; 
 
   @IsArray() //Check others validations later
+  @MinLength(8)
   phoneNumbers: number[];
 
   @IsString()
