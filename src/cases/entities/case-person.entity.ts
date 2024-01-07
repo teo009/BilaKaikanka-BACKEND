@@ -1,19 +1,26 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+
 import { Case } from "./case.entity";
+import { Person } from "src/people/entities/person.entity";
 
 @Entity('cases-people')
 export class CasePerson {
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column('text')
-  text: string;
   
-  @OneToMany(
-    () => Case, (Case) => Case.casePerson, { eager: true, cascade: true }
+  @ManyToOne(
+    () => Case, 
+    (Case) => Case.casePerson, 
+    { eager: true, cascade: true }
   )
   case_id: Case;
+
+  @ManyToOne(
+    () => Person,
+    (person) => person.casePerson
+  )
+  person_id: Person
 
   @CreateDateColumn({
     type: 'timestamp', 

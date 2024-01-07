@@ -14,7 +14,7 @@ export class CreatePersonDto {
   birthDate: Date; 
 
   @IsArray() //Check others validations later
-  @MinLength(8)
+  //@MinLength(8)
   phoneNumbers: number[];
 
   @IsString()

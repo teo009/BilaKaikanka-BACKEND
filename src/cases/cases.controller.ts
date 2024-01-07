@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 
 import { CasesService } from './cases.service';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
+import { CreateCasePersonDto } from './dto/create-casePerson.dto';
 
 @Controller('cases')
 export class CasesController {
@@ -14,9 +14,10 @@ export class CasesController {
     return this.casesService.create(createCaseDto);
   }
 
-  @Post('case-has-person/:caseId')
-  createCasePeople(@Param('caseId', ParseUUIDPipe) caseId: string) {
-    return this.casesService.createCasePerson(caseId);
+  @Post('case-has-person')
+  createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
+    //return { caseId };
+    return this.casesService.createCasePerson(CreateCasePerson);
   }
 
   @Get()

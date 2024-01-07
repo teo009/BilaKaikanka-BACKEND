@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+
+import { CasePerson } from "src/cases/entities";
 
 @Entity('people')
 export class Person {
@@ -23,6 +25,12 @@ export class Person {
 
   @Column('text', { unique: true })
   identity: string;
+
+  @OneToMany(
+    () => CasePerson,
+    (casePerson) => casePerson.person_id,
+  )
+  casePerson: CasePerson;
 
   //FOREIGN KEYS
   /*tipoIdentidad_id

@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 import { Case, CasePerson } from './entities/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
+import { CreateCasePersonDto } from './dto/create-casePerson.dto';
+import { Person } from 'src/people/entities/person.entity';
 
 @Injectable()
 export class CasesService {
@@ -15,7 +16,10 @@ export class CasesService {
     private readonly CaseRepository: Repository<Case>,
 
     @InjectRepository(CasePerson)
-    private readonly CasePersonRepository: Repository<CasePerson>
+    private readonly CasePersonRepository: Repository<CasePerson>,
+
+    @InjectRepository(Person)
+    private readonly PersonInCaseRepository: Repository<Person>
   ) {}
 
   async create(createCaseDto: CreateCaseDto) {
@@ -23,7 +27,6 @@ export class CasesService {
     try {
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
-        casePerson: this.CasePersonRepository.create({ text: 'Pruebaaaa' })
       });
       await this.CaseRepository.save(caseResponse)
       return caseResponse;
@@ -32,15 +35,18 @@ export class CasesService {
     }
   }
 
-  async createCasePerson(caseId: string) {
+  async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
+    const { caseId, personId } = CreateCasePerson;
     try {
-      const caseHasPersonResponse = this.CasePersonRepository.create()
-      await this.CasePersonRepository.save(caseHasPersonResponse);
-      return { status: 'ok' }
+      const caseById = await this.CaseRepository.findOneBy({ id: caseId })
+      const personById = await this.PersonInCaseRepository.findOneBy({ id: personId })
+      const caseHasPersonResponse = this.CasePersonRepository.create(
+        { case_id: caseById, person_id: personById }
+      );
+      return await this.CasePersonRepository.save(caseHasPersonResponse);
     } catch (error) {
       console.log(error);
     }
-    //return {caseId, status: 'Ok'};
   }
 
   findAll() {

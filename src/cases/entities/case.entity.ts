@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CasePerson } from "./case-person.entity";
 
 @Entity('case')
@@ -34,7 +34,7 @@ export class Case {
   })
   reception_date: Date; //save reception_hour too
 
-  @ManyToOne(
+  @OneToMany(
     () => CasePerson,
     (casePerson) => casePerson.case_id,
   )
