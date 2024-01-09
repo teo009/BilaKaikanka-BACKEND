@@ -2,6 +2,7 @@ import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDate
 
 import { Case } from "./case.entity";
 import { Person } from "src/people/entities/person.entity";
+import { RoleInCase } from "src/common/entities/roleInCase.entity";
 
 @Entity('cases-people')
 export class CasePerson {
@@ -21,6 +22,12 @@ export class CasePerson {
     (person) => person.casePerson
   )
   person_id: Person
+
+  @ManyToOne(
+    () => RoleInCase,
+    (roleInCase) => roleInCase.casePerson
+  )
+  roleInCase: RoleInCase;
 
   @CreateDateColumn({
     type: 'timestamp', 

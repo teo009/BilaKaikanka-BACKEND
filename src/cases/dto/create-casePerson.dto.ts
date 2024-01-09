@@ -9,4 +9,7 @@ export class CreateCasePersonDto {
   @IsUUID()
   personId: string;
 
+  @IsUUID()
+  roleInCaseId: string;
+
 }
