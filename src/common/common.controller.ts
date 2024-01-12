@@ -3,6 +3,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CommonService } from './common.service';
 import { UpdateCommonDto } from './dto/update-common.dto';
 import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
+import { CreateVictimRelationship } from './dto/create-victimRelationship';
 
 @Controller('common')
 export class CommonController {
@@ -11,6 +12,15 @@ export class CommonController {
   @Post('role-in-case')
   create(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
     return this.commonService.createArole(createRoleInCaseDto);
+  }
+
+  @Post('victim-relationship')
+  cretateVictimRelationship(
+    @Body() createVictimRelationship: CreateVictimRelationship
+  ) {
+    return this.commonService.createAvictimRelationship(
+      createVictimRelationship
+    ); 
   }
 
   @Get()
@@ -24,7 +34,9 @@ export class CommonController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommonDto: UpdateCommonDto) {
+  update(
+    @Param('id') id: string, @Body() updateCommonDto: UpdateCommonDto
+  ) {
     return this.commonService.update(+id, updateCommonDto);
   }
 

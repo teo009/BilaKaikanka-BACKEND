@@ -7,7 +7,7 @@ export class VictimRealationship {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
+  @Column('text', { unique: true })
   victimRelationship: string;
 
 }
