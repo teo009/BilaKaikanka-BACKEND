@@ -9,12 +9,21 @@ import { Person } from 'src/people/entities/person.entity';
 import { RoleInCase } from 'src/common/entities/roleInCase.entity';
 import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
 import { Career } from 'src/common/entities/Career.entity';
+import { Workplace } from 'src/common/entities/Workplace.entity';
 
 @Module({
   controllers: [CasesController],
   providers: [CasesService],
   imports: [
-    TypeOrmModule.forFeature([Case, CasePerson, Person, RoleInCase, VictimRealationship, Career]),
+    TypeOrmModule.forFeature([
+      Case, 
+      CasePerson, 
+      Person, 
+      RoleInCase, 
+      VictimRealationship, 
+      Career, 
+      Workplace
+    ]),
     AuthModule
   ],
   exports: [CasesService]

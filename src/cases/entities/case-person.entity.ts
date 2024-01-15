@@ -5,6 +5,7 @@ import { Person } from "src/people/entities/person.entity";
 import { RoleInCase } from "src/common/entities/roleInCase.entity";
 import { VictimRealationship } from "src/common/entities/VictimRelationship.entity";
 import { Career } from "src/common/entities/Career.entity";
+import { Workplace } from "src/common/entities/Workplace.entity";
 
 @Entity('cases-people')
 export class CasePerson {
@@ -55,10 +56,15 @@ export class CasePerson {
   )
   career?: Career;
 
+  @ManyToOne(
+    () => Workplace,
+    (workplace) => workplace.casePerson
+  )
+  workplace?: Workplace;
+
   /* 
   FOREIGN KEYS
-  work_place_id (optional)
-  cargo_id (optional)
+  jobPosition (optional)
   nivel_académico_id
   */
 

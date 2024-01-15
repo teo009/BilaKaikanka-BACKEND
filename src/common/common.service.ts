@@ -9,6 +9,8 @@ import { CreateVictimRelationship } from './dto/create-victimRelationship';
 import { VictimRealationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { CreateCareerDto } from './dto/create-career.dto';
+import { Workplace } from './entities/Workplace.entity';
+import { CreateWorkplaceDto } from './dto/create-workplace.dto';
 
 @Injectable()
 export class CommonService {
@@ -22,6 +24,9 @@ export class CommonService {
 
     @InjectRepository(Career)
     private readonly CareerRepository: Repository<Career>,
+
+    @InjectRepository(Workplace)
+    private readonly WorkplaceRepository: Repository<Workplace>,
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -47,6 +52,13 @@ export class CommonService {
     try {
       const careerResponse = this.CareerRepository.create(createCareer);
       return await this.CareerRepository.save(careerResponse);
+    } catch (error) { console.log(error) }
+  }
+
+  async createWorkplace(createWorkplace: CreateWorkplaceDto) {
+    try {
+      const workplaceResponse = this.WorkplaceRepository.create(createWorkplace);
+      return await this.WorkplaceRepository.save(workplaceResponse);
     } catch (error) { console.log(error) }
   }
 
