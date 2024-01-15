@@ -4,6 +4,7 @@ import { CommonService } from './common.service';
 import { UpdateCommonDto } from './dto/update-common.dto';
 import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
 import { CreateVictimRelationship } from './dto/create-victimRelationship';
+import { CreateCareerDto } from './dto/create-career.dto';
 
 @Controller('common')
 export class CommonController {
@@ -21,6 +22,11 @@ export class CommonController {
     return this.commonService.createAvictimRelationship(
       createVictimRelationship
     ); 
+  }
+
+  @Post('career')
+  createCareer(@Body() createCareer: CreateCareerDto) {
+    return this.commonService.createAcareer(createCareer)
   }
 
   @Get()

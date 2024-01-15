@@ -7,12 +7,15 @@ export class CreateCasePersonDto {
   caseId: string;
 
   @IsUUID()
-  personId: string;
+  person: string;
 
   @IsUUID()
-  roleInCaseId: string;
+  roleInCase: string;
 
   @IsUUID()
   victimRelationship: string;
+
+  @IsUUID()
+  career: string;
 
 }

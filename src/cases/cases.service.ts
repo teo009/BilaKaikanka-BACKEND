@@ -9,6 +9,7 @@ import { CreateCasePersonDto } from './dto/create-casePerson.dto';
 import { Person } from 'src/people/entities/person.entity';
 import { RoleInCase } from 'src/common/entities/roleInCase.entity';
 import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
+import { Career } from 'src/common/entities/Career.entity';
 
 @Injectable()
 export class CasesService {
@@ -27,8 +28,10 @@ export class CasesService {
     private readonly RoleInCaseRepository: Repository<RoleInCase>,
 
     @InjectRepository(VictimRealationship)
-    private readonly VictimReltionshipRepository: Repository<VictimRealationship>
+    private readonly VictimReltionshipRepository: Repository<VictimRealationship>,
 
+    @InjectRepository(Career)
+    private readonly CareerRepository: Repository<Career>,
   ) {}
 
   async create(createCaseDto: CreateCaseDto) {
@@ -45,19 +48,21 @@ export class CasesService {
   }
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
-    const { caseId, personId, roleInCaseId, victimRelationship } = CreateCasePerson;
+    const { caseId, person, roleInCase, victimRelationship, career } = CreateCasePerson;
     try {
       const caseById = await this.CaseRepository.findOneBy({ id: caseId })
-      const personById = await this.PersonInCaseRepository.findOneBy({ id: personId })
-      const roleInCaseById = await this.RoleInCaseRepository.findOneBy({ id: roleInCaseId })
+      const personById = await this.PersonInCaseRepository.findOneBy({ id: person })
+      const roleInCaseById = await this.RoleInCaseRepository.findOneBy({ id: roleInCase })
       const victimRelationshipId = await this.VictimReltionshipRepository.findOneBy({ id: victimRelationship })
+      const careerById = await this.CareerRepository.findOneBy({ id: career })
 
       const caseHasPersonResponse = this.CasePersonRepository.create(
         { 
           case_id: caseById, 
           person_id: personById, 
           roleInCase: roleInCaseById, 
-          victimRelationship: victimRelationshipId 
+          victimRelationship: victimRelationshipId,
+          career: careerById,
         }
       );
       return await this.CasePersonRepository.save(caseHasPersonResponse);
