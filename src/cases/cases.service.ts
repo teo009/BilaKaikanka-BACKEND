@@ -8,6 +8,7 @@ import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/create-casePerson.dto';
 import { Person } from 'src/people/entities/person.entity';
 import { RoleInCase } from 'src/common/entities/roleInCase.entity';
+import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
 
 @Injectable()
 export class CasesService {
@@ -23,7 +24,10 @@ export class CasesService {
     private readonly CasePersonRepository: Repository<CasePerson>,
 
     @InjectRepository(RoleInCase)
-    private readonly RoleInCaseRepository: Repository<RoleInCase>
+    private readonly RoleInCaseRepository: Repository<RoleInCase>,
+
+    @InjectRepository(VictimRealationship)
+    private readonly VictimReltionshipRepository: Repository<VictimRealationship>
 
   ) {}
 
@@ -41,14 +45,20 @@ export class CasesService {
   }
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
-    const { caseId, personId, roleInCaseId } = CreateCasePerson;
+    const { caseId, personId, roleInCaseId, victimRelationship } = CreateCasePerson;
     try {
       const caseById = await this.CaseRepository.findOneBy({ id: caseId })
       const personById = await this.PersonInCaseRepository.findOneBy({ id: personId })
       const roleInCaseById = await this.RoleInCaseRepository.findOneBy({ id: roleInCaseId })
+      const victimRelationshipId = await this.VictimReltionshipRepository.findOneBy({ id: victimRelationship })
 
       const caseHasPersonResponse = this.CasePersonRepository.create(
-        { case_id: caseById, person_id: personById, roleInCase: roleInCaseById }
+        { 
+          case_id: caseById, 
+          person_id: personById, 
+          roleInCase: roleInCaseById, 
+          victimRelationship: victimRelationshipId 
+        }
       );
       return await this.CasePersonRepository.save(caseHasPersonResponse);
     } catch (error) {

@@ -3,12 +3,25 @@ import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDate
 import { Case } from "./case.entity";
 import { Person } from "src/people/entities/person.entity";
 import { RoleInCase } from "src/common/entities/roleInCase.entity";
+import { VictimRealationship } from "src/common/entities/VictimRelationship.entity";
 
 @Entity('cases-people')
 export class CasePerson {
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @CreateDateColumn({
+    type: 'timestamp', 
+    default: () => 'CURRENT_TIMESTAMP' 
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP'
+  })
+  updated_at: Date;
   
   @ManyToOne(
     () => Case, 
@@ -29,22 +42,14 @@ export class CasePerson {
   )
   roleInCase: RoleInCase;
 
-  @CreateDateColumn({
-    type: 'timestamp', 
-    default: () => 'CURRENT_TIMESTAMP' 
-  })
-  created_at: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP'
-  })
-  updated_at: Date;
+  @ManyToOne(
+    () => VictimRealationship,
+    (victimRelationship) => victimRelationship.casePerson
+  )
+  victimRelationship: VictimRealationship;
 
   /* 
   FOREIGN KEYS
-  person_id
-  rol_id
   relationship_id
   career_id (optional)
   work_place_id (optional)

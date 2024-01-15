@@ -7,12 +7,13 @@ import { CasesController } from './cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
 import { RoleInCase } from 'src/common/entities/roleInCase.entity';
+import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
 
 @Module({
   controllers: [CasesController],
   providers: [CasesService],
   imports: [
-    TypeOrmModule.forFeature([Case, CasePerson, Person, RoleInCase]),
+    TypeOrmModule.forFeature([Case, CasePerson, Person, RoleInCase, VictimRealationship]),
     AuthModule
   ],
   exports: [CasesService]
