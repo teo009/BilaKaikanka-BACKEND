@@ -1,4 +1,4 @@
-import { IsUUID } from "class-validator";
+import { IsOptional, IsUUID } from "class-validator";
 
 
 export class CreateCasePersonDto {
@@ -16,6 +16,7 @@ export class CreateCasePersonDto {
   victimRelationship: string;
 
   @IsUUID()
-  career: string;
+  @IsOptional()
+  career?: string;
 
 }

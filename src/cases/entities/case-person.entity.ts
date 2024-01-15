@@ -53,11 +53,10 @@ export class CasePerson {
     () => Career,
     (career) => career.casePerson
   )
-  career: Career;
+  career?: Career;
 
   /* 
   FOREIGN KEYS
-  career_id (optional)
   work_place_id (optional)
   cargo_id (optional)
   nivel_académico_id
