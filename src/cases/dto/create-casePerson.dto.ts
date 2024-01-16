@@ -26,4 +26,7 @@ export class CreateCasePersonDto {
   @IsOptional()
   jobPosition?: string;
 
+  @IsUUID()
+  academicLevel: string;
+
 }

@@ -11,6 +11,7 @@ import { VictimRealationship } from 'src/common/entities/VictimRelationship.enti
 import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
+import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 
 @Module({
   controllers: [CasesController],
@@ -24,7 +25,8 @@ import { JobPosition } from 'src/common/entities/jobPosition.entity';
       VictimRealationship, 
       Career, 
       Workplace,
-      JobPosition
+      JobPosition,
+      AcademicLevel
     ]),
     AuthModule
   ],

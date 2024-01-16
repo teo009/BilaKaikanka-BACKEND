@@ -12,6 +12,7 @@ import { VictimRealationship } from 'src/common/entities/VictimRelationship.enti
 import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
+import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 
 @Injectable()
 export class CasesService {
@@ -40,6 +41,9 @@ export class CasesService {
 
     @InjectRepository(JobPosition)
     private readonly JobPositionRepository: Repository<JobPosition>,
+
+    @InjectRepository(AcademicLevel)
+    private readonly AcademicLevelRepository: Repository<AcademicLevel>,
   ) {}
 
   async create(createCaseDto: CreateCaseDto) {
@@ -63,7 +67,8 @@ export class CasesService {
       victimRelationship, 
       career, 
       workplace, 
-      jobPosition
+      jobPosition,
+      academicLevel
     } = CreateCasePerson;
 
     try {
@@ -74,6 +79,7 @@ export class CasesService {
       const careerById = await this.CareerRepository.findOneBy({ id: career })
       const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace })
       const jobPositionById = await this.JobPositionRepository.findOneBy({ id: jobPosition })
+      const AcademicLevelById = await this.AcademicLevelRepository.findOneBy({ id: academicLevel })
 
       const caseHasPersonResponse = this.CasePersonRepository.create(
         { 
@@ -84,6 +90,7 @@ export class CasesService {
           career: careerById,
           workplace: workplaceById,
           jobPosiion: jobPositionById,
+          academicLevel: AcademicLevelById
         }
       );
       return await this.CasePersonRepository.save(caseHasPersonResponse);

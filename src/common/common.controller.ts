@@ -7,6 +7,7 @@ import { CreateVictimRelationship } from './dto/create-victimRelationship';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
 import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
+import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
 
 @Controller('common')
 export class CommonController {
@@ -39,6 +40,11 @@ export class CommonController {
   @Post('jobposition')
   createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
     return this.commonService.createJobPosition(createJobPosition);
+  }
+
+  @Post('academiclevel')
+  createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
+    return this.commonService.createAcademicLevel(createAcademicLevel);
   }
 
   @Get()

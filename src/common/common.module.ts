@@ -8,6 +8,7 @@ import { VictimRealationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { Workplace } from './entities/Workplace.entity';
 import { JobPosition } from './entities/jobPosition.entity';
+import { AcademicLevel } from './entities/AcademicLevel.entity';
 
 @Module({
   controllers: [CommonController],
@@ -18,7 +19,8 @@ import { JobPosition } from './entities/jobPosition.entity';
       VictimRealationship, 
       Career, 
       Workplace,
-      JobPosition
+      JobPosition,
+      AcademicLevel
     ])
   ]
 })

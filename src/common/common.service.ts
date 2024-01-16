@@ -13,6 +13,8 @@ import { Workplace } from './entities/Workplace.entity';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
 import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
 import { JobPosition } from './entities/jobPosition.entity';
+import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
+import { AcademicLevel } from './entities/AcademicLevel.entity';
 
 @Injectable()
 export class CommonService {
@@ -32,6 +34,9 @@ export class CommonService {
 
     @InjectRepository(JobPosition)
     private readonly JobPositionRepository: Repository<JobPosition>,
+
+    @InjectRepository(AcademicLevel)
+    private readonly AcademicLevelRepository: Repository<AcademicLevel>,
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -71,6 +76,13 @@ export class CommonService {
     try {
       const jobPositionResponse = this.JobPositionRepository.create(createJobPosition);
       return await this.JobPositionRepository.save(jobPositionResponse);
+    } catch (error) { console.log(error) }
+  }
+
+  async createAcademicLevel(createAcademicLevel: CreateAcademicLevel) {
+    try {
+      const academicLevelResponse = this.AcademicLevelRepository.create(createAcademicLevel);
+      return await this.AcademicLevelRepository.save(academicLevelResponse);
     } catch (error) { console.log(error) }
   }
 
