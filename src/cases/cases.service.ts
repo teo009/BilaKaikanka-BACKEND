@@ -11,6 +11,7 @@ import { RoleInCase } from 'src/common/entities/roleInCase.entity';
 import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
 import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
+import { JobPosition } from 'src/common/entities/jobPosition.entity';
 
 @Injectable()
 export class CasesService {
@@ -36,6 +37,9 @@ export class CasesService {
 
     @InjectRepository(Workplace)
     private readonly WorkplaceRepository: Repository<Workplace>,
+
+    @InjectRepository(JobPosition)
+    private readonly JobPositionRepository: Repository<JobPosition>,
   ) {}
 
   async create(createCaseDto: CreateCaseDto) {
@@ -52,7 +56,16 @@ export class CasesService {
   }
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
-    const { caseId, person, roleInCase, victimRelationship, career, workplace } = CreateCasePerson;
+    const { 
+      caseId, 
+      person, 
+      roleInCase, 
+      victimRelationship, 
+      career, 
+      workplace, 
+      jobPosition
+    } = CreateCasePerson;
+
     try {
       const caseById = await this.CaseRepository.findOneBy({ id: caseId })
       const personById = await this.PersonInCaseRepository.findOneBy({ id: person })
@@ -60,6 +73,7 @@ export class CasesService {
       const victimRelationshipId = await this.VictimReltionshipRepository.findOneBy({ id: victimRelationship })
       const careerById = await this.CareerRepository.findOneBy({ id: career })
       const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace })
+      const jobPositionById = await this.JobPositionRepository.findOneBy({ id: jobPosition })
 
       const caseHasPersonResponse = this.CasePersonRepository.create(
         { 
@@ -69,6 +83,7 @@ export class CasesService {
           victimRelationship: victimRelationshipId,
           career: careerById,
           workplace: workplaceById,
+          jobPosiion: jobPositionById,
         }
       );
       return await this.CasePersonRepository.save(caseHasPersonResponse);

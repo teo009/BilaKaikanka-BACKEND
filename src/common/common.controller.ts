@@ -6,6 +6,7 @@ import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
 import { CreateVictimRelationship } from './dto/create-victimRelationship';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
+import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
 
 @Controller('common')
 export class CommonController {
@@ -33,6 +34,11 @@ export class CommonController {
   @Post('workplace')
   createWorkplace(@Body() createWorkplace: CreateWorkplaceDto) {
     return this.commonService.createWorkplace(createWorkplace);
+  }
+
+  @Post('jobposition')
+  createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
+    return this.commonService.createJobPosition(createJobPosition);
   }
 
   @Get()

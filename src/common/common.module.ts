@@ -7,13 +7,19 @@ import { RoleInCase } from './entities/roleInCase.entity';
 import { VictimRealationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { Workplace } from './entities/Workplace.entity';
+import { JobPosition } from './entities/jobPosition.entity';
 
 @Module({
   controllers: [CommonController],
   providers: [CommonService],
   imports: [
-    TypeOrmModule.forFeature([ RoleInCase, VictimRealationship, Career, Workplace ])
+    TypeOrmModule.forFeature([ 
+      RoleInCase, 
+      VictimRealationship, 
+      Career, 
+      Workplace,
+      JobPosition
+    ])
   ]
-  //exports: [  ]
 })
 export class CommonModule {}

@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { UpdateCommonDto } from './dto/update-common.dto';
 import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { RoleInCase } from './entities/roleInCase.entity';
-import { Repository } from 'typeorm';
 import { CreateVictimRelationship } from './dto/create-victimRelationship';
 import { VictimRealationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { Workplace } from './entities/Workplace.entity';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
+import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
+import { JobPosition } from './entities/jobPosition.entity';
 
 @Injectable()
 export class CommonService {
@@ -27,6 +29,9 @@ export class CommonService {
 
     @InjectRepository(Workplace)
     private readonly WorkplaceRepository: Repository<Workplace>,
+
+    @InjectRepository(JobPosition)
+    private readonly JobPositionRepository: Repository<JobPosition>,
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -59,6 +64,13 @@ export class CommonService {
     try {
       const workplaceResponse = this.WorkplaceRepository.create(createWorkplace);
       return await this.WorkplaceRepository.save(workplaceResponse);
+    } catch (error) { console.log(error) }
+  }
+
+  async createJobPosition(createJobPosition: CreateJobPositionDto) {
+    try {
+      const jobPositionResponse = this.JobPositionRepository.create(createJobPosition);
+      return await this.JobPositionRepository.save(jobPositionResponse);
     } catch (error) { console.log(error) }
   }
 

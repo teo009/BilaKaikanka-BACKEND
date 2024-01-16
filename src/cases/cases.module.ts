@@ -10,6 +10,7 @@ import { RoleInCase } from 'src/common/entities/roleInCase.entity';
 import { VictimRealationship } from 'src/common/entities/VictimRelationship.entity';
 import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
+import { JobPosition } from 'src/common/entities/jobPosition.entity';
 
 @Module({
   controllers: [CasesController],
@@ -22,7 +23,8 @@ import { Workplace } from 'src/common/entities/Workplace.entity';
       RoleInCase, 
       VictimRealationship, 
       Career, 
-      Workplace
+      Workplace,
+      JobPosition
     ]),
     AuthModule
   ],
