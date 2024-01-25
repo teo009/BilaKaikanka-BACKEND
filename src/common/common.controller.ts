@@ -8,6 +8,7 @@ import { CreateCareerDto } from './dto/create-career.dto';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
 import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
 import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
+import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
 
 @Controller('common')
 export class CommonController {
@@ -45,6 +46,11 @@ export class CommonController {
   @Post('academiclevel')
   createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
     return this.commonService.createAcademicLevel(createAcademicLevel);
+  }
+
+  @Post('regionalcenter')
+  createRegionalCenter(@Body() createRegionalCenter: CreateRegionalCenter) {
+    return this.commonService.createRegionalCenter(createRegionalCenter);
   }
 
   @Get()

@@ -15,6 +15,8 @@ import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
 import { JobPosition } from './entities/jobPosition.entity';
 import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
 import { AcademicLevel } from './entities/AcademicLevel.entity';
+import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
+import { RegionalCenter } from './entities/regionalCenter.entity';
 
 @Injectable()
 export class CommonService {
@@ -37,6 +39,9 @@ export class CommonService {
 
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
+
+    @InjectRepository(RegionalCenter)
+    private readonly RegionalCenterRepository: Repository<RegionalCenter>
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -85,6 +90,13 @@ export class CommonService {
       return await this.AcademicLevelRepository.save(academicLevelResponse);
     } catch (error) { console.log(error) }
   }
+
+  async createRegionalCenter(createRegionalCenter: CreateRegionalCenter) {
+    try {
+      const regionalCenterResponse = this.RegionalCenterRepository.create(createRegionalCenter);
+      return await this.RegionalCenterRepository.save(regionalCenterResponse );
+    } catch (error) { console.log(error) }
+  } s
 
   findAll() {
     return `This action returns all common`;

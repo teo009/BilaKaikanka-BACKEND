@@ -41,6 +41,8 @@ export class Case {
   )
   casePerson: CasePerson;
 
+  
+
   /*@CreateDateColumn({
     type: 'timestamp', 
     default: () => 'CURRENT_TIME' 
@@ -55,7 +57,6 @@ export class Case {
 
   /*FOREIGN KEYS
   //user_update_id: ???;
-  recinto_id
   municipio_id
   */
 

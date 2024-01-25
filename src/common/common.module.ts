@@ -9,6 +9,7 @@ import { Career } from './entities/Career.entity';
 import { Workplace } from './entities/Workplace.entity';
 import { JobPosition } from './entities/jobPosition.entity';
 import { AcademicLevel } from './entities/AcademicLevel.entity';
+import { RegionalCenter } from './entities/regionalCenter.entity';
 
 @Module({
   controllers: [CommonController],
@@ -20,7 +21,8 @@ import { AcademicLevel } from './entities/AcademicLevel.entity';
       Career, 
       Workplace,
       JobPosition,
-      AcademicLevel
+      AcademicLevel,
+      RegionalCenter
     ])
   ]
 })
