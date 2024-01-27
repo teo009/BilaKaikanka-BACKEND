@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { IsDate, IsNumber, IsPositive, IsString, IsUUID, MinLength } from "class-validator";
 
 export class CreateCaseDto {
 
@@ -21,6 +21,9 @@ export class CreateCaseDto {
 
   @IsString() //Check this later
   occurrence_time: string; 
+
+  @IsUUID()
+  regionalCenter: string;
 
   @IsDate()
   @Type(() => Date)

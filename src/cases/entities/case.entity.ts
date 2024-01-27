@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { CasePerson } from "./case-person.entity";
+import { RegionalCenter } from "src/common/entities/regionalCenter.entity";
 
 @Entity('case')
 export class Case {
@@ -41,7 +42,11 @@ export class Case {
   )
   casePerson: CasePerson;
 
-  
+  @ManyToOne(
+    () => RegionalCenter,
+    (regionalCenter) => regionalCenter.cases
+  )
+  regionalCenter: RegionalCenter;
 
   /*@CreateDateColumn({
     type: 'timestamp', 

@@ -12,6 +12,7 @@ import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
+import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
 
 @Module({
   controllers: [CasesController],
@@ -26,7 +27,8 @@ import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
       Career, 
       Workplace,
       JobPosition,
-      AcademicLevel
+      AcademicLevel,
+      RegionalCenter
     ]),
     AuthModule
   ],

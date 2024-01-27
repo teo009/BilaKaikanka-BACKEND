@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Case } from "src/cases/entities";
 
 @Entity()
 export class RegionalCenter {
@@ -9,5 +9,11 @@ export class RegionalCenter {
 
   @Column('text', { unique: true })
   regionalCenter: string;
+
+  @OneToMany(
+    () => Case,
+    (Case) => Case.regionalCenter
+  )
+  cases: Case;
 
 }

@@ -11,7 +11,7 @@ export class CasesController {
 
   @Post()
   create(@Body() createCaseDto: CreateCaseDto) {
-    return this.casesService.create(createCaseDto);
+    return this.casesService.createAcase(createCaseDto);
   }
 
   @Post('case-has-person')
