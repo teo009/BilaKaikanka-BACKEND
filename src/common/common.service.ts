@@ -17,6 +17,8 @@ import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
 import { AcademicLevel } from './entities/AcademicLevel.entity';
 import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
 import { RegionalCenter } from './entities/regionalCenter.entity';
+import { CreateMunicipalityDto } from './dto/create-municipality.dto';
+import { Municipality } from './entities/municipality.entity';
 
 @Injectable()
 export class CommonService {
@@ -41,7 +43,10 @@ export class CommonService {
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
     @InjectRepository(RegionalCenter)
-    private readonly RegionalCenterRepository: Repository<RegionalCenter>
+    private readonly RegionalCenterRepository: Repository<RegionalCenter>,
+
+    @InjectRepository(Municipality)
+    private readonly MunicipalityRepository: Repository<Municipality>,
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -94,9 +99,16 @@ export class CommonService {
   async createRegionalCenter(createRegionalCenter: CreateRegionalCenter) {
     try {
       const regionalCenterResponse = this.RegionalCenterRepository.create(createRegionalCenter);
-      return await this.RegionalCenterRepository.save(regionalCenterResponse );
+      return await this.RegionalCenterRepository.save(regionalCenterResponse);
     } catch (error) { console.log(error) }
-  } s
+  } 
+
+  async createMunicipality(createMunicipality: CreateMunicipalityDto) {
+    try {
+      const municipalityResponse = this.MunicipalityRepository.create(createMunicipality);
+      return await this.MunicipalityRepository.save(municipalityResponse);
+    } catch (error) { console.log(error) }
+  }
 
   findAll() {
     return `This action returns all common`;

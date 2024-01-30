@@ -53,7 +53,9 @@ export class CasesService {
   async createAcase(createCaseDto: CreateCaseDto) {
     const { regionalCenter, ...caseDetails } = createCaseDto;
     try {
-      const regionalCenterById = await this.RegionalCenterRepository.findOneBy({ id: regionalCenter });
+      const regionalCenterById = await this.RegionalCenterRepository.findOneBy(
+        { id: regionalCenter }
+      );
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
         regionalCenter: regionalCenterById
