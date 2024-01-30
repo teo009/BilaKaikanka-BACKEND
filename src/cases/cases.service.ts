@@ -14,6 +14,7 @@ import { Workplace } from 'src/common/entities/Workplace.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
+import { Municipality } from 'src/common/entities/municipality.entity';
 
 @Injectable()
 export class CasesService {
@@ -47,18 +48,25 @@ export class CasesService {
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
     @InjectRepository(RegionalCenter)
-    private readonly RegionalCenterRepository: Repository<RegionalCenter>
+    private readonly RegionalCenterRepository: Repository<RegionalCenter>,
+
+    @InjectRepository(Municipality)
+    private readonly MunicipalityRepository: Repository<Municipality>,
   ) {}
 
   async createAcase(createCaseDto: CreateCaseDto) {
-    const { regionalCenter, ...caseDetails } = createCaseDto;
+    const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
     try {
       const regionalCenterById = await this.RegionalCenterRepository.findOneBy(
         { id: regionalCenter }
       );
+      const municipalityById = await this.MunicipalityRepository.findOneBy(
+        { id: municipality }
+      );
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
-        regionalCenter: regionalCenterById
+        regionalCenter: regionalCenterById,
+        municipality: municipalityById
       });
       await this.CaseRepository.save(caseResponse)
       return caseResponse;

@@ -25,6 +25,9 @@ export class CreateCaseDto {
   @IsUUID()
   regionalCenter: string;
 
+  @IsUUID()
+  municipality: string;
+
   @IsDate()
   @Type(() => Date)
   occurrence_date: Date //save occurrence_hour too
