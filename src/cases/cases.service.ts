@@ -15,6 +15,8 @@ import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
+import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
+import { CaseViolence } from './entities/case-violenctetype.entity';
 
 @Injectable()
 export class CasesService {
@@ -52,6 +54,9 @@ export class CasesService {
 
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
+
+    @InjectRepository(CaseViolence)
+    private readonly CaseViolenceRepository: Repository<CaseViolence>,
   ) {}
 
   async createAcase(createCaseDto: CreateCaseDto) {
@@ -111,6 +116,16 @@ export class CasesService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async creteViolencetype(createViolencetype: CreateViolencetypeDto) {
+    try {
+      const caseById = await this.CaseRepository.findOneBy({ id: createViolencetype.case })
+      const caseViolenceResponse = this.CaseViolenceRepository.create({
+        case: caseById
+      });
+      return await this.CaseViolenceRepository.save(caseViolenceResponse);
+    } catch (error) { console.log(error) }
   }
 
   findAll() {

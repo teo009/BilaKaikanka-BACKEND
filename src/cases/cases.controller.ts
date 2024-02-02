@@ -4,6 +4,7 @@ import { CasesService } from './cases.service';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/create-casePerson.dto';
+import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
 
 @Controller('cases')
 export class CasesController {
@@ -16,8 +17,15 @@ export class CasesController {
 
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
-    //return { caseId };
     return this.casesService.createCasePerson(CreateCasePerson);
+  }
+
+  @Post('case-has-violencetype')
+  createCaseViolencetype(
+    @Body() 
+    createViolencetype: CreateViolencetypeDto
+  ) {
+    return this.casesService.creteViolencetype(createViolencetype);
   }
 
   @Get()

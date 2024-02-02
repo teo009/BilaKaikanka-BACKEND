@@ -14,6 +14,7 @@ import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
+import { CaseViolence } from './entities/case-violenctetype.entity';
 
 @Module({
   controllers: [CasesController],
@@ -22,6 +23,7 @@ import { Municipality } from 'src/common/entities/municipality.entity';
     TypeOrmModule.forFeature([
       Case, 
       CasePerson, 
+      CaseViolence,
       Person, 
       RoleInCase, 
       VictimRealationship, 

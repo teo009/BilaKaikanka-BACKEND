@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { CasePerson } from "./case-person.entity";
 import { RegionalCenter } from "src/common/entities/regionalCenter.entity";
 import { Municipality } from "src/common/entities/municipality.entity";
+import { CaseViolence } from "./case-violenctetype.entity";
 
 @Entity('case')
 export class Case {
@@ -42,6 +43,12 @@ export class Case {
     (casePerson) => casePerson.case_id,
   )
   casePerson: CasePerson;
+
+  @OneToMany(
+    () => CaseViolence,
+    (caseViolence) => caseViolence.case
+  )
+  caseViolence: CaseViolence
 
   @ManyToOne(
     () => RegionalCenter,
