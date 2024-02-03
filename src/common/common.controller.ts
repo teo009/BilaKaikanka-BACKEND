@@ -10,6 +10,7 @@ import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
 import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
 import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
 import { CreateMunicipalityDto } from './dto/create-municipality.dto';
+import { CreateViolenceTypeDto } from './dto/create-violenceType.dto';
 
 @Controller('common')
 export class CommonController {
@@ -57,6 +58,11 @@ export class CommonController {
   @Post('municipality') 
   createMunicipality(@Body() createMunicipality: CreateMunicipalityDto) {
     return this.commonService.createMunicipality(createMunicipality);
+  }
+
+  @Post('violencetype')
+  createViolenceType(@Body() createViolenceType: CreateViolenceTypeDto) {
+    return this.commonService.createViolenceType(createViolenceType);
   }
 
   @Get()

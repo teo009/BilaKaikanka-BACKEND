@@ -15,6 +15,7 @@ import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
 import { CaseViolence } from './entities/case-violenctetype.entity';
+import { ViolenceType } from 'src/common/entities/violenceType.entity';
 
 @Module({
   controllers: [CasesController],
@@ -33,6 +34,7 @@ import { CaseViolence } from './entities/case-violenctetype.entity';
       AcademicLevel,
       RegionalCenter,
       Municipality,
+      ViolenceType,
     ]),
     AuthModule
   ],

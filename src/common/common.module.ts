@@ -11,6 +11,7 @@ import { JobPosition } from './entities/jobPosition.entity';
 import { AcademicLevel } from './entities/AcademicLevel.entity';
 import { RegionalCenter } from './entities/regionalCenter.entity';
 import { Municipality } from './entities/municipality.entity';
+import { ViolenceType } from './entities/violenceType.entity';
 
 @Module({
   controllers: [CommonController],
@@ -25,6 +26,7 @@ import { Municipality } from './entities/municipality.entity';
       AcademicLevel,
       RegionalCenter,
       Municipality,
+      ViolenceType,
     ])
   ]
 })

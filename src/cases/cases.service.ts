@@ -17,6 +17,7 @@ import { RegionalCenter } from 'src/common/entities/regionalCenter.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
 import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
 import { CaseViolence } from './entities/case-violenctetype.entity';
+import { ViolenceType } from 'src/common/entities/violenceType.entity';
 
 @Injectable()
 export class CasesService {
@@ -57,6 +58,9 @@ export class CasesService {
 
     @InjectRepository(CaseViolence)
     private readonly CaseViolenceRepository: Repository<CaseViolence>,
+
+    @InjectRepository(ViolenceType)
+    private readonly ViolenceTypeRepository: Repository<ViolenceType>
   ) {}
 
   async createAcase(createCaseDto: CreateCaseDto) {
@@ -119,10 +123,13 @@ export class CasesService {
   }
 
   async creteViolencetype(createViolencetype: CreateViolencetypeDto) {
+    const { violenceType } = createViolencetype;
     try {
       const caseById = await this.CaseRepository.findOneBy({ id: createViolencetype.case })
+      const violenceTypeById = await this.ViolenceTypeRepository.findOneBy({ id: violenceType }) 
+
       const caseViolenceResponse = this.CaseViolenceRepository.create({
-        case: caseById
+        case: caseById, violenceType: violenceTypeById
       });
       return await this.CaseViolenceRepository.save(caseViolenceResponse);
     } catch (error) { console.log(error) }

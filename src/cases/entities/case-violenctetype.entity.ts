@@ -1,6 +1,7 @@
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Case } from "./case.entity";
+import { ViolenceType } from "src/common/entities/violenceType.entity";
 
 @Entity('cases-violencetype')
 export class CaseViolence {
@@ -13,5 +14,11 @@ export class CaseViolence {
     (Case) => Case.caseViolence
   )
   case: Case;
+
+  @ManyToOne(
+    () => ViolenceType,
+    (violenceType) => violenceType.caseViolencetype
+  )
+  violenceType: ViolenceType;
 
 }
