@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsDate, IsString, MinLength } from "class-validator";
+import { IsArray, IsDate, IsString, IsUUID, MinLength } from "class-validator";
 
 export class CreatePersonDto {
 
@@ -24,5 +24,8 @@ export class CreatePersonDto {
   @MinLength(13)
   //@MinLength(10)
   identity: string;
+
+  @IsUUID()
+  career: string;
 
 }

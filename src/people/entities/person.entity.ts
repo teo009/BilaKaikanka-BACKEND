@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 import { CasePerson } from "src/cases/entities";
+import { Career } from "src/common/entities/Career.entity";
 
 @Entity('people')
 export class Person {
@@ -31,6 +32,12 @@ export class Person {
     (casePerson) => casePerson.person_id,
   )
   casePerson: CasePerson;
+
+  @ManyToOne(
+    () => Career,
+    (career) => career.person
+  )
+  career: Career
 
   //FOREIGN KEYS
   /*tipoIdentidad_id

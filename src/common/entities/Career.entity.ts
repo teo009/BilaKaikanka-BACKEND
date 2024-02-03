@@ -1,4 +1,5 @@
 import { CasePerson } from "src/cases/entities";
+import { Person } from "src/people/entities/person.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
@@ -16,5 +17,11 @@ export class Career {
   (CasePerson) => CasePerson.career
   )
   casePerson: CasePerson;
+
+  @OneToMany(
+    () => Person,
+    (person) => person.career
+  )
+  person: Person;
 
 }
