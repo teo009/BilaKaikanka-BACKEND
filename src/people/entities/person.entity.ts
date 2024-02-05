@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 
 import { CasePerson } from "src/cases/entities";
 import { Career } from "src/common/entities/Career.entity";
+import { Workplace } from "src/common/entities/Workplace.entity";
 
 @Entity('people')
 export class Person {
@@ -38,6 +39,12 @@ export class Person {
     (career) => career.person
   )
   career: Career
+
+  @ManyToOne(
+    () => Workplace,
+    (workplace) => workplace.person
+  )
+  workplace: Workplace;
 
   //FOREIGN KEYS
   /*tipoIdentidad_id

@@ -6,6 +6,7 @@ import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { Person } from './entities/person.entity';
 import { Career } from 'src/common/entities/Career.entity';
+import { Workplace } from 'src/common/entities/Workplace.entity';
 
 @Injectable()
 export class PeopleService {
@@ -16,14 +17,19 @@ export class PeopleService {
 
     @InjectRepository(Career)
     private readonly CareerRepository: Repository<Career>,
+
+    @InjectRepository(Workplace)
+    private readonly WorkplaceRepository: Repository<Workplace>
   ) {}
 
   async create(createPersonDto: CreatePersonDto) {
-    const { career, ...createPersonData } = createPersonDto;
+    const { career, workplace, ...createPersonData } = createPersonDto;
     try {
-      const careerById = await this.CareerRepository.findOneBy({ id: career })
+      const careerById = await this.CareerRepository.findOneBy({ id: career });
+      const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace });
+
       const peopleResponse = this.PersonRepository.create({
-        ...createPersonData, career: careerById
+        ...createPersonData, career: careerById, workplace: workplaceById
       });
       await this.PersonRepository.save(peopleResponse);
       return peopleResponse;

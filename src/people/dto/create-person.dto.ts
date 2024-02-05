@@ -28,4 +28,7 @@ export class CreatePersonDto {
   @IsUUID()
   career: string;
 
+  @IsUUID()
+  workplace: string;
+
 }
