@@ -5,6 +5,7 @@ import { Career } from "src/common/entities/Career.entity";
 import { Workplace } from "src/common/entities/Workplace.entity";
 import { Municipality } from "src/common/entities/municipality.entity";
 import { JobPosition } from "src/common/entities/jobPosition.entity";
+import { IdentityType } from "src/common/entities/IdentityType.entity";
 
 @Entity('people')
 export class Person {
@@ -59,6 +60,12 @@ export class Person {
     (jobposition) => jobposition.person
   )
   jobposition: JobPosition;
+
+  @ManyToOne(
+    () => IdentityType,
+    (identityType) => identityType.person
+  )
+  identityType: IdentityType;
 
   //FOREIGN KEYS
   /*tipoIdentidad_id

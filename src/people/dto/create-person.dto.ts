@@ -37,4 +37,7 @@ export class CreatePersonDto {
   @IsUUID()
   jobposition: string;
 
+  @IsUUID()
+  identityType: string;
+
 }

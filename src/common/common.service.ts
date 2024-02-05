@@ -21,6 +21,8 @@ import { CreateMunicipalityDto } from './dto/create-municipality.dto';
 import { Municipality } from './entities/municipality.entity';
 import { CreateViolenceTypeDto } from './dto/create-violenceType.dto';
 import { ViolenceType } from './entities/violenceType.entity';
+import { CreateIdentityType } from './dto/create-identityType.dto';
+import { IdentityType } from './entities/IdentityType.entity';
 
 @Injectable()
 export class CommonService {
@@ -52,6 +54,9 @@ export class CommonService {
 
     @InjectRepository(ViolenceType)
     private readonly ViolenceTypeRepository: Repository<ViolenceType>,
+
+    @InjectRepository(IdentityType)
+    private readonly IdentityTypeRepository: Repository<IdentityType>,
   ) {}
 
   async createArole(createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -119,6 +124,13 @@ export class CommonService {
     try {
       const violenceTypeResponse = this.ViolenceTypeRepository.create(createViolenceType);
       return await this.ViolenceTypeRepository.save(violenceTypeResponse);
+    } catch (error) { console.log(error) }
+  }
+
+  async createIdentityType(createIdentityType: CreateIdentityType) {
+    try {
+      const identityTypeResponse = this.IdentityTypeRepository.create(createIdentityType);
+      return await this.IdentityTypeRepository.save(identityTypeResponse);
     } catch (error) { console.log(error) }
   }
 

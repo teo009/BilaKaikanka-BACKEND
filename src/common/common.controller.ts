@@ -11,6 +11,7 @@ import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
 import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
 import { CreateMunicipalityDto } from './dto/create-municipality.dto';
 import { CreateViolenceTypeDto } from './dto/create-violenceType.dto';
+import { CreateIdentityType } from './dto/create-identityType.dto';
 
 @Controller('common')
 export class CommonController {
@@ -63,6 +64,11 @@ export class CommonController {
   @Post('violencetype')
   createViolenceType(@Body() createViolenceType: CreateViolenceTypeDto) {
     return this.commonService.createViolenceType(createViolenceType);
+  }
+
+  @Post('identitytype')
+  createIdentityType(@Body() createIdentityType: CreateIdentityType) {
+    return this.commonService.createIdentityType(createIdentityType);
   }
 
   @Get()

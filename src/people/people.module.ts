@@ -8,6 +8,7 @@ import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
+import { IdentityType } from 'src/common/entities/IdentityType.entity';
 
 @Module({
   controllers: [PeopleController],
@@ -18,7 +19,8 @@ import { JobPosition } from 'src/common/entities/jobPosition.entity';
       Career, 
       Workplace, 
       Municipality,
-      JobPosition 
+      JobPosition,
+      IdentityType
     ])
   ],
   exports: [PeopleService]
