@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { CasePerson } from "src/cases/entities";
 import { Career } from "src/common/entities/Career.entity";
 import { Workplace } from "src/common/entities/Workplace.entity";
+import { Municipality } from "src/common/entities/municipality.entity";
 
 @Entity('people')
 export class Person {
@@ -46,14 +47,15 @@ export class Person {
   )
   workplace: Workplace;
 
+  @ManyToOne(
+    () => Municipality,
+    (municipality) => municipality.person
+  )
+  municipality: Municipality;
+
   //FOREIGN KEYS
   /*tipoIdentidad_id
   cargo_id
   nivelAcademico_id
-  carrera_id
-  centroTrabajo_id
-  municipio_id
-  carrera_id
-  centroTrabajo_id
   municipio_id*/
 }

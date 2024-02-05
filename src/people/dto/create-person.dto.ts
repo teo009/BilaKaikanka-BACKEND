@@ -31,4 +31,7 @@ export class CreatePersonDto {
   @IsUUID()
   workplace: string;
 
+  @IsUUID()
+  municipality: string;
+
 }
