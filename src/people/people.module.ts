@@ -7,12 +7,19 @@ import { Person } from './entities/person.entity';
 import { Career } from 'src/common/entities/Career.entity';
 import { Workplace } from 'src/common/entities/Workplace.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
+import { JobPosition } from 'src/common/entities/jobPosition.entity';
 
 @Module({
   controllers: [PeopleController],
   providers: [PeopleService],
   imports: [
-    TypeOrmModule.forFeature([ Person, Career, Workplace, Municipality ])
+    TypeOrmModule.forFeature([ 
+      Person, 
+      Career, 
+      Workplace, 
+      Municipality,
+      JobPosition 
+    ])
   ],
   exports: [PeopleService]
 })
