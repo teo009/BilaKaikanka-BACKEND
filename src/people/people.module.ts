@@ -9,6 +9,7 @@ import { Workplace } from 'src/common/entities/Workplace.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { IdentityType } from 'src/common/entities/IdentityType.entity';
+import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 
 @Module({
   controllers: [PeopleController],
@@ -20,7 +21,8 @@ import { IdentityType } from 'src/common/entities/IdentityType.entity';
       Workplace, 
       Municipality,
       JobPosition,
-      IdentityType
+      IdentityType,
+      AcademicLevel
     ])
   ],
   exports: [PeopleService]

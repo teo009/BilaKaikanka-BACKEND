@@ -10,6 +10,7 @@ import { Workplace } from 'src/common/entities/Workplace.entity';
 import { Municipality } from 'src/common/entities/municipality.entity';
 import { JobPosition } from 'src/common/entities/jobPosition.entity';
 import { IdentityType } from 'src/common/entities/IdentityType.entity';
+import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
 
 @Injectable()
 export class PeopleService {
@@ -31,7 +32,10 @@ export class PeopleService {
     private readonly JobpositionRepository: Repository<JobPosition>,
 
     @InjectRepository(IdentityType)
-    private readonly IdentityTypeRepository: Repository<IdentityType>
+    private readonly IdentityTypeRepository: Repository<IdentityType>,
+
+    @InjectRepository(AcademicLevel)
+    private readonly AcademicLevelRepository: Repository<AcademicLevel>,
   ) {}
 
   async create(createPersonDto: CreatePersonDto) {
@@ -41,6 +45,7 @@ export class PeopleService {
       municipality,
       jobposition, 
       identityType,
+      academicLevel,
       ...createPersonData 
     } = createPersonDto;
     try {
@@ -49,6 +54,7 @@ export class PeopleService {
       const municipalityById = await this.MunicipalityRepository.findOneBy({ id: municipality });
       const jobpositionById = await this.JobpositionRepository.findOneBy({ id: jobposition });
       const identityTypeById = await this.IdentityTypeRepository.findOneBy({ is: identityType });
+      const academicLevelById = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
 
       const peopleResponse = this.PersonRepository.create({
         ...createPersonData, 
@@ -56,7 +62,8 @@ export class PeopleService {
         workplace: workplaceById,
         municipality: municipalityById,
         jobposition: jobpositionById,
-        identityType: identityTypeById
+        identityType: identityTypeById,
+        academicLevel: academicLevelById
       });
       await this.PersonRepository.save(peopleResponse);
       return peopleResponse;

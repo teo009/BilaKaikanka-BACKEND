@@ -40,4 +40,7 @@ export class CreatePersonDto {
   @IsUUID()
   identityType: string;
 
+  @IsUUID()
+  academicLevel: string;
+
 }

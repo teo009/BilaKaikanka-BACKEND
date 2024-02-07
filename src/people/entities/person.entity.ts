@@ -6,6 +6,7 @@ import { Workplace } from "src/common/entities/Workplace.entity";
 import { Municipality } from "src/common/entities/municipality.entity";
 import { JobPosition } from "src/common/entities/jobPosition.entity";
 import { IdentityType } from "src/common/entities/IdentityType.entity";
+import { AcademicLevel } from "src/common/entities/AcademicLevel.entity";
 
 @Entity('people')
 export class Person {
@@ -67,9 +68,9 @@ export class Person {
   )
   identityType: IdentityType;
 
-  //FOREIGN KEYS
-  /*tipoIdentidad_id
-  cargo_id
-  nivelAcademico_id
-  municipio_id*/
+  @ManyToOne(
+    () => AcademicLevel,
+    (academicLevel) => academicLevel.person
+  )
+  academicLevel: AcademicLevel;
 }
