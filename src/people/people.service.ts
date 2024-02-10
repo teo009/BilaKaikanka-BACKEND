@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -80,8 +80,24 @@ export class PeopleService {
     return `This action returns a #${id} person`;
   }
 
-  update(id: number, updatePersonDto: UpdatePersonDto) {
-    return `This action updates a #${id} person`;
+  async update(id: string, updatePersonDto: UpdatePersonDto) {
+    const { 
+      career, 
+      workplace, 
+      municipality, 
+      jobposition, 
+      identityType, 
+      academicLevel, 
+      ...dataToUpdate 
+    } = updatePersonDto;
+    try {
+      const peopleResponse = await this.PersonRepository.preload({ 
+        id: id, ...dataToUpdate
+      });
+      if(!peopleResponse) throw new NotFoundException(`La persona no ha sido encontrada`);
+      await this.PersonRepository.save(peopleResponse)
+      return peopleResponse;
+    } catch(error) { console.log(error) }
   }
 
   remove(id: number) {
