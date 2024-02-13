@@ -90,13 +90,18 @@ export class PeopleService {
       academicLevel, 
       ...dataToUpdate 
     } = updatePersonDto;
+
     try {
-      const peopleResponse = await this.PersonRepository.preload({ 
-        id: id, ...dataToUpdate
-      });
-      if(!peopleResponse) throw new NotFoundException(`La persona no ha sido encontrada`);
-      await this.PersonRepository.save(peopleResponse)
-      return peopleResponse;
+      const people = await this.PersonRepository.preload({ id, ...dataToUpdate });
+      if(!people) throw new NotFoundException(`La persona no ha sido encontrada`);
+
+      let careerUpdated: Object;
+      if(career) {
+        careerUpdated = await this.CareerRepository.findOneBy({ id: career });
+      }
+
+      return await this.PersonRepository.save({ ...people, career: careerUpdated });
+      
     } catch(error) { console.log(error) }
   }
 
