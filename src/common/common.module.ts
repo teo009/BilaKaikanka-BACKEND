@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonController } from './common.controller';
 import { RoleInCase } from './entities/roleInCase.entity';
-import { VictimRealationship } from './entities/VictimRelationship.entity';
+import { VictimRelationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { Workplace } from './entities/Workplace.entity';
 import { JobPosition } from './entities/jobPosition.entity';
@@ -20,7 +20,7 @@ import { IdentityType } from './entities/IdentityType.entity';
   imports: [
     TypeOrmModule.forFeature([ 
       RoleInCase, 
-      VictimRealationship, 
+      VictimRelationship, 
       Career, 
       Workplace,
       JobPosition,

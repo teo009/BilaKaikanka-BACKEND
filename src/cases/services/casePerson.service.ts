@@ -1,0 +1,90 @@
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
+import { CreateCasePersonDto } from "../dto/create-casePerson.dto";
+
+import { Case, CasePerson } from "../entities";
+import { Person } from "src/people/entities/person.entity";
+import { RoleInCase } from "src/common/entities/roleInCase.entity";
+import { VictimRelationship } from "src/common/entities/VictimRelationship.entity";
+import { Career } from "src/common/entities/Career.entity";
+import { Workplace } from "src/common/entities/Workplace.entity";
+import { JobPosition } from "src/common/entities/jobPosition.entity";
+import { AcademicLevel } from "src/common/entities/AcademicLevel.entity";
+
+@Injectable()
+export class CasePersonService {
+
+  constructor(
+
+    @InjectRepository(CasePerson)
+    private readonly CasePersonRepository: Repository<CasePerson>,
+
+    @InjectRepository(Case)
+    private readonly CaseRepository: Repository<Case>,
+
+    @InjectRepository(Person)
+    private readonly PersonRepository: Repository<Person>,
+
+    @InjectRepository(RoleInCase)
+    private readonly RoleInCaseRepository: Repository<RoleInCase>,
+
+    @InjectRepository(VictimRelationship)
+    private readonly VictimRelationshipRepository: Repository<VictimRelationship>,
+
+    @InjectRepository(Career)
+    private readonly CareerRepository: Repository<Career>,
+
+    @InjectRepository(Workplace)
+    private readonly WorkplaceRepository: Repository<Workplace>,
+
+    @InjectRepository(JobPosition)
+    private readonly JobPositionRepository: Repository<JobPosition>,
+
+    @InjectRepository(AcademicLevel)
+    private readonly AcademicLevelRepository: Repository<AcademicLevel>,
+
+  ) {}
+
+  async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
+    const { 
+      caseId, 
+      person, 
+      roleInCase, 
+      victimRelationship, 
+      career, 
+      workplace, 
+      jobPosition,
+      academicLevel
+    } = CreateCasePerson;
+
+    try {
+      const caseById = await this.CaseRepository.findOneBy({ id: caseId })
+      const personById = await this.PersonRepository.findOneBy({ id: person })
+      const roleInCaseById = await this.RoleInCaseRepository.findOneBy({ id: roleInCase })
+      const victimRelationshipId = await this.VictimRelationshipRepository.findOneBy({ id: victimRelationship })
+      const careerById = await this.CareerRepository.findOneBy({ id: career })
+      const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace })
+      const jobPositionById = await this.JobPositionRepository.findOneBy({ id: jobPosition })
+      const AcademicLevelById = await this.AcademicLevelRepository.findOneBy({ id: academicLevel })
+
+      const caseHasPersonResponse = this.CasePersonRepository.create(
+        { 
+          case_id: caseById, 
+          person_id: personById, 
+          roleInCase: roleInCaseById, 
+          victimRelationship: victimRelationshipId,
+          career: careerById,
+          workplace: workplaceById,
+          jobPosition: jobPositionById,
+          academicLevel: AcademicLevelById          
+        }
+      );
+      return await this.CasePersonRepository.save(caseHasPersonResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+}

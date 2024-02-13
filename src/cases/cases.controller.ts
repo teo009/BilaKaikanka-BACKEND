@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 
-import { CasesService } from './cases.service';
+import { CasesService, CasePersonService } from './services/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/create-casePerson.dto';
@@ -8,7 +8,11 @@ import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
 
 @Controller('cases')
 export class CasesController {
-  constructor(private readonly casesService: CasesService) {}
+
+  constructor(
+    private readonly casesService: CasesService,
+    private readonly casePersonService: CasePersonService
+  ) {}
 
   @Post()
   create(@Body() createCaseDto: CreateCaseDto) {
@@ -17,7 +21,7 @@ export class CasesController {
 
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
-    return this.casesService.createCasePerson(CreateCasePerson);
+    return this.casePersonService.createCasePerson(CreateCasePerson);
   }
 
   @Post('case-has-violencetype')
