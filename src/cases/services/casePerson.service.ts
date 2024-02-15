@@ -112,11 +112,38 @@ export class CasePersonService {
       if(roleInCase) {
         roleInCaseUpdated = await this.RoleInCaseRepository.findOneBy({ id: roleInCase });
       }
+      let victimRelationshipUpdated: Object;
+      if(victimRelationship) {
+        victimRelationshipUpdated = await this.VictimRelationshipRepository.findOneBy({ 
+          id: victimRelationship 
+        });
+      }
+      let careerUpdated: Object;
+      if(career) {
+        careerUpdated = await this.CareerRepository.findOneBy({ id: career });
+      }
+      let workplaceUpdated: Object;
+      if(workplace) {
+        workplaceUpdated = await this.WorkplaceRepository.findOneBy({ id: workplace });
+      }
+      let jobPositionUpdated: Object;
+      if(jobPosition) {
+        jobPositionUpdated = await this.JobPositionRepository.findOneBy({ id: jobPosition });
+      }
+      let academicLevelUpdated: Object;
+      if(academicLevel) {
+        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
+      }
 
       return await this.CasePersonRepository.save({
         ...casePersonToUpdate,
         person_id: personUpdated,
         roleInCase: roleInCaseUpdated,
+        victimRelationship: victimRelationshipUpdated,
+        career: careerUpdated,
+        workplace: workplaceUpdated,
+        jobPosition: jobPositionUpdated,
+        academicLevel: academicLevelUpdated
       })
     } catch(error) { console.log(error) }
   }
