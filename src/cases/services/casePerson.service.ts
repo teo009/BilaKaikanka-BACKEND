@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { CreateCasePersonDto } from "../dto/create-casePerson.dto";
+import { CreateCasePersonDto } from "../dto/casePerson/create-casePerson.dto";
 
 import { Case, CasePerson } from "../entities";
 import { Person } from "src/people/entities/person.entity";
@@ -12,6 +12,7 @@ import { Career } from "src/common/entities/Career.entity";
 import { Workplace } from "src/common/entities/Workplace.entity";
 import { JobPosition } from "src/common/entities/jobPosition.entity";
 import { AcademicLevel } from "src/common/entities/AcademicLevel.entity";
+import { UpdateCasePersonDto } from "../dto/casePerson/update-casePerson.dto";
 
 @Injectable()
 export class CasePersonService {
@@ -85,6 +86,39 @@ export class CasePersonService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async updateCasePerson(id: string, updateCasePersonDto: UpdateCasePersonDto) {
+    const { 
+      person, 
+      roleInCase, 
+      victimRelationship, 
+      career, 
+      workplace, 
+      jobPosition, 
+      academicLevel,
+    } = updateCasePersonDto;
+
+    try {
+      const casePersonToUpdate = await this.CasePersonRepository.preload({ id })
+      if(!casePersonToUpdate) throw new NotFoundException(`El caso no ha sido encontrado`);
+
+      //Check if there is an foreignKey update and doing it if there is one
+      let personUpdated: Object;
+      if(person) {
+        personUpdated = await this.PersonRepository.findOneBy({ id: person });
+      }
+      let roleInCaseUpdated: Object;
+      if(roleInCase) {
+        roleInCaseUpdated = await this.RoleInCaseRepository.findOneBy({ id: roleInCase });
+      }
+
+      return await this.CasePersonRepository.save({
+        ...casePersonToUpdate,
+        person_id: personUpdated,
+        roleInCase: roleInCaseUpdated,
+      })
+    } catch(error) { console.log(error) }
   }
 
 }
