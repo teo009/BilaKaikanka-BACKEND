@@ -3,7 +3,7 @@ import { CasePerson } from "src/cases/entities";
 
 //Parentezco
 @Entity('victim-relationship')
-export class VictimRealationship {
+export class VictimRelationship {
 
   @PrimaryGeneratedColumn('uuid')
   id: string;

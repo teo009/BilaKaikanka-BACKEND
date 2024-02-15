@@ -1,14 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 
-import { CasesService } from './cases.service';
+import { CasesService, CasePersonService } from './services/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
-import { CreateCasePersonDto } from './dto/create-casePerson.dto';
+import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
 import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
+import { UpdateCasePersonDto } from './dto/casePerson/update-casePerson.dto';
 
 @Controller('cases')
 export class CasesController {
-  constructor(private readonly casesService: CasesService) {}
+
+  constructor(
+    private readonly casesService: CasesService,
+    private readonly casePersonService: CasePersonService
+  ) {}
 
   @Post()
   create(@Body() createCaseDto: CreateCaseDto) {
@@ -17,7 +22,7 @@ export class CasesController {
 
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
-    return this.casesService.createCasePerson(CreateCasePerson);
+    return this.casePersonService.createCasePerson(CreateCasePerson);
   }
 
   @Post('case-has-violencetype')
@@ -41,6 +46,14 @@ export class CasesController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCaseDto: UpdateCaseDto) {
     return this.casesService.update(+id, updateCaseDto);
+  }
+
+  @Patch('case-has-person/:id')
+  updateCasePerson(
+    @Param('id', ParseUUIDPipe) id: string, @Body() 
+    updateCasePersonDto: UpdateCasePersonDto
+  ) {
+    return this.casePersonService.updateCasePerson(id, updateCasePersonDto);
   }
 
   @Delete(':id')

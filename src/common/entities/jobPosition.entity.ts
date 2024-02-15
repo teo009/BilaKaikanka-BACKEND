@@ -13,7 +13,7 @@ export class JobPosition {
 
   @OneToMany(
     () => CasePerson,
-    (casePerson) => casePerson.jobPosiion
+    (casePerson) => casePerson.jobPosition
   )
   casePerson: CasePerson;
 

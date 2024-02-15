@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -80,8 +80,52 @@ export class PeopleService {
     return `This action returns a #${id} person`;
   }
 
-  update(id: number, updatePersonDto: UpdatePersonDto) {
-    return `This action updates a #${id} person`;
+  async update(id: string, updatePersonDto: UpdatePersonDto) {
+    const { 
+      career, 
+      workplace, 
+      municipality, 
+      jobposition, 
+      identityType, // => PENDING TO UPDATE
+      academicLevel, 
+      ...dataToUpdate 
+    } = updatePersonDto;
+
+    try {
+      const people = await this.PersonRepository.preload({ id, ...dataToUpdate });
+      if(!people) throw new NotFoundException(`La persona no ha sido encontrada`);
+
+      //Check if there is an foreignKey update and doing it if there is one
+      let careerUpdated: Object;
+      if(career) {
+        careerUpdated = await this.CareerRepository.findOneBy({ id: career });
+      }
+      let workplaceUpdated: Object;
+      if(workplace) {
+        workplaceUpdated = await this.WorkplaceRepository.findOneBy({ id: workplace });
+      }
+      let municipalityUpdated: Object;
+      if(municipality) {
+        municipalityUpdated = await this.MunicipalityRepository.findOneBy({ id: municipality });
+      }
+      let jobpositionUpdated: Object;
+      if(jobposition) {
+        jobpositionUpdated = await this.JobpositionRepository.findOneBy({ id: jobposition });
+      }
+      let academicLevelUpdated: Object;
+      if(academicLevel) {
+        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
+      }
+
+      return await this.PersonRepository.save({ 
+        ...people,
+        career: careerUpdated,
+        workplace: workplaceUpdated,
+        municipality: municipalityUpdated,
+        jobposition: jobpositionUpdated,
+        academicLevel: academicLevelUpdated,
+      });
+    } catch(error) { console.log(error) }
   }
 
   remove(id: number) {

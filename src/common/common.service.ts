@@ -6,7 +6,7 @@ import { UpdateCommonDto } from './dto/update-common.dto';
 import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
 import { RoleInCase } from './entities/roleInCase.entity';
 import { CreateVictimRelationship } from './dto/create-victimRelationship';
-import { VictimRealationship } from './entities/VictimRelationship.entity';
+import { VictimRelationship } from './entities/VictimRelationship.entity';
 import { Career } from './entities/Career.entity';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { Workplace } from './entities/Workplace.entity';
@@ -31,8 +31,8 @@ export class CommonService {
     @InjectRepository(RoleInCase)
     private readonly RoleInCaseRepository: Repository<RoleInCase>,
 
-    @InjectRepository(VictimRealationship)
-    private readonly VictimRelationshipRepository: Repository<VictimRealationship>,
+    @InjectRepository(VictimRelationship)
+    private readonly VictimRelationshipRepository: Repository<VictimRelationship>,
 
     @InjectRepository(Career)
     private readonly CareerRepository: Repository<Career>,

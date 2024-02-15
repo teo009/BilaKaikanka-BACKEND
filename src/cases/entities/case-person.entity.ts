@@ -3,7 +3,7 @@ import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDate
 import { Case } from "./case.entity";
 import { Person } from "src/people/entities/person.entity";
 import { RoleInCase } from "src/common/entities/roleInCase.entity";
-import { VictimRealationship } from "src/common/entities/VictimRelationship.entity";
+import { VictimRelationship } from "src/common/entities/VictimRelationship.entity";
 import { Career } from "src/common/entities/Career.entity";
 import { Workplace } from "src/common/entities/Workplace.entity";
 import { JobPosition } from "src/common/entities/jobPosition.entity";
@@ -47,10 +47,10 @@ export class CasePerson {
   roleInCase: RoleInCase;
 
   @ManyToOne(
-    () => VictimRealationship,
+    () => VictimRelationship,
     (victimRelationship) => victimRelationship.casePerson
   )
-  victimRelationship: VictimRealationship;
+  victimRelationship: VictimRelationship;
 
   @ManyToOne(
     () => Career,
@@ -68,7 +68,7 @@ export class CasePerson {
     () => JobPosition,
     (jobPosition) => jobPosition.casePerson
   )
-  jobPosiion?: JobPosition;
+  jobPosition?: JobPosition;
 
   @ManyToOne(
     () => AcademicLevel,

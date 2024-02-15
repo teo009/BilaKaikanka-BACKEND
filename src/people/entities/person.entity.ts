@@ -40,7 +40,7 @@ export class Person {
 
   @ManyToOne(
     () => Career,
-    (career) => career.person
+    (career) => career.person, { cascade: true }
   )
   career: Career
 
