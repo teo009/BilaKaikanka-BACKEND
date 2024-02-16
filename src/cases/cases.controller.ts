@@ -44,8 +44,11 @@ export class CasesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCaseDto: UpdateCaseDto) {
-    return this.casesService.update(+id, updateCaseDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateCaseDto: UpdateCaseDto
+  ) {
+    return this.casesService.update(id, updateCaseDto);
   }
 
   @Patch('case-has-person/:id')

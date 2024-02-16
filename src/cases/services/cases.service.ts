@@ -74,8 +74,32 @@ export class CasesService {
     return `This action returns a #${id} case`;
   }
 
-  update(id: number, updateCaseDto: UpdateCaseDto) {
-    return `This action updates a #${id} case`;
+  async update(id: string, updateCaseDto: UpdateCaseDto) {
+
+    const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
+
+    try {
+      const caseToUpdate = await this.CaseRepository.preload({ id, ...dataToUpdate });
+
+      //Check if there is an foreignKey update and doing it if there is one
+      let municipalityUpdated: Object;
+      if(municipality) {
+        municipalityUpdated = await this.MunicipalityRepository.findOneBy({ id: municipality });
+      }
+      let regionalCenterUpdated: Object;
+      if(regionalCenter) {
+        regionalCenterUpdated = await this.RegionalCenterRepository.findOneBy({ 
+          id: regionalCenter
+        });
+      }
+      console.log(regionalCenterUpdated);
+
+      return await this.CaseRepository.save({ 
+        ...caseToUpdate, 
+        municipality: municipalityUpdated,
+        regionalCenter: regionalCenterUpdated,
+      })
+    } catch(error) { console.log(error) }
   }
 
   remove(id: number) {
