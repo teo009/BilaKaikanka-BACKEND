@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CasesService, CasePersonService, CaseViolenceTypeService } from './services/';
 import { Case, CasePerson } from './entities/';
-import { CasesService, CasePersonService } from './services/';
 import { CasesController } from './cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
@@ -19,7 +19,7 @@ import { ViolenceType } from 'src/common/entities/violenceType.entity';
 
 @Module({
   controllers: [CasesController],
-  providers: [CasesService, CasePersonService],
+  providers: [CasesService, CasePersonService, CaseViolenceTypeService],
   imports: [
     TypeOrmModule.forFeature([
       Case, 

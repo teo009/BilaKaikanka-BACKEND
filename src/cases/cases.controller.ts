@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 
-import { CasesService, CasePersonService } from './services/';
+import { CasesService, CasePersonService, CaseViolenceTypeService } from './services/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
@@ -12,7 +12,8 @@ export class CasesController {
 
   constructor(
     private readonly casesService: CasesService,
-    private readonly casePersonService: CasePersonService
+    private readonly casePersonService: CasePersonService,
+    private readonly caseViolenceType: CaseViolenceTypeService
   ) {}
 
   @Post()
@@ -30,7 +31,7 @@ export class CasesController {
     @Body() 
     createViolencetype: CreateViolencetypeDto
   ) {
-    return this.casesService.creteViolencetype(createViolencetype);
+    return this.caseViolenceType.createCaseViolenceType(createViolencetype);
   }
 
   @Get()
