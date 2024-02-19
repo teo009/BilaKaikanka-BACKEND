@@ -6,6 +6,7 @@ import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
 import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
 import { UpdateCasePersonDto } from './dto/casePerson/update-casePerson.dto';
+import { UpdateCaseViolencetypeDto } from './dto/caseViolencetype/update-caseViolencetype.dto';
 
 @Controller('cases')
 export class CasesController {
@@ -24,14 +25,6 @@ export class CasesController {
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
     return this.casePersonService.createCasePerson(CreateCasePerson);
-  }
-
-  @Post('case-has-violencetype')
-  createCaseViolencetype(
-    @Body() 
-    createViolencetype: CreateViolencetypeDto
-  ) {
-    return this.caseViolenceType.createCaseViolenceType(createViolencetype);
   }
 
   @Get()
@@ -63,5 +56,23 @@ export class CasesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.casesService.remove(+id);
+  }
+
+  //Case has Violence Type Pivote routes
+  @Post('case-has-violencetype')
+  createCaseViolencetype(
+    @Body() 
+    createViolencetype: CreateViolencetypeDto
+  ) {
+    return this.caseViolenceType.createCaseViolenceType(createViolencetype);
+  }
+  @Patch('case-has-violencetype/:id')
+  updateCaseViolencetype(
+    @Param('id', ParseUUIDPipe) id: string, @Body()
+    updateCaseViolencetype: UpdateCaseViolencetypeDto
+  ) {
+    return this.caseViolenceType.updateCaseViolenceType(
+      id, updateCaseViolencetype
+    );
   }
 }
