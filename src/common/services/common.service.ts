@@ -2,27 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UpdateCommonDto } from './dto/update-common.dto';
-import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
-import { RoleInCase } from './entities/roleInCase.entity';
-import { CreateVictimRelationship } from './dto/create-victimRelationship';
-import { VictimRelationship } from './entities/VictimRelationship.entity';
-import { Career } from './entities/Career.entity';
-import { CreateCareerDto } from './dto/create-career.dto';
-import { Workplace } from './entities/Workplace.entity';
-import { CreateWorkplaceDto } from './dto/create-workplace.dto';
-import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
-import { JobPosition } from './entities/jobPosition.entity';
-import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
-import { AcademicLevel } from './entities/AcademicLevel.entity';
-import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
-import { RegionalCenter } from './entities/regionalCenter.entity';
-import { CreateMunicipalityDto } from './dto/create-municipality.dto';
-import { Municipality } from './entities/municipality.entity';
-import { CreateViolenceTypeDto } from './dto/create-violenceType.dto';
-import { ViolenceType } from './entities/violenceType.entity';
-import { CreateIdentityType } from './dto/create-identityType.dto';
-import { IdentityType } from './entities/IdentityType.entity';
+import { UpdateCommonDto } from '../dto/update-common.dto';
+import { CreateRoleInCaseDto } from '../dto/create-roleInCase.dto';
+import { CreateVictimRelationship } from '../dto/create-victimRelationship';
+import { CreateCareerDto } from '../dto/create-career.dto';
+import { CreateWorkplaceDto } from '../dto/create-workplace.dto';
+import { CreateJobPositionDto } from '../dto/create-jobPosition.dto';
+import { CreateRegionalCenter } from '../dto/create-regionalCenter.dto';
+import { CreateMunicipalityDto } from '../dto/create-municipality.dto';
+import { CreateViolenceTypeDto } from '../dto/create-violenceType.dto';
+
+import { RoleInCase } from '../entities/roleInCase.entity';
+import { VictimRelationship } from '../entities/VictimRelationship.entity';
+import { Career } from '../entities/Career.entity';
+import { Workplace } from '../entities/Workplace.entity';
+import { JobPosition } from '../entities/jobPosition.entity';
+import { RegionalCenter } from '../entities/regionalCenter.entity';
+import { Municipality } from '../entities/municipality.entity';
+import { ViolenceType } from '../entities/violenceType.entity';
+import { CreateIdentityType } from '../dto/create-identityType.dto';
+import { IdentityType } from '../entities/IdentityType.entity';
 
 @Injectable()
 export class CommonService {
@@ -42,9 +41,6 @@ export class CommonService {
 
     @InjectRepository(JobPosition)
     private readonly JobPositionRepository: Repository<JobPosition>,
-
-    @InjectRepository(AcademicLevel)
-    private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
     @InjectRepository(RegionalCenter)
     private readonly RegionalCenterRepository: Repository<RegionalCenter>,
@@ -96,13 +92,6 @@ export class CommonService {
     try {
       const jobPositionResponse = this.JobPositionRepository.create(createJobPosition);
       return await this.JobPositionRepository.save(jobPositionResponse);
-    } catch (error) { console.log(error) }
-  }
-
-  async createAcademicLevel(createAcademicLevel: CreateAcademicLevel) {
-    try {
-      const academicLevelResponse = this.AcademicLevelRepository.create(createAcademicLevel);
-      return await this.AcademicLevelRepository.save(academicLevelResponse);
     } catch (error) { console.log(error) }
   }
 

@@ -1,7 +1,8 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 
-import { CommonService } from './common.service';
+import { AcademicLevelService, CommonService } from './services/';
+
 import { CommonController } from './common.controller';
 import { RoleInCase } from './entities/roleInCase.entity';
 import { VictimRelationship } from './entities/VictimRelationship.entity';
@@ -15,8 +16,8 @@ import { ViolenceType } from './entities/violenceType.entity';
 import { IdentityType } from './entities/IdentityType.entity';
 
 @Module({
-  controllers: [CommonController],
-  providers: [CommonService],
+  controllers: [ CommonController ],
+  providers: [ CommonService, AcademicLevelService ],
   imports: [
     TypeOrmModule.forFeature([ 
       RoleInCase, 

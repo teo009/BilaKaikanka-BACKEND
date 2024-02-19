@@ -1,21 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 
-import { CommonService } from './common.service';
+import { AcademicLevelService, CommonService } from './services';
+
 import { UpdateCommonDto } from './dto/update-common.dto';
 import { CreateRoleInCaseDto } from './dto/create-roleInCase.dto';
 import { CreateVictimRelationship } from './dto/create-victimRelationship';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { CreateWorkplaceDto } from './dto/create-workplace.dto';
 import { CreateJobPositionDto } from './dto/create-jobPosition.dto';
-import { CreateAcademicLevel } from './dto/create-AcademicLevel.dto';
+import { CreateAcademicLevel } from './dto/create/create-AcademicLevel.dto';
 import { CreateRegionalCenter } from './dto/create-regionalCenter.dto';
 import { CreateMunicipalityDto } from './dto/create-municipality.dto';
 import { CreateViolenceTypeDto } from './dto/create-violenceType.dto';
 import { CreateIdentityType } from './dto/create-identityType.dto';
+import { UpdateAcademicLevelDto } from './dto/update/update-academicLevel.dto';
 
 @Controller('common')
 export class CommonController {
-  constructor(private readonly commonService: CommonService) {}
+
+  constructor(
+    private readonly commonService: CommonService,
+    private readonly AcademicLevelService: AcademicLevelService,
+  ) {}
 
   @Post('role-in-case')
   create(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
@@ -44,11 +50,6 @@ export class CommonController {
   @Post('jobposition')
   createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
     return this.commonService.createJobPosition(createJobPosition);
-  }
-
-  @Post('academiclevel')
-  createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
-    return this.commonService.createAcademicLevel(createAcademicLevel);
   }
 
   @Post('regionalcenter')
@@ -80,16 +81,28 @@ export class CommonController {
   findOne(@Param('id') id: string) {
     return this.commonService.findOne(+id);
   }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string, @Body() updateCommonDto: UpdateCommonDto
-  ) {
-    return this.commonService.update(+id, updateCommonDto);
-  }
-
+  
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.commonService.remove(+id);
+  }
+
+  //ACADEMIC LEVEL
+  @Post('academiclevel')
+  createAcademicLevel(
+    @Body() createAcademicLevel: CreateAcademicLevel
+  ) {
+    return this.AcademicLevelService.createAcademicLevel(
+      createAcademicLevel
+    );
+  }
+  @Patch('academiclevel/:id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string, @Body() 
+    updateAcademicLevelDto: UpdateAcademicLevelDto
+  ) {
+    return this.AcademicLevelService.updateAcademicLevel(
+      id, updateAcademicLevelDto
+    );
   }
 }
