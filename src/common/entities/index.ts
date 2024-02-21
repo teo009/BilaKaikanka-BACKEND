@@ -1,0 +1,10 @@
+export { AcademicLevel } from "./AcademicLevel.entity";
+export { Career } from "./Career.entity";
+export { IdentityType } from "./IdentityType.entity";
+export { VictimRelationship } from "./VictimRelationship.entity";
+export { Workplace } from "./Workplace.entity";
+export { JobPosition } from "./jobPosition.entity";
+export { Municipality } from "./municipality.entity";
+export { RegionalCenter } from "./regionalCenter.entity";
+export { RoleInCase } from "./roleInCase.entity";
+export { ViolenceType } from "./violenceType.entity";

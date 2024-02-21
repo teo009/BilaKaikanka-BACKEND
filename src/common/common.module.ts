@@ -1,23 +1,50 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 
-import { AcademicLevelService, CommonService } from './services/';
-
 import { CommonController } from './common.controller';
-import { RoleInCase } from './entities/roleInCase.entity';
-import { VictimRelationship } from './entities/VictimRelationship.entity';
-import { Career } from './entities/Career.entity';
-import { Workplace } from './entities/Workplace.entity';
-import { JobPosition } from './entities/jobPosition.entity';
-import { AcademicLevel } from './entities/AcademicLevel.entity';
-import { RegionalCenter } from './entities/regionalCenter.entity';
-import { Municipality } from './entities/municipality.entity';
-import { ViolenceType } from './entities/violenceType.entity';
-import { IdentityType } from './entities/IdentityType.entity';
+
+import { 
+  AcademicLevelService, 
+  CareerService, 
+  CommonService, 
+  IdentityTypeService, 
+  JobPositionService, 
+  MunicipalityService, 
+  RegionalCenterService, 
+  RoleInCaseService, 
+  VictimRelationshipService, 
+  ViolenceTypeService, 
+  WorkPlaceService
+} from './services/';
+
+import { 
+  RoleInCase, 
+  VictimRelationship,
+  Career,
+  Workplace,
+  JobPosition,
+  AcademicLevel,
+  RegionalCenter,
+  Municipality,
+  ViolenceType,
+  IdentityType
+} from './entities/';
 
 @Module({
   controllers: [ CommonController ],
-  providers: [ CommonService, AcademicLevelService ],
+  providers: [ 
+    CommonService, 
+    AcademicLevelService,
+    RoleInCaseService,
+    VictimRelationshipService,
+    CareerService,
+    WorkPlaceService,
+    JobPositionService,
+    RegionalCenterService,
+    MunicipalityService,
+    ViolenceTypeService,
+    IdentityTypeService
+  ],
   imports: [
     TypeOrmModule.forFeature([ 
       RoleInCase, 

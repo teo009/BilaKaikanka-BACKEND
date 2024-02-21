@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { AcademicLevel } from "../entities/AcademicLevel.entity";
-import { CreateAcademicLevel } from "../dto/create/create-AcademicLevel.dto";
-import { UpdateAcademicLevelDto } from "../dto/update/update-academicLevel.dto";
+import { AcademicLevel } from "../entities/";
+import { CreateAcademicLevel } from "../dto/create/";
+import { UpdateAcademicLevelDto } from "../dto/update/";
 
 
 @Injectable()

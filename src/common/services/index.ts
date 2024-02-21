@@ -1,2 +1,11 @@
+export { IdentityTypeService } from './identityType.service';
+export { ViolenceTypeService } from './violenceType.service';
+export { MunicipalityService } from './municipality.service';
+export { RegionalCenterService } from './reginalCenter.service';
+export { JobPositionService } from './jobPosition.service';
+export { WorkPlaceService } from './workplace.service';
+export { CareerService } from './career.service';
+export { VictimRelationshipService } from './victimRelationship.service';
+export { RoleInCaseService } from './roleInCase.service';
 export { CommonService } from './common.service';
 export { AcademicLevelService } from "./academicLevel.service";
