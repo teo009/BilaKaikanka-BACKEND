@@ -6,7 +6,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 export class IdentityType {
 
   @PrimaryGeneratedColumn('uuid')
-  is: string;
+  id: string;
 
   @Column('text', { unique: true })
   identityType: string;

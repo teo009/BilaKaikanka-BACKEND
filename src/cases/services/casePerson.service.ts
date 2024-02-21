@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { CreateCasePersonDto } from "../dto/casePerson/create-casePerson.dto";
+import { UpdateCasePersonDto } from "../dto/casePerson/update-casePerson.dto";
 
 import { Case, CasePerson } from "../entities";
 import { Person } from "src/people/entities/person.entity";
@@ -12,7 +13,6 @@ import { Career } from "src/common/entities/Career.entity";
 import { Workplace } from "src/common/entities/Workplace.entity";
 import { JobPosition } from "src/common/entities/jobPosition.entity";
 import { AcademicLevel } from "src/common/entities/AcademicLevel.entity";
-import { UpdateCasePersonDto } from "../dto/casePerson/update-casePerson.dto";
 
 @Injectable()
 export class CasePersonService {

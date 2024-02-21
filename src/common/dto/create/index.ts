@@ -1,0 +1,10 @@
+export { CreateAcademicLevel } from "./create-AcademicLevel.dto";
+export { CreateCareerDto } from "./create-career.dto";
+export { CreateIdentityType } from "./create-identityType.dto";
+export { CreateJobPositionDto } from "./create-jobPosition.dto";
+export { CreateMunicipalityDto } from "./create-municipality.dto";
+export { CreateRegionalCenter } from "./create-regionalCenter.dto";
+export { CreateRoleInCaseDto } from "./create-roleInCase.dto";
+export { CreateVictimRelationship } from "./create-victimRelationship";
+export { CreateViolenceTypeDto } from "./create-violenceType.dto";
+export { CreateWorkplaceDto } from "./create-workplace.dto";

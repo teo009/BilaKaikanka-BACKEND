@@ -1,18 +1,20 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 
-import { CasesService, CasePersonService } from './services/';
+import { CasesService, CasePersonService, CaseViolenceTypeService } from './services/';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
 import { CreateViolencetypeDto } from './dto/create-violencetype.dto';
 import { UpdateCasePersonDto } from './dto/casePerson/update-casePerson.dto';
+import { UpdateCaseViolencetypeDto } from './dto/caseViolencetype/update-caseViolencetype.dto';
 
 @Controller('cases')
 export class CasesController {
 
   constructor(
     private readonly casesService: CasesService,
-    private readonly casePersonService: CasePersonService
+    private readonly casePersonService: CasePersonService,
+    private readonly caseViolenceType: CaseViolenceTypeService
   ) {}
 
   @Post()
@@ -23,14 +25,6 @@ export class CasesController {
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
     return this.casePersonService.createCasePerson(CreateCasePerson);
-  }
-
-  @Post('case-has-violencetype')
-  createCaseViolencetype(
-    @Body() 
-    createViolencetype: CreateViolencetypeDto
-  ) {
-    return this.casesService.creteViolencetype(createViolencetype);
   }
 
   @Get()
@@ -44,8 +38,11 @@ export class CasesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCaseDto: UpdateCaseDto) {
-    return this.casesService.update(+id, updateCaseDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateCaseDto: UpdateCaseDto
+  ) {
+    return this.casesService.update(id, updateCaseDto);
   }
 
   @Patch('case-has-person/:id')
@@ -59,5 +56,23 @@ export class CasesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.casesService.remove(+id);
+  }
+
+  //Case has Violence Type Pivote routes
+  @Post('case-has-violencetype')
+  createCaseViolencetype(
+    @Body() 
+    createViolencetype: CreateViolencetypeDto
+  ) {
+    return this.caseViolenceType.createCaseViolenceType(createViolencetype);
+  }
+  @Patch('case-has-violencetype/:id')
+  updateCaseViolencetype(
+    @Param('id', ParseUUIDPipe) id: string, @Body()
+    updateCaseViolencetype: UpdateCaseViolencetypeDto
+  ) {
+    return this.caseViolenceType.updateCaseViolenceType(
+      id, updateCaseViolencetype
+    );
   }
 }

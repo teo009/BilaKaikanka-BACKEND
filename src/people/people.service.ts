@@ -53,7 +53,7 @@ export class PeopleService {
       const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace });
       const municipalityById = await this.MunicipalityRepository.findOneBy({ id: municipality });
       const jobpositionById = await this.JobpositionRepository.findOneBy({ id: jobposition });
-      const identityTypeById = await this.IdentityTypeRepository.findOneBy({ is: identityType });
+      const identityTypeById = await this.IdentityTypeRepository.findOneBy({ id: identityType });
       const academicLevelById = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
 
       const peopleResponse = this.PersonRepository.create({
