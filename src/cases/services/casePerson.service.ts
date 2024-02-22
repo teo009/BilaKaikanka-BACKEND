@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 
 import { CreateCasePersonDto } from "../dto/casePerson/create-casePerson.dto";
 import { UpdateCasePersonDto } from "../dto/casePerson/update-casePerson.dto";
+import { Person } from "src/people/entities/person.entity";
 
 import { Case, CasePerson } from "../entities";
-import { Person } from "src/people/entities/person.entity";
 import { RoleInCase } from "src/common/entities/roleInCase.entity";
 import { VictimRelationship } from "src/common/entities/VictimRelationship.entity";
 import { Career } from "src/common/entities/Career.entity";
@@ -45,6 +45,8 @@ export class CasePersonService {
 
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
+
+    private readonly dataSource: DataSource
 
   ) {}
 
@@ -145,6 +147,18 @@ export class CasePersonService {
         jobPosition: jobPositionUpdated,
         academicLevel: academicLevelUpdated
       })
+    } catch(error) { console.log(error) }
+  }
+
+  async removeCasePerson(id: string) {
+    try {
+      await this.dataSource
+        .getRepository(CasePerson)
+        .createQueryBuilder()
+        .softDelete()
+        .where("id = :id", { id })
+        .execute();
+      return `El caso id: ${ id } ha sido eliminado exitosamente`;
     } catch(error) { console.log(error) }
   }
 

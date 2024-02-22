@@ -22,11 +22,6 @@ export class CasesController {
     return this.casesService.createAcase(createCaseDto);
   }
 
-  @Post('case-has-person')
-  createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
-    return this.casePersonService.createCasePerson(CreateCasePerson);
-  }
-
   @Get()
   findAll() {
     return this.casesService.findAll();
@@ -45,20 +40,12 @@ export class CasesController {
     return this.casesService.update(id, updateCaseDto);
   }
 
-  @Patch('case-has-person/:id')
-  updateCasePerson(
-    @Param('id', ParseUUIDPipe) id: string, @Body() 
-    updateCasePersonDto: UpdateCasePersonDto
-  ) {
-    return this.casePersonService.updateCasePerson(id, updateCasePersonDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.casesService.remove(+id);
   }
 
-  //Case has Violence Type Pivote routes
+  //CASE HAS VIOLENCE TYPE PIVOTE
   @Post('case-has-violencetype')
   createCaseViolencetype(
     @Body() 
@@ -66,6 +53,7 @@ export class CasesController {
   ) {
     return this.caseViolenceType.createCaseViolenceType(createViolencetype);
   }
+
   @Patch('case-has-violencetype/:id')
   updateCaseViolencetype(
     @Param('id', ParseUUIDPipe) id: string, @Body()
@@ -75,4 +63,24 @@ export class CasesController {
       id, updateCaseViolencetype
     );
   }
+
+  //CASE HAS PERSON PIVOTE TABLE
+  @Post('case-has-person')
+  createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
+    return this.casePersonService.createCasePerson(CreateCasePerson);
+  }
+
+  @Patch('case-has-person/:id')
+  updateCasePerson(
+    @Param('id', ParseUUIDPipe) id: string, @Body() 
+    updateCasePersonDto: UpdateCasePersonDto
+  ) {
+    return this.casePersonService.updateCasePerson(id, updateCasePersonDto);
+  }
+
+  @Delete('case-has-person/:id')
+  deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casePersonService.removeCasePerson(id);
+  }
+
 }
