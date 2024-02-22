@@ -27,7 +27,7 @@ export class CasesController {
     return this.casesService.findAll();
   }
 
-  @Get(':id')
+  @Get('case/:id')
   findOne(@Param('id') id: string) {
     return this.casesService.findOne(+id);
   }
@@ -81,6 +81,11 @@ export class CasesController {
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
+  }
+
+  @Get('case-has-person')
+  findAllCasePeople() {
+    return this.casePersonService.getAllCasePeople();
   }
 
 }

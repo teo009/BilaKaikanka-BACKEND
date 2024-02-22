@@ -162,4 +162,13 @@ export class CasePersonService {
     } catch(error) { console.log(error) }
   }
 
+  async getAllCasePeople() {
+    return await this.CasePersonRepository.find({
+      relations: {
+        case_id: true,
+        person_id: true,
+      }
+    })
+  }
+
 }

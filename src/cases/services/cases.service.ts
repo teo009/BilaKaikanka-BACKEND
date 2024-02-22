@@ -49,7 +49,7 @@ export class CasesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} case`;
+    return `I dont want this`;
   }
 
   async update(id: string, updateCaseDto: UpdateCaseDto) {
