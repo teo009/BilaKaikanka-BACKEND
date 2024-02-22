@@ -1,27 +1,32 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-import { CasePerson } from "./case-person.entity";
-import { RegionalCenter } from "src/common/entities/regionalCenter.entity";
-import { Municipality } from "src/common/entities/municipality.entity";
-import { CaseViolence } from "./case-violenctetype.entity";
+import { CasePerson } from './case-person.entity';
+import { CaseViolence } from './case-violenctetype.entity';
+import { RegionalCenter, Municipality } from 'src/common/entities/';
 
 @Entity('case')
 export class Case {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('int',  { unique: true })
+  @Column('int', { unique: true })
   code: number;
 
-  @Column('int', { unique: true }) 
+  @Column('int', { unique: true })
   case_number: number;
 
   @Column('text')
-  narration: string; 
+  narration: string;
 
   @Column('text')
-  place_of_events: string; 
+  place_of_events: string;
 
   @Column('text')
   occurrence_time: string; //Check this type later
@@ -30,7 +35,7 @@ export class Case {
     type: 'timestamptz',
     //default: () => 'CURRENT_TIME'
   })
-  occurrence_date: Date //save occurrence_hour too
+  occurrence_date: Date; //save occurrence_hour too
 
   @Column({
     type: 'timestamptz',
@@ -38,29 +43,20 @@ export class Case {
   })
   reception_date: Date; //save reception_hour too
 
-  @OneToMany(
-    () => CasePerson,
-    (casePerson) => casePerson.case_id,
-  )
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.case_id)
   casePerson: CasePerson;
 
-  @OneToMany(
-    () => CaseViolence,
-    (caseViolence) => caseViolence.case
-  )
-  caseViolence: CaseViolence
+  @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.case)
+  caseViolence: CaseViolence;
 
-  @ManyToOne(
-    () => RegionalCenter,
-    (regionalCenter) => regionalCenter.cases
-  )
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.cases)
   regionalCenter: RegionalCenter;
 
-  @ManyToOne(
-    () => Municipality,
-    (municipality) => municipality.case
-  )
+  @ManyToOne(() => Municipality, (municipality) => municipality.case)
   municipality: Municipality;
+
+  @DeleteDateColumn()
+  deleteAt?: Date;
 
   /*@CreateDateColumn({
     type: 'timestamp', 
@@ -78,5 +74,4 @@ export class Case {
   //user_update_id: ???;
   municipio_id
   */
-
 }
