@@ -1,20 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 
-import { 
-  AcademicLevelService, 
-  CareerService, 
-  CommonService, 
-  IdentityTypeService, 
-  JobPositionService, 
-  MunicipalityService, 
-  RegionalCenterService, 
-  RoleInCaseService, 
-  VictimRelationshipService, 
-  ViolenceTypeService, 
-  WorkPlaceService
+import {
+  AcademicLevelService,
+  CareerService,
+  CommonService,
+  IdentityTypeService,
+  JobPositionService,
+  MunicipalityService,
+  RegionalCenterService,
+  RoleInCaseService,
+  VictimRelationshipService,
+  ViolenceTypeService,
+  WorkPlaceService,
 } from './services';
 
-import { 
+import {
   CreateRoleInCaseDto,
   CreateVictimRelationship,
   CreateCareerDto,
@@ -24,10 +33,10 @@ import {
   CreateRegionalCenter,
   CreateMunicipalityDto,
   CreateViolenceTypeDto,
-  CreateIdentityType
+  CreateIdentityType,
 } from './dto/create/';
 
-import { 
+import {
   UpdateAcademicLevelDto,
   UpdateCareerDto,
   UpdateIdentityType,
@@ -37,12 +46,11 @@ import {
   UpdateRoleInCaseDto,
   UpdateVictimRelationshipDto,
   UpdateViolenceTypeDto,
-  UpdateWorkplaceDto
+  UpdateWorkplaceDto,
 } from './dto/update/';
 
 @Controller('common')
 export class CommonController {
-
   constructor(
     private readonly commonService: CommonService,
     private readonly AcademicLevelService: AcademicLevelService,
@@ -54,7 +62,7 @@ export class CommonController {
     private readonly RegionalCenterService: RegionalCenterService,
     private readonly MunicipalityService: MunicipalityService,
     private readonly ViolenceTypeService: ViolenceTypeService,
-    private readonly IdentityTypeService: IdentityTypeService
+    private readonly IdentityTypeService: IdentityTypeService,
   ) {}
 
   @Get()
@@ -66,7 +74,7 @@ export class CommonController {
   findOne(@Param('id') id: string) {
     return this.commonService.findOne(+id);
   }
-  
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.commonService.remove(+id);
@@ -74,21 +82,23 @@ export class CommonController {
 
   //ACADEMIC LEVEL
   @Post('academiclevel')
-  createAcademicLevel(
-    @Body() createAcademicLevel: CreateAcademicLevel
-  ) {
-    return this.AcademicLevelService.createAcademicLevel(
-      createAcademicLevel
-    );
+  createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
+    return this.AcademicLevelService.createAcademicLevel(createAcademicLevel);
   }
   @Patch('academiclevel/:id')
   updateAcademicLevel(
-    @Param('id', ParseUUIDPipe) id: string, @Body() 
-    updateAcademicLevelDto: UpdateAcademicLevelDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateAcademicLevelDto: UpdateAcademicLevelDto,
   ) {
     return this.AcademicLevelService.updateAcademicLevel(
-      id, updateAcademicLevelDto
+      id,
+      updateAcademicLevelDto,
     );
+  }
+  @Delete('academiclevel/:id')
+  deleteCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.AcademicLevelService.removeAcademicLevel(id);
   }
 
   //ROLE IN CASE
@@ -96,49 +106,59 @@ export class CommonController {
   create(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
     return this.RoleInCaseService.createRoleInCase(createRoleInCaseDto);
   }
-
   @Patch('role-in-case/:id')
   updateRoleInCase(
-    @Param('id', ParseUUIDPipe) id: string, @Body()
-    updateRoleInCaseDto: UpdateRoleInCaseDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateRoleInCaseDto: UpdateRoleInCaseDto,
   ) {
-    return this.RoleInCaseService.updateRoleInCase(
-      id, updateRoleInCaseDto
-    );
+    return this.RoleInCaseService.updateRoleInCase(id, updateRoleInCaseDto);
+  }
+  @Delete('role-in-case/:id')
+  deleteRoleInCase(@Param('id', ParseUUIDPipe) id: string) {
+    return this.RoleInCaseService.removeRoleInCase(id);
   }
 
   //VICTIM RELATIONSHIP
   @Post('victim-relationship')
   cretateVictimRelationship(
-    @Body() createVictimRelationship: CreateVictimRelationship
+    @Body() createVictimRelationship: CreateVictimRelationship,
   ) {
     return this.VictimRelationshipService.createAvictimRelationship(
-      createVictimRelationship
-    ); 
+      createVictimRelationship,
+    );
   }
-
   @Patch('victim-relationship/:id')
   updateVictimRelationship(
-    @Param('id', ParseUUIDPipe) id: string, @Body()
-    updateVictimRelationshipDto: UpdateVictimRelationshipDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateVictimRelationshipDto: UpdateVictimRelationshipDto,
   ) {
     return this.VictimRelationshipService.updateVictimRelationship(
-      id, updateVictimRelationshipDto
+      id,
+      updateVictimRelationshipDto,
     );
+  }
+  @Delete('victim-relationship/:id')
+  deleteVictimRelationship(@Param('id', ParseUUIDPipe) id: string) {
+    return this.VictimRelationshipService.removeVictimRelationship(id);
   }
 
   //CAREER
   @Post('career')
   createCareer(@Body() createCareer: CreateCareerDto) {
-    return this.CareerService.createAcareer(createCareer)
+    return this.CareerService.createAcareer(createCareer);
   }
-
   @Patch('career/:id')
   updateCareer(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateCareerDto: UpdateCareerDto
+    @Body() updateCareerDto: UpdateCareerDto,
   ) {
     return this.CareerService.updateCareer(id, updateCareerDto);
+  }
+  @Delete('career/:id')
+  deleteCareer(@Param('id', ParseUUIDPipe) id: string) {
+    return this.CareerService.removeCareer(id);
   }
 
   //WORKPLACE
@@ -146,13 +166,16 @@ export class CommonController {
   createWorkplace(@Body() createWorkplace: CreateWorkplaceDto) {
     return this.WorkplaceService.createWorkplace(createWorkplace);
   }
-
   @Patch('workplace/:id')
   updateWorkplace(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateWorkplaceDto: UpdateWorkplaceDto
+    @Body() updateWorkplaceDto: UpdateWorkplaceDto,
   ) {
     return this.WorkplaceService.updateWorkplace(id, updateWorkplaceDto);
+  }
+  @Delete('workplace/:id')
+  deleteWorkplace(@Param('id', ParseUUIDPipe) id: string) {
+    return this.WorkplaceService.removeWorkplace(id);
   }
 
   //JOB POSITION
@@ -160,47 +183,60 @@ export class CommonController {
   createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
     return this.JobPositionService.createJobPosition(createJobPosition);
   }
-
   @Patch('jobposition/:id')
   updateJobposition(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateJobPositionDto: UpdateJobPositionDto
+    @Body() updateJobPositionDto: UpdateJobPositionDto,
   ) {
-    return this.JobPositionService.updateJobPosition(
-      id, updateJobPositionDto
-    );
+    return this.JobPositionService.updateJobPosition(id, updateJobPositionDto);
+  }
+  @Delete('jobposition/:id')
+  deleteJobPosition(@Param('id', ParseUUIDPipe) id: string) {
+    return this.JobPositionService.removeJobPosition(id);
   }
 
   //REGIONAL CENTER
   @Post('regionalcenter')
   createRegionalCenter(@Body() createRegionalCenter: CreateRegionalCenter) {
-    return this.RegionalCenterService.createRegionalCenter(createRegionalCenter);
+    return this.RegionalCenterService.createRegionalCenter(
+      createRegionalCenter,
+    );
   }
-
   @Patch('regionalcenter/:id')
   updateRegionalCenter(
-    @Param('id', ParseUUIDPipe) id: string, @Body() 
-    updateRegionalCenterDto: UpdateRegionalCenterDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateRegionalCenterDto: UpdateRegionalCenterDto,
   ) {
     return this.RegionalCenterService.updateRegionalCenter(
-      id, updateRegionalCenterDto
+      id,
+      updateRegionalCenterDto,
     );
+  }
+  @Delete('regionalcenter/:id')
+  deleteRegionalCenter(@Param('id', ParseUUIDPipe) id: string) {
+    return this.RegionalCenterService.removeRegionalCenter(id);
   }
 
   //MUNICIPALITY
-  @Post('municipality') 
+  @Post('municipality')
   createMunicipality(@Body() createMunicipality: CreateMunicipalityDto) {
     return this.MunicipalityService.createMunicipality(createMunicipality);
   }
-
   @Patch('municipality/:id')
   updateMunicipality(
-    @Param('id', ParseUUIDPipe) id: string, @Body()
-    updateMunicipalityDto: UpdateMunicipalityDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateMunicipalityDto: UpdateMunicipalityDto,
   ) {
     return this.MunicipalityService.updateMunicipality(
-      id, updateMunicipalityDto
+      id,
+      updateMunicipalityDto,
     );
+  }
+  @Delete('municipality/:id')
+  deleteMunicipality(@Param('id', ParseUUIDPipe) id: string) {
+    return this.MunicipalityService.removeMunicipality(id);
   }
 
   //VIOLENCE TYPE
@@ -208,15 +244,20 @@ export class CommonController {
   createViolenceType(@Body() createViolenceType: CreateViolenceTypeDto) {
     return this.ViolenceTypeService.createViolenceType(createViolenceType);
   }
-
   @Patch('violencetype/:id')
   updateViolenceType(
-    @Param('id', ParseUUIDPipe) id: string, @Body()
-    updateViolenceTypeDto: UpdateViolenceTypeDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateViolenceTypeDto: UpdateViolenceTypeDto,
   ) {
     return this.ViolenceTypeService.updateViolenceType(
-      id, updateViolenceTypeDto
+      id,
+      updateViolenceTypeDto,
     );
+  }
+  @Delete('violencetype/:id')
+  deleteViolenceType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.ViolenceTypeService.removeViolenceType(id);
   }
 
   //IDENTITY TYPE
@@ -224,15 +265,19 @@ export class CommonController {
   createIdentityType(@Body() createIdentityType: CreateIdentityType) {
     return this.IdentityTypeService.createIdentityType(createIdentityType);
   }
-
   @Patch('identitytype/:id')
   updateIdentityType(
-    @Param('id', ParseUUIDPipe) id: string, @Body()
-    updateIdentityTypeDto: UpdateIdentityType
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    updateIdentityTypeDto: UpdateIdentityType,
   ) {
     return this.IdentityTypeService.updateIdentityType(
-      id, updateIdentityTypeDto
+      id,
+      updateIdentityTypeDto,
     );
   }
-
+  @Delete('identitytype/:id')
+  deleteIdentityType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.IdentityTypeService.removeIdentityType(id);
+  }
 }
