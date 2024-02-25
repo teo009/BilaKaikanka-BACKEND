@@ -1,20 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
 import { Person } from './entities/person.entity';
-import { Career } from 'src/common/entities/Career.entity';
-import { Workplace } from 'src/common/entities/Workplace.entity';
-import { Municipality } from 'src/common/entities/municipality.entity';
-import { JobPosition } from 'src/common/entities/jobPosition.entity';
-import { IdentityType } from 'src/common/entities/IdentityType.entity';
-import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
+import { CreatePersonDto, UpdatePersonDto } from './dto/';
+
+import {
+  Career,
+  Workplace,
+  Municipality,
+  JobPosition,
+  IdentityType,
+  AcademicLevel,
+} from 'src/common/entities/';
 
 @Injectable()
 export class PeopleService {
-
   constructor(
     @InjectRepository(Person)
     private readonly PersonRepository: Repository<Person>,
@@ -36,34 +37,46 @@ export class PeopleService {
 
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createPersonDto: CreatePersonDto) {
-    const { 
-      career, 
-      workplace, 
+    const {
+      career,
+      workplace,
       municipality,
-      jobposition, 
+      jobposition,
       identityType,
       academicLevel,
-      ...createPersonData 
+      ...createPersonData
     } = createPersonDto;
     try {
       const careerById = await this.CareerRepository.findOneBy({ id: career });
-      const workplaceById = await this.WorkplaceRepository.findOneBy({ id: workplace });
-      const municipalityById = await this.MunicipalityRepository.findOneBy({ id: municipality });
-      const jobpositionById = await this.JobpositionRepository.findOneBy({ id: jobposition });
-      const identityTypeById = await this.IdentityTypeRepository.findOneBy({ id: identityType });
-      const academicLevelById = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
+      const workplaceById = await this.WorkplaceRepository.findOneBy({
+        id: workplace,
+      });
+      const municipalityById = await this.MunicipalityRepository.findOneBy({
+        id: municipality,
+      });
+      const jobpositionById = await this.JobpositionRepository.findOneBy({
+        id: jobposition,
+      });
+      const identityTypeById = await this.IdentityTypeRepository.findOneBy({
+        id: identityType,
+      });
+      const academicLevelById = await this.AcademicLevelRepository.findOneBy({
+        id: academicLevel,
+      });
 
       const peopleResponse = this.PersonRepository.create({
-        ...createPersonData, 
-        career: careerById, 
+        ...createPersonData,
+        career: careerById,
         workplace: workplaceById,
         municipality: municipalityById,
         jobposition: jobpositionById,
         identityType: identityTypeById,
-        academicLevel: academicLevelById
+        academicLevel: academicLevelById,
       });
       await this.PersonRepository.save(peopleResponse);
       return peopleResponse;
@@ -81,43 +94,55 @@ export class PeopleService {
   }
 
   async update(id: string, updatePersonDto: UpdatePersonDto) {
-    const { 
-      career, 
-      workplace, 
-      municipality, 
-      jobposition, 
+    const {
+      career,
+      workplace,
+      municipality,
+      jobposition,
       identityType, // => PENDING TO UPDATE
-      academicLevel, 
-      ...dataToUpdate 
+      academicLevel,
+      ...dataToUpdate
     } = updatePersonDto;
 
     try {
-      const people = await this.PersonRepository.preload({ id, ...dataToUpdate });
-      if(!people) throw new NotFoundException(`La persona no ha sido encontrada`);
+      const people = await this.PersonRepository.preload({
+        id,
+        ...dataToUpdate,
+      });
+      if (!people)
+        throw new NotFoundException(`La persona no ha sido encontrada`);
 
       //Check if there is an foreignKey update and doing it if there is one
-      let careerUpdated: Object;
-      if(career) {
+      let careerUpdated: object;
+      if (career) {
         careerUpdated = await this.CareerRepository.findOneBy({ id: career });
       }
-      let workplaceUpdated: Object;
-      if(workplace) {
-        workplaceUpdated = await this.WorkplaceRepository.findOneBy({ id: workplace });
+      let workplaceUpdated: object;
+      if (workplace) {
+        workplaceUpdated = await this.WorkplaceRepository.findOneBy({
+          id: workplace,
+        });
       }
-      let municipalityUpdated: Object;
-      if(municipality) {
-        municipalityUpdated = await this.MunicipalityRepository.findOneBy({ id: municipality });
+      let municipalityUpdated: object;
+      if (municipality) {
+        municipalityUpdated = await this.MunicipalityRepository.findOneBy({
+          id: municipality,
+        });
       }
-      let jobpositionUpdated: Object;
-      if(jobposition) {
-        jobpositionUpdated = await this.JobpositionRepository.findOneBy({ id: jobposition });
+      let jobpositionUpdated: object;
+      if (jobposition) {
+        jobpositionUpdated = await this.JobpositionRepository.findOneBy({
+          id: jobposition,
+        });
       }
-      let academicLevelUpdated: Object;
-      if(academicLevel) {
-        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({ id: academicLevel });
+      let academicLevelUpdated: object;
+      if (academicLevel) {
+        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({
+          id: academicLevel,
+        });
       }
 
-      return await this.PersonRepository.save({ 
+      return await this.PersonRepository.save({
         ...people,
         career: careerUpdated,
         workplace: workplaceUpdated,
@@ -125,10 +150,22 @@ export class PeopleService {
         jobposition: jobpositionUpdated,
         academicLevel: academicLevelUpdated,
       });
-    } catch(error) { console.log(error) }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} person`;
+  async remove(id: string) {
+    try {
+      await this.dataSource
+        .getRepository(Person)
+        .createQueryBuilder()
+        .softDelete()
+        .where('id = :id', { id })
+        .execute();
+      return `La persona id: ${id} ha sido eliminada exitosamente`;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

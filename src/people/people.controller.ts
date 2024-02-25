@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
+
 import { PeopleService } from './people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
@@ -25,14 +35,14 @@ export class PeopleController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() updatePersonDto: UpdatePersonDto
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updatePersonDto: UpdatePersonDto,
   ) {
     return this.peopleService.update(id, updatePersonDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.peopleService.remove(+id);
+  delete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.peopleService.remove(id);
   }
 }

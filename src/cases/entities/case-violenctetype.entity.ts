@@ -1,24 +1,27 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-import { Case } from "./case.entity";
-import { ViolenceType } from "src/common/entities/violenceType.entity";
+import { Case } from './case.entity';
+import { ViolenceType } from 'src/common/entities/violenceType.entity';
 
 @Entity('cases-violencetype')
 export class CaseViolence {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(
-    () => Case,
-    (Case) => Case.caseViolence
-  )
+  @ManyToOne(() => Case, (Case) => Case.caseViolence)
   case: Case;
 
   @ManyToOne(
     () => ViolenceType,
-    (violenceType) => violenceType.caseViolencetype
+    (violenceType) => violenceType.caseViolencetype,
   )
   violenceType: ViolenceType;
 
+  @DeleteDateColumn()
+  deleteAt?: Date;
 }

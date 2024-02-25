@@ -1,35 +1,52 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { JobPosition } from "../entities/jobPosition.entity";
-import { CreateJobPositionDto } from "../dto/create/create-jobPosition.dto";
-import { UpdateJobPositionDto } from "../dto/update/update-jobPosition.dto";
+import { JobPosition } from '../entities/jobPosition.entity';
+import { CreateJobPositionDto } from '../dto/create/create-jobPosition.dto';
+import { UpdateJobPositionDto } from '../dto/update/update-jobPosition.dto';
 
 @Injectable()
 export class JobPositionService {
-
   constructor(
-
     @InjectRepository(JobPosition)
-    private readonly JobPositionRepository: Repository<JobPosition>
-
+    private readonly JobPositionRepository: Repository<JobPosition>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createJobPosition(createJobPosition: CreateJobPositionDto) {
     try {
-      const jobPositionResponse = this.JobPositionRepository.create(createJobPosition);
+      const jobPositionResponse =
+        this.JobPositionRepository.create(createJobPosition);
       return await this.JobPositionRepository.save(jobPositionResponse);
-    } catch (error) { console.log(error) }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async updateJobPosition(id: string, updateJobPosition: UpdateJobPositionDto) {
     try {
-      const jobPositionUpdated = await this.JobPositionRepository.preload(
-        { id, ...updateJobPosition }
-      );
+      const jobPositionUpdated = await this.JobPositionRepository.preload({
+        id,
+        ...updateJobPosition,
+      });
       return await this.JobPositionRepository.save(jobPositionUpdated);
-    } catch(error) { console.log(error); }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
+  async removeJobPosition(id: string) {
+    try {
+      await this.dataSource
+        .getRepository(JobPosition)
+        .createQueryBuilder()
+        .softDelete()
+        .where('id = :id', { id })
+        .execute();
+      return `El Puesto de trabajo id: ${id} ha sido eliminado exitosamente`;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

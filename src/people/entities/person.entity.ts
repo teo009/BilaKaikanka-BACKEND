@@ -1,27 +1,35 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import {
+  Career,
+  Workplace,
+  Municipality,
+  JobPosition,
+  IdentityType,
+  AcademicLevel,
+} from 'src/common/entities/';
 
-import { CasePerson } from "src/cases/entities";
-import { Career } from "src/common/entities/Career.entity";
-import { Workplace } from "src/common/entities/Workplace.entity";
-import { Municipality } from "src/common/entities/municipality.entity";
-import { JobPosition } from "src/common/entities/jobPosition.entity";
-import { IdentityType } from "src/common/entities/IdentityType.entity";
-import { AcademicLevel } from "src/common/entities/AcademicLevel.entity";
+import { CasePerson } from 'src/cases/entities';
 
 @Entity('people')
 export class Person {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text')
-  firstName: string
+  firstName: string;
 
   @Column('text')
-  secondName: string
-  
+  secondName: string;
+
   @Column({ type: 'timestamptz' })
-  birthDate: Date; 
+  birthDate: Date;
 
   @Column('int', { array: true })
   phoneNumbers: number[];
@@ -32,45 +40,27 @@ export class Person {
   @Column('text', { unique: true })
   identity: string;
 
-  @OneToMany(
-    () => CasePerson,
-    (casePerson) => casePerson.person_id,
-  )
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.person_id)
   casePerson: CasePerson;
 
-  @ManyToOne(
-    () => Career,
-    (career) => career.person, { cascade: true }
-  )
-  career: Career
+  @ManyToOne(() => Career, (career) => career.person, { cascade: true })
+  career: Career;
 
-  @ManyToOne(
-    () => Workplace,
-    (workplace) => workplace.person
-  )
+  @ManyToOne(() => Workplace, (workplace) => workplace.person)
   workplace: Workplace;
 
-  @ManyToOne(
-    () => Municipality,
-    (municipality) => municipality.person
-  )
+  @ManyToOne(() => Municipality, (municipality) => municipality.person)
   municipality: Municipality;
 
-  @ManyToOne(
-    () => JobPosition,
-    (jobposition) => jobposition.person
-  )
+  @ManyToOne(() => JobPosition, (jobposition) => jobposition.person)
   jobposition: JobPosition;
 
-  @ManyToOne(
-    () => IdentityType,
-    (identityType) => identityType.person
-  )
+  @ManyToOne(() => IdentityType, (identityType) => identityType.person)
   identityType: IdentityType;
 
-  @ManyToOne(
-    () => AcademicLevel,
-    (academicLevel) => academicLevel.person
-  )
+  @ManyToOne(() => AcademicLevel, (academicLevel) => academicLevel.person)
   academicLevel: AcademicLevel;
+
+  @DeleteDateColumn()
+  deleteAt?: Date;
 }
