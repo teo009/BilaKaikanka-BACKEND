@@ -50,46 +50,26 @@ export class CasePersonService {
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
     const {
-      caseId,
-      person,
-      roleInCase,
-      victimRelationship,
-      career,
-      workplace,
-      jobPosition,
-      academicLevel,
+      case_id,
+      person_id,
+      roleInCase_id,
+      victimRelationship_id,
+      career_id,
+      workplace_id,
+      jobPosition_id,
+      academicLevel_id,
     } = CreateCasePerson;
 
     try {
-      const caseById = await this.CaseRepository.findOneBy({ id: caseId });
-      const personById = await this.PersonRepository.findOneBy({ id: person });
-      const roleInCaseById = await this.RoleInCaseRepository.findOneBy({
-        id: roleInCase,
-      });
-      const victimRelationshipId =
-        await this.VictimRelationshipRepository.findOneBy({
-          id: victimRelationship,
-        });
-      const careerById = await this.CareerRepository.findOneBy({ id: career });
-      const workplaceById = await this.WorkplaceRepository.findOneBy({
-        id: workplace,
-      });
-      const jobPositionById = await this.JobPositionRepository.findOneBy({
-        id: jobPosition,
-      });
-      const AcademicLevelById = await this.AcademicLevelRepository.findOneBy({
-        id: academicLevel,
-      });
-
       const caseHasPersonResponse = this.CasePersonRepository.create({
-        case_id: caseById,
-        person_id: personById,
-        roleInCase: roleInCaseById,
-        victimRelationship: victimRelationshipId,
-        career: careerById,
-        workplace: workplaceById,
-        jobPosition: jobPositionById,
-        academicLevel: AcademicLevelById,
+        case_id,
+        person_id,
+        roleInCase_id,
+        victimRelationship_id,
+        career_id,
+        workplace_id,
+        jobPosition_id,
+        academicLevel_id,
       });
       return await this.CasePersonRepository.save(caseHasPersonResponse);
     } catch (error) {
@@ -99,13 +79,13 @@ export class CasePersonService {
 
   async updateCasePerson(id: string, updateCasePersonDto: UpdateCasePersonDto) {
     const {
-      person,
-      roleInCase,
-      victimRelationship,
-      career,
-      workplace,
-      jobPosition,
-      academicLevel,
+      person_id,
+      roleInCase_id,
+      victimRelationship_id,
+      career_id,
+      workplace_id,
+      jobPosition_id,
+      academicLevel_id,
     } = updateCasePersonDto;
 
     try {
@@ -117,48 +97,52 @@ export class CasePersonService {
 
       //Check if there is an foreignKey update and doing it if there is one
       let personUpdated: object;
-      if (person) {
-        personUpdated = await this.PersonRepository.findOneBy({ id: person });
+      if (person_id) {
+        personUpdated = await this.PersonRepository.findOneBy({
+          id: person_id,
+        });
       }
       let roleInCaseUpdated: object;
-      if (roleInCase) {
+      if (roleInCase_id) {
         roleInCaseUpdated = await this.RoleInCaseRepository.findOneBy({
-          id: roleInCase,
+          id: roleInCase_id,
         });
       }
       let victimRelationshipUpdated: object;
-      if (victimRelationship) {
+      if (victimRelationship_id) {
         victimRelationshipUpdated =
           await this.VictimRelationshipRepository.findOneBy({
-            id: victimRelationship,
+            id: victimRelationship_id,
           });
       }
       let careerUpdated: object;
-      if (career) {
-        careerUpdated = await this.CareerRepository.findOneBy({ id: career });
+      if (career_id) {
+        careerUpdated = await this.CareerRepository.findOneBy({
+          id: career_id,
+        });
       }
       let workplaceUpdated: object;
-      if (workplace) {
+      if (workplace_id) {
         workplaceUpdated = await this.WorkplaceRepository.findOneBy({
-          id: workplace,
+          id: workplace_id,
         });
       }
       let jobPositionUpdated: object;
-      if (jobPosition) {
+      if (jobPosition_id) {
         jobPositionUpdated = await this.JobPositionRepository.findOneBy({
-          id: jobPosition,
+          id: jobPosition_id,
         });
       }
       let academicLevelUpdated: object;
-      if (academicLevel) {
+      if (academicLevel_id) {
         academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({
-          id: academicLevel,
+          id: academicLevel_id,
         });
       }
 
       return await this.CasePersonRepository.save({
         ...casePersonToUpdate,
-        person_id: personUpdated,
+        person: personUpdated,
         roleInCase: roleInCaseUpdated,
         victimRelationship: victimRelationshipUpdated,
         career: careerUpdated,
@@ -188,8 +172,8 @@ export class CasePersonService {
   async getAllCasePeople() {
     return await this.CasePersonRepository.find({
       relations: {
-        case_id: true,
-        person_id: true,
+        case: true,
+        person: true,
       },
     });
   }

@@ -1,86 +1,98 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-import { Case } from "./case.entity";
-import { Person } from "src/people/entities/person.entity";
+import { Case } from './case.entity';
+import { Person } from 'src/people/entities/person.entity';
 
-import { 
-  RoleInCase, 
-  VictimRelationship, 
-  Career, 
-  Workplace, 
-  JobPosition, 
-  AcademicLevel 
-} from "src/common/entities/";
+import {
+  RoleInCase,
+  VictimRelationship,
+  Career,
+  Workplace,
+  JobPosition,
+  AcademicLevel,
+} from 'src/common/entities/';
 
 @Entity('cases-people')
 export class CasePerson {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  
-  @ManyToOne(
-    () => Case, 
-    (Case) => Case.casePerson, 
-    { eager: true, cascade: true }
-  )
-  case_id: Case;
 
-  @ManyToOne(
-    () => Person,
-    (person) => person.casePerson
-  )
-  person_id: Person
+  @Column('varchar')
+  case_id: string;
+  @ManyToOne(() => Case, (Case) => Case.casePerson, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn({ name: 'case_id' })
+  case: Case;
 
-  @ManyToOne(
-    () => RoleInCase,
-    (roleInCase) => roleInCase.casePerson
-  )
+  @Column('varchar')
+  person_id: string;
+  @ManyToOne(() => Person, (person) => person.casePerson)
+  @JoinColumn({ name: 'person_id' })
+  person: Person;
+
+  @Column('varchar')
+  roleInCase_id: string;
+  @ManyToOne(() => RoleInCase, (roleInCase) => roleInCase.casePerson)
+  @JoinColumn({ name: 'roleInCase_id' })
   roleInCase: RoleInCase;
 
+  @Column('varchar')
+  victimRelationship_id: string;
   @ManyToOne(
     () => VictimRelationship,
-    (victimRelationship) => victimRelationship.casePerson
+    (victimRelationship) => victimRelationship.casePerson,
   )
+  @JoinColumn({ name: 'victimRelationship_id' })
   victimRelationship: VictimRelationship;
 
-  @ManyToOne(
-    () => Career,
-    (career) => career.casePerson
-  )
+  @Column('varchar')
+  career_id: string;
+  @ManyToOne(() => Career, (career) => career.casePerson)
+  @JoinColumn({ name: 'career_id' })
   career?: Career;
 
-  @ManyToOne(
-    () => Workplace,
-    (workplace) => workplace.casePerson
-  )
+  @Column('varchar')
+  workplace_id: string;
+  @ManyToOne(() => Workplace, (workplace) => workplace.casePerson)
+  @JoinColumn({ name: 'workplace_id' })
   workplace?: Workplace;
 
-  @ManyToOne(
-    () => JobPosition,
-    (jobPosition) => jobPosition.casePerson
-  )
+  @Column('varchar')
+  jobPosition_id: string;
+  @ManyToOne(() => JobPosition, (jobPosition) => jobPosition.casePerson)
+  @JoinColumn({ name: 'jobPosition_id' })
   jobPosition?: JobPosition;
 
-  @ManyToOne(
-    () => AcademicLevel,
-    (academicLevel) => academicLevel.casePerson
-  )
+  @Column('varchar')
+  academicLevel_id: string;
+  @ManyToOne(() => AcademicLevel, (academicLevel) => academicLevel.casePerson)
+  @JoinColumn({ name: 'academicLevel_id' })
   academicLevel: AcademicLevel;
 
   //TRACKING COLUMNS
   @CreateDateColumn({
-    type: 'timestamp', 
-    default: () => 'CURRENT_TIMESTAMP' 
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP'
+    default: () => 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
 
   @DeleteDateColumn()
   deleteAt?: Date;
-
 }
