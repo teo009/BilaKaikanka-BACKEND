@@ -13,12 +13,13 @@ export class CaseViolence {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Case, (Case) => Case.caseViolence)
+  @ManyToOne(() => Case, (Case) => Case.caseViolence, { eager: true })
   case: Case;
 
   @ManyToOne(
     () => ViolenceType,
     (violenceType) => violenceType.caseViolencetype,
+    { eager: true },
   )
   violenceType: ViolenceType;
 

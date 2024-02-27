@@ -62,7 +62,10 @@ export class CasesController {
   ) {
     return this.caseViolenceType.createCaseViolenceType(createViolencetype);
   }
-
+  @Get('case-has-violencetype/:id')
+  findOneCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.caseViolenceType.getOne(id);
+  }
   @Patch('case-has-violencetype/:id')
   updateCaseViolencetype(
     @Param('id', ParseUUIDPipe) id: string,
@@ -74,7 +77,6 @@ export class CasesController {
       updateCaseViolencetype,
     );
   }
-
   @Delete('case-has-violencetype/:id')
   deleteCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
     return this.caseViolenceType.removeCaseViolenceType(id);
