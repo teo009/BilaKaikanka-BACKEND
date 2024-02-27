@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { Person } from 'src/people/entities/person.entity';
-import { Case, CasePerson } from '../entities';
+import { CasePerson } from '../entities';
 import { CreateCasePersonDto, UpdateCasePersonDto } from '../dto/casePerson/';
 
 import {
@@ -20,9 +20,6 @@ export class CasePersonService {
   constructor(
     @InjectRepository(CasePerson)
     private readonly CasePersonRepository: Repository<CasePerson>,
-
-    @InjectRepository(Case)
-    private readonly CaseRepository: Repository<Case>,
 
     @InjectRepository(Person)
     private readonly PersonRepository: Repository<Person>,
@@ -49,28 +46,9 @@ export class CasePersonService {
   ) {}
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
-    const {
-      case_id,
-      person_id,
-      roleInCase_id,
-      victimRelationship_id,
-      career_id,
-      workplace_id,
-      jobPosition_id,
-      academicLevel_id,
-    } = CreateCasePerson;
-
     try {
-      const caseHasPersonResponse = this.CasePersonRepository.create({
-        case_id,
-        person_id,
-        roleInCase_id,
-        victimRelationship_id,
-        career_id,
-        workplace_id,
-        jobPosition_id,
-        academicLevel_id,
-      });
+      const caseHasPersonResponse =
+        this.CasePersonRepository.create(CreateCasePerson);
       return await this.CasePersonRepository.save(caseHasPersonResponse);
     } catch (error) {
       console.log(error);
@@ -78,16 +56,6 @@ export class CasePersonService {
   }
 
   async updateCasePerson(id: string, updateCasePersonDto: UpdateCasePersonDto) {
-    const {
-      person_id,
-      roleInCase_id,
-      victimRelationship_id,
-      career_id,
-      workplace_id,
-      jobPosition_id,
-      academicLevel_id,
-    } = updateCasePersonDto;
-
     try {
       const casePersonToUpdate = await this.CasePersonRepository.preload({
         id,
@@ -97,47 +65,54 @@ export class CasePersonService {
 
       //Check if there is an foreignKey update and doing it if there is one
       let personUpdated: object;
-      if (person_id) {
-        personUpdated = await this.PersonRepository.findOneBy({
-          id: person_id,
-        });
+      if (updateCasePersonDto.person_id) {
+        personUpdated = await this.getOne(
+          updateCasePersonDto.person_id,
+          this.PersonRepository,
+        );
+        console.log(personUpdated);
       }
       let roleInCaseUpdated: object;
-      if (roleInCase_id) {
-        roleInCaseUpdated = await this.RoleInCaseRepository.findOneBy({
-          id: roleInCase_id,
-        });
+      if (updateCasePersonDto.roleInCase_id) {
+        roleInCaseUpdated = await this.getOne(
+          updateCasePersonDto.roleInCase_id,
+          this.RoleInCaseRepository,
+        );
       }
       let victimRelationshipUpdated: object;
-      if (victimRelationship_id) {
-        victimRelationshipUpdated =
-          await this.VictimRelationshipRepository.findOneBy({
-            id: victimRelationship_id,
-          });
+      if (updateCasePersonDto.victimRelationship_id) {
+        victimRelationshipUpdated = await this.getOne(
+          updateCasePersonDto.victimRelationship_id,
+          this.VictimRelationshipRepository,
+        );
       }
       let careerUpdated: object;
-      if (career_id) {
-        careerUpdated = await this.CareerRepository.findOneBy({
-          id: career_id,
-        });
+      if (updateCasePersonDto.career_id) {
+        careerUpdated = await this.getOne(
+          updateCasePersonDto.career_id,
+          this.CareerRepository,
+        );
       }
       let workplaceUpdated: object;
-      if (workplace_id) {
-        workplaceUpdated = await this.WorkplaceRepository.findOneBy({
-          id: workplace_id,
-        });
+      if (updateCasePersonDto.workplace_id) {
+        workplaceUpdated = await this.getOne(
+          updateCasePersonDto.workplace_id,
+          this.WorkplaceRepository,
+        );
       }
       let jobPositionUpdated: object;
-      if (jobPosition_id) {
-        jobPositionUpdated = await this.JobPositionRepository.findOneBy({
-          id: jobPosition_id,
-        });
+      if (updateCasePersonDto.jobPosition_id) {
+        jobPositionUpdated = await this.getOne(
+          updateCasePersonDto.jobPosition_id,
+          this.JobPositionRepository,
+        );
       }
       let academicLevelUpdated: object;
-      if (academicLevel_id) {
-        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({
-          id: academicLevel_id,
-        });
+      if (updateCasePersonDto.academicLevel_id) {
+        academicLevelUpdated = await this.getOne(
+          updateCasePersonDto.academicLevel_id,
+          this.AcademicLevelRepository,
+        );
       }
 
       return await this.CasePersonRepository.save({
@@ -176,5 +151,21 @@ export class CasePersonService {
         person: true,
       },
     });
+  }
+
+  async getOne(id: string, repository?: any): Promise<any> {
+    let singleCasePerson: any;
+    if (!repository) {
+      singleCasePerson = await this.CasePersonRepository.findOneBy({
+        id,
+      });
+    } else {
+      singleCasePerson = await repository.findOneBy({
+        id,
+      });
+    }
+    if (!singleCasePerson)
+      throw new NotFoundException('Register was not found');
+    return singleCasePerson;
   }
 }

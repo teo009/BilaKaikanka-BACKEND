@@ -40,11 +40,6 @@ export class CasesController {
     return this.casesService.findAll();
   }
 
-  /*@Get('case/:id')
-  findOne(@Param('id') id: string) {
-    return this.casesService.findOne();
-  }*/
-
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -89,7 +84,6 @@ export class CasesController {
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
     return this.casePersonService.createCasePerson(CreateCasePerson);
   }
-
   @Patch('case-has-person/:id')
   updateCasePerson(
     @Param('id', ParseUUIDPipe) id: string,
@@ -98,14 +92,16 @@ export class CasesController {
   ) {
     return this.casePersonService.updateCasePerson(id, updateCasePersonDto);
   }
-
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
   }
-
   @Get('case-has-person')
   findAllCasePeople() {
     return this.casePersonService.getAllCasePeople();
+  }
+  @Get('case-has-person/:id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casePersonService.getOne(id);
   }
 }
