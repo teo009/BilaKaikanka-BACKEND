@@ -19,7 +19,6 @@ export class PeopleController {
 
   @Post()
   create(@Body() createPersonDto: CreatePersonDto) {
-    //console.log('Its working here');
     return this.peopleService.create(createPersonDto);
   }
 
@@ -29,8 +28,8 @@ export class PeopleController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.peopleService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.peopleService.getOne(id);
   }
 
   @Patch(':id')

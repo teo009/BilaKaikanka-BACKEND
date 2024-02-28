@@ -89,8 +89,20 @@ export class PeopleService {
     return `This action returns all people`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} person`;
+  //Working on Find one for people module
+  async getOne(id: string, repository?: any): Promise<any> {
+    let data: any;
+    if (!repository) {
+      data = await this.PersonRepository.findOneBy({
+        id,
+      });
+    } else {
+      data = await repository.findOneBy({
+        id,
+      });
+    }
+    if (!data) throw new NotFoundException('Register was not found');
+    return data;
   }
 
   async update(id: string, updatePersonDto: UpdatePersonDto) {
