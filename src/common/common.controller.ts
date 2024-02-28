@@ -10,15 +10,24 @@ import {
 } from '@nestjs/common';
 
 import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   AcademicLevelService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CareerService,
   CommonService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   IdentityTypeService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   JobPositionService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   MunicipalityService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   RegionalCenterService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   RoleInCaseService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   VictimRelationshipService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ViolenceTypeService,
   WorkPlaceService,
 } from './services';
@@ -70,20 +79,14 @@ export class CommonController {
     return this.commonService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commonService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commonService.remove(+id);
-  }
-
   //ACADEMIC LEVEL
   @Post('academiclevel')
   createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
     return this.AcademicLevelService.createAcademicLevel(createAcademicLevel);
+  }
+  @Get('academiclevel/:id')
+  findOneAcademicLevel(@Param('id', ParseUUIDPipe) id: string) {
+    return this.AcademicLevelService.getOne(id);
   }
   @Patch('academiclevel/:id')
   updateAcademicLevel(
@@ -97,14 +100,18 @@ export class CommonController {
     );
   }
   @Delete('academiclevel/:id')
-  deleteCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
+  deleteAcademicLevel(@Param('id', ParseUUIDPipe) id: string) {
     return this.AcademicLevelService.removeAcademicLevel(id);
   }
 
   //ROLE IN CASE
   @Post('role-in-case')
-  create(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
+  createRoleInCase(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
     return this.RoleInCaseService.createRoleInCase(createRoleInCaseDto);
+  }
+  @Get('role-in-case/:id')
+  findOneRoleInCase(@Param('id', ParseUUIDPipe) id: string) {
+    return this.RoleInCaseService.getOne(id);
   }
   @Patch('role-in-case/:id')
   updateRoleInCase(
@@ -128,6 +135,10 @@ export class CommonController {
       createVictimRelationship,
     );
   }
+  @Get('victim-relationship/:id')
+  findOneVictimRelationship(@Param('id', ParseUUIDPipe) id: string) {
+    return this.VictimRelationshipService.getOne(id);
+  }
   @Patch('victim-relationship/:id')
   updateVictimRelationship(
     @Param('id', ParseUUIDPipe) id: string,
@@ -149,6 +160,10 @@ export class CommonController {
   createCareer(@Body() createCareer: CreateCareerDto) {
     return this.CareerService.createAcareer(createCareer);
   }
+  @Get('career/:id')
+  findOneCareer(@Param('id', ParseUUIDPipe) id: string) {
+    return this.CareerService.getOne(id);
+  }
   @Patch('career/:id')
   updateCareer(
     @Param('id', ParseUUIDPipe) id: string,
@@ -166,6 +181,10 @@ export class CommonController {
   createWorkplace(@Body() createWorkplace: CreateWorkplaceDto) {
     return this.WorkplaceService.createWorkplace(createWorkplace);
   }
+  @Get('workplace/:id')
+  findOneWorkplace(@Param('id', ParseUUIDPipe) id: string) {
+    return this.WorkplaceService.getOne(id);
+  }
   @Patch('workplace/:id')
   updateWorkplace(
     @Param('id', ParseUUIDPipe) id: string,
@@ -182,6 +201,10 @@ export class CommonController {
   @Post('jobposition')
   createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
     return this.JobPositionService.createJobPosition(createJobPosition);
+  }
+  @Get('jobposition/:id')
+  findOneJobposition(@Param('id', ParseUUIDPipe) id: string) {
+    return this.JobPositionService.getOne(id);
   }
   @Patch('jobposition/:id')
   updateJobposition(
@@ -201,6 +224,10 @@ export class CommonController {
     return this.RegionalCenterService.createRegionalCenter(
       createRegionalCenter,
     );
+  }
+  @Get('regionalcenter/:id')
+  findOneRegionalCenter(@Param('id', ParseUUIDPipe) id: string) {
+    return this.RegionalCenterService.getOne(id);
   }
   @Patch('regionalcenter/:id')
   updateRegionalCenter(
@@ -223,6 +250,10 @@ export class CommonController {
   createMunicipality(@Body() createMunicipality: CreateMunicipalityDto) {
     return this.MunicipalityService.createMunicipality(createMunicipality);
   }
+  @Get('municipality/:id')
+  findOneMunicipality(@Param('id', ParseUUIDPipe) id: string) {
+    return this.MunicipalityService.getOne(id);
+  }
   @Patch('municipality/:id')
   updateMunicipality(
     @Param('id', ParseUUIDPipe) id: string,
@@ -244,6 +275,10 @@ export class CommonController {
   createViolenceType(@Body() createViolenceType: CreateViolenceTypeDto) {
     return this.ViolenceTypeService.createViolenceType(createViolenceType);
   }
+  @Get('violencetype/:id')
+  findOneViolenceType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.ViolenceTypeService.getOne(id);
+  }
   @Patch('violencetype/:id')
   updateViolenceType(
     @Param('id', ParseUUIDPipe) id: string,
@@ -264,6 +299,10 @@ export class CommonController {
   @Post('identitytype')
   createIdentityType(@Body() createIdentityType: CreateIdentityType) {
     return this.IdentityTypeService.createIdentityType(createIdentityType);
+  }
+  @Get('identitytype/:id')
+  findOneIdentityType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.IdentityTypeService.getOne(id);
   }
   @Patch('identitytype/:id')
   updateIdentityType(
