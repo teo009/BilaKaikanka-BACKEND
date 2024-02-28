@@ -24,7 +24,7 @@ export class PeopleController {
 
   @Get()
   findAll() {
-    return this.peopleService.findAll();
+    return this.peopleService.getAll();
   }
 
   @Get(':id')

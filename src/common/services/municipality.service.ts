@@ -24,6 +24,10 @@ export class MunicipalityService {
     }
   }
 
+  async getAll() {
+    return await this.MunicipalityRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

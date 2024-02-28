@@ -24,6 +24,10 @@ export class RoleInCaseService {
     }
   }
 
+  async getAll() {
+    return await this.RoleInCaseRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

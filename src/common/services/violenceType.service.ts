@@ -24,6 +24,10 @@ export class ViolenceTypeService {
     }
   }
 
+  async getAll() {
+    return await this.ViolenceTypeRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

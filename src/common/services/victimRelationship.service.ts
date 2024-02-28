@@ -28,6 +28,10 @@ export class VictimRelationshipService {
     }
   }
 
+  async getAll() {
+    return await this.VictimrelationshipRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

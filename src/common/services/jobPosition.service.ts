@@ -24,6 +24,10 @@ export class JobPositionService {
     }
   }
 
+  async getAll() {
+    return await this.JobPositionRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

@@ -24,6 +24,10 @@ export class AcademicLevelService {
     }
   }
 
+  async getAll() {
+    return await this.AcademicLevelRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

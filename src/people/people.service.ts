@@ -85,8 +85,17 @@ export class PeopleService {
     }
   }
 
-  findAll() {
-    return `This action returns all people`;
+  async getAll() {
+    return await this.PersonRepository.find({
+      relations: {
+        career: true,
+        workplace: true,
+        municipality: true,
+        jobposition: true,
+        identityType: true,
+        academicLevel: true,
+      },
+    });
   }
 
   //Working on Find one for people module

@@ -74,15 +74,14 @@ export class CommonController {
     private readonly IdentityTypeService: IdentityTypeService,
   ) {}
 
-  @Get()
-  findAll() {
-    return this.commonService.findAll();
-  }
-
   //ACADEMIC LEVEL
   @Post('academiclevel')
   createAcademicLevel(@Body() createAcademicLevel: CreateAcademicLevel) {
     return this.AcademicLevelService.createAcademicLevel(createAcademicLevel);
+  }
+  @Get('academiclevel')
+  findAll() {
+    return this.AcademicLevelService.getAll();
   }
   @Get('academiclevel/:id')
   findOneAcademicLevel(@Param('id', ParseUUIDPipe) id: string) {
@@ -108,6 +107,10 @@ export class CommonController {
   @Post('role-in-case')
   createRoleInCase(@Body() createRoleInCaseDto: CreateRoleInCaseDto) {
     return this.RoleInCaseService.createRoleInCase(createRoleInCaseDto);
+  }
+  @Get('role-in-case')
+  findAllRoleInCases() {
+    return this.AcademicLevelService.getAll();
   }
   @Get('role-in-case/:id')
   findOneRoleInCase(@Param('id', ParseUUIDPipe) id: string) {
@@ -135,6 +138,10 @@ export class CommonController {
       createVictimRelationship,
     );
   }
+  @Get('victim-relationship')
+  findAllVictimRelationship() {
+    return this.VictimRelationshipService.getAll();
+  }
   @Get('victim-relationship/:id')
   findOneVictimRelationship(@Param('id', ParseUUIDPipe) id: string) {
     return this.VictimRelationshipService.getOne(id);
@@ -160,6 +167,10 @@ export class CommonController {
   createCareer(@Body() createCareer: CreateCareerDto) {
     return this.CareerService.createAcareer(createCareer);
   }
+  @Get('career')
+  findAllCareers() {
+    return this.CareerService.getAll();
+  }
   @Get('career/:id')
   findOneCareer(@Param('id', ParseUUIDPipe) id: string) {
     return this.CareerService.getOne(id);
@@ -181,6 +192,10 @@ export class CommonController {
   createWorkplace(@Body() createWorkplace: CreateWorkplaceDto) {
     return this.WorkplaceService.createWorkplace(createWorkplace);
   }
+  @Get('workplace')
+  findAllWorkPlaces() {
+    return this.WorkplaceService.getAll();
+  }
   @Get('workplace/:id')
   findOneWorkplace(@Param('id', ParseUUIDPipe) id: string) {
     return this.WorkplaceService.getOne(id);
@@ -201,6 +216,10 @@ export class CommonController {
   @Post('jobposition')
   createJobPosition(@Body() createJobPosition: CreateJobPositionDto) {
     return this.JobPositionService.createJobPosition(createJobPosition);
+  }
+  @Get('jobposition')
+  findAllJobPositions() {
+    return this.JobPositionService.getAll();
   }
   @Get('jobposition/:id')
   findOneJobposition(@Param('id', ParseUUIDPipe) id: string) {
@@ -224,6 +243,10 @@ export class CommonController {
     return this.RegionalCenterService.createRegionalCenter(
       createRegionalCenter,
     );
+  }
+  @Get('regionalcenter')
+  findAllRegionalcenter() {
+    return this.RegionalCenterService.getAll();
   }
   @Get('regionalcenter/:id')
   findOneRegionalCenter(@Param('id', ParseUUIDPipe) id: string) {
@@ -250,6 +273,10 @@ export class CommonController {
   createMunicipality(@Body() createMunicipality: CreateMunicipalityDto) {
     return this.MunicipalityService.createMunicipality(createMunicipality);
   }
+  @Get('municipality')
+  findAllMunicipalities() {
+    return this.MunicipalityService.getAll();
+  }
   @Get('municipality/:id')
   findOneMunicipality(@Param('id', ParseUUIDPipe) id: string) {
     return this.MunicipalityService.getOne(id);
@@ -275,6 +302,10 @@ export class CommonController {
   createViolenceType(@Body() createViolenceType: CreateViolenceTypeDto) {
     return this.ViolenceTypeService.createViolenceType(createViolenceType);
   }
+  @Get('violencetype')
+  findAllViolenceTypes() {
+    return this.ViolenceTypeService.getAll();
+  }
   @Get('violencetype/:id')
   findOneViolenceType(@Param('id', ParseUUIDPipe) id: string) {
     return this.ViolenceTypeService.getOne(id);
@@ -299,6 +330,10 @@ export class CommonController {
   @Post('identitytype')
   createIdentityType(@Body() createIdentityType: CreateIdentityType) {
     return this.IdentityTypeService.createIdentityType(createIdentityType);
+  }
+  @Get('identitytype')
+  findAllIdentityTypes() {
+    return this.IdentityTypeService.getAll();
   }
   @Get('identitytype/:id')
   findOneIdentityType(@Param('id', ParseUUIDPipe) id: string) {

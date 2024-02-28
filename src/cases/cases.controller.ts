@@ -31,12 +31,12 @@ export class CasesController {
   ) {}
 
   @Post()
-  create(@Body() createCaseDto: CreateCaseDto) {
+  createCase(@Body() createCaseDto: CreateCaseDto) {
     return this.casesService.createAcase(createCaseDto);
   }
-  @Get()
-  findAll() {
-    return this.casesService.findAll();
+  @Get('case/')
+  findAllCases() {
+    return this.casesService.getAllCases();
   }
   @Get('case/:id')
   findOneCase(@Param('id', ParseUUIDPipe) id: string) {
@@ -66,6 +66,10 @@ export class CasesController {
   findOneCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
     return this.caseViolenceType.getOne(id);
   }
+  @Get('case-has-violencetype/')
+  findAllCasesViolenceType() {
+    return this.caseViolenceType.getAllCaseViolenceType();
+  }
   @Patch('case-has-violencetype/:id')
   updateCaseViolencetype(
     @Param('id', ParseUUIDPipe) id: string,
@@ -87,6 +91,14 @@ export class CasesController {
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
     return this.casePersonService.createCasePerson(CreateCasePerson);
   }
+  @Get('case-has-person/:id')
+  findOneCasePerson(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casePersonService.getOne(id);
+  }
+  @Get('case-has-person')
+  findAllCasePeople() {
+    return this.casePersonService.getAllCasePeople();
+  }
   @Patch('case-has-person/:id')
   updateCasePerson(
     @Param('id', ParseUUIDPipe) id: string,
@@ -98,13 +110,5 @@ export class CasesController {
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
-  }
-  @Get('case-has-person')
-  findAllCasePeople() {
-    return this.casePersonService.getAllCasePeople();
-  }
-  @Get('case-has-person/:id')
-  findOneCasePerson(@Param('id', ParseUUIDPipe) id: string) {
-    return this.casePersonService.getOne(id);
   }
 }

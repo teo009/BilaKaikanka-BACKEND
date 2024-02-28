@@ -23,6 +23,10 @@ export class CareerService {
     }
   }
 
+  async getAll() {
+    return await this.CareerRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

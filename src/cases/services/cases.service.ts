@@ -44,8 +44,13 @@ export class CasesService {
     }
   }
 
-  findAll() {
-    return `This action returns all cases`;
+  async getAllCases() {
+    return await this.CaseRepository.find({
+      relations: {
+        regionalCenter: true,
+        municipality: true,
+      },
+    });
   }
 
   async getOne(id: string, repository?: any): Promise<any> {

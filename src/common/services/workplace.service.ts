@@ -24,6 +24,10 @@ export class WorkPlaceService {
     }
   }
 
+  async getAll() {
+    return await this.WorkplaceRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {

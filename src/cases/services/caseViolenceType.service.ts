@@ -59,6 +59,15 @@ export class CaseViolenceTypeService {
     return singleCaseViolenceTye;
   }
 
+  async getAllCaseViolenceType() {
+    return await this.CaseViolencetypeRepository.find({
+      relations: {
+        case: true,
+        violenceType: true,
+      },
+    });
+  }
+
   async updateCaseViolenceType(
     id: string,
     updateCaseViolencetype: UpdateCaseViolencetypeDto,

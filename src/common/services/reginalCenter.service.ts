@@ -24,6 +24,10 @@ export class RegionalCenterService {
     }
   }
 
+  async getAll() {
+    return await this.RegionalCenterRepository.find();
+  }
+
   async getOne(id: string, repository?: any): Promise<any> {
     let data: any;
     if (!repository) {
