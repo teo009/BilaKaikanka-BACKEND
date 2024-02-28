@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -24,12 +24,14 @@ export class CasesService {
   async createAcase(createCaseDto: CreateCaseDto) {
     const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
     try {
-      const regionalCenterById = await this.RegionalCenterRepository.findOneBy({
-        id: regionalCenter,
-      });
-      const municipalityById = await this.MunicipalityRepository.findOneBy({
-        id: municipality,
-      });
+      const regionalCenterById = await this.getOne(
+        regionalCenter,
+        this.RegionalCenterRepository,
+      );
+      const municipalityById = await this.getOne(
+        municipality,
+        this.MunicipalityRepository,
+      );
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
         regionalCenter: regionalCenterById,
@@ -42,12 +44,28 @@ export class CasesService {
     }
   }
 
-  findAll() {
-    return `This action returns all cases`;
+  async getAllCases() {
+    return await this.CaseRepository.find({
+      relations: {
+        regionalCenter: true,
+        municipality: true,
+      },
+    });
   }
 
-  findOne() {
-    return `I dont want this`;
+  async getOne(id: string, repository?: any): Promise<any> {
+    let singleCase: any;
+    if (!repository) {
+      singleCase = await this.CaseRepository.findOneBy({
+        id,
+      });
+    } else {
+      singleCase = await repository.findOneBy({
+        id,
+      });
+    }
+    if (!singleCase) throw new NotFoundException('Register was not found');
+    return singleCase;
   }
 
   async update(id: string, updateCaseDto: UpdateCaseDto) {
@@ -62,17 +80,18 @@ export class CasesService {
       //Check if there is an foreignKey update and doing it if there is one
       let municipalityUpdated: object;
       if (municipality) {
-        municipalityUpdated = await this.MunicipalityRepository.findOneBy({
-          id: municipality,
-        });
+        municipalityUpdated = await this.getOne(
+          municipality,
+          this.MunicipalityRepository,
+        );
       }
       let regionalCenterUpdated: object;
       if (regionalCenter) {
-        regionalCenterUpdated = await this.RegionalCenterRepository.findOneBy({
-          id: regionalCenter,
-        });
+        regionalCenterUpdated = await this.getOne(
+          regionalCenter,
+          this.RegionalCenterRepository,
+        );
       }
-      console.log(regionalCenterUpdated);
 
       return await this.CaseRepository.save({
         ...caseToUpdate,

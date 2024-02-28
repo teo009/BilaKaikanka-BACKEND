@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -22,6 +22,25 @@ export class WorkPlaceService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async getAll() {
+    return await this.WorkplaceRepository.find();
+  }
+
+  async getOne(id: string, repository?: any): Promise<any> {
+    let data: any;
+    if (!repository) {
+      data = await this.WorkplaceRepository.findOneBy({
+        id,
+      });
+    } else {
+      data = await repository.findOneBy({
+        id,
+      });
+    }
+    if (!data) throw new NotFoundException('Register was not found');
+    return data;
   }
 
   async updateWorkplace(id: string, updateWorkplaceDto: UpdateWorkplaceDto) {

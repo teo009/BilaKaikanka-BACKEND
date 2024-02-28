@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -41,6 +41,31 @@ export class CaseViolenceTypeService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async getOne(id: string, repository?: any): Promise<any> {
+    let singleCaseViolenceTye: any;
+    if (!repository) {
+      singleCaseViolenceTye = await this.CaseViolencetypeRepository.findOneBy({
+        id,
+      });
+    } else {
+      singleCaseViolenceTye = await repository.findOneBy({
+        id,
+      });
+    }
+    if (!singleCaseViolenceTye)
+      throw new NotFoundException('Register was not found');
+    return singleCaseViolenceTye;
+  }
+
+  async getAllCaseViolenceType() {
+    return await this.CaseViolencetypeRepository.find({
+      relations: {
+        case: true,
+        violenceType: true,
+      },
+    });
   }
 
   async updateCaseViolenceType(

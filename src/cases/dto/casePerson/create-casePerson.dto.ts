@@ -1,32 +1,30 @@
-import { IsOptional, IsUUID } from "class-validator";
+import { IsOptional, IsUUID } from 'class-validator';
 
 export class CreateCasePersonDto {
-  
   @IsUUID()
-  caseId: string;
+  case_id: string;
 
   @IsUUID()
-  person: string;
+  person_id: string;
 
   @IsUUID()
-  roleInCase: string;
+  roleInCase_id: string;
 
   @IsUUID()
-  victimRelationship: string;
-
-  @IsUUID()
-  @IsOptional()
-  career?: string;
+  victimRelationship_id: string;
 
   @IsUUID()
   @IsOptional()
-  workplace?: string;
+  career_id?: string;
 
   @IsUUID()
   @IsOptional()
-  jobPosition?: string;
+  workplace_id?: string;
 
   @IsUUID()
-  academicLevel: string;
+  @IsOptional()
+  jobPosition_id?: string;
 
+  @IsUUID()
+  academicLevel_id: string;
 }
