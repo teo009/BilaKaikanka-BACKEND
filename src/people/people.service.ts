@@ -156,6 +156,12 @@ export class PeopleService {
           id: jobposition,
         });
       }
+      let identityTypeUpdated: object;
+      if (identityType) {
+        identityTypeUpdated = await this.IdentityTypeRepository.findOneBy({
+          id: identityType,
+        });
+      }
       let academicLevelUpdated: object;
       if (academicLevel) {
         academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({
@@ -169,6 +175,7 @@ export class PeopleService {
         workplace: workplaceUpdated,
         municipality: municipalityUpdated,
         jobposition: jobpositionUpdated,
+        identityType: identityTypeUpdated,
         academicLevel: academicLevelUpdated,
       });
     } catch (error) {

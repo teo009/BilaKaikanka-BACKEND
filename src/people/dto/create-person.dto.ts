@@ -1,17 +1,16 @@
-import { Type } from "class-transformer";
-import { IsArray, IsDate, IsString, IsUUID, MinLength } from "class-validator";
+import { Type } from 'class-transformer';
+import { IsArray, IsDate, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class CreatePersonDto {
+  @IsString()
+  firstName: string;
 
   @IsString()
-  firstName: string
+  secondName: string;
 
-  @IsString()
-  secondName: string
-  
   @IsDate()
   @Type(() => Date)
-  birthDate: Date; 
+  birthDate: Date;
 
   @IsArray() //Check others validations later
   //@MinLength(8)
@@ -42,5 +41,4 @@ export class CreatePersonDto {
 
   @IsUUID()
   academicLevel: string;
-
 }
