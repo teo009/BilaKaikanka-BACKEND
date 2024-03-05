@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CasesService, CasePersonService, CaseViolenceTypeService } from './services/';
 import { Case, CasePerson } from './entities/';
 import { CasesController } from './cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
 import { CaseViolence } from './entities/case-violenctetype.entity';
 
-import { 
+import {
+  CasesService,
+  CasePersonService,
+  CaseViolenceTypeService,
+} from './services/';
+import {
   RoleInCase,
   VictimRelationship,
   Career,
@@ -17,21 +21,22 @@ import {
   AcademicLevel,
   RegionalCenter,
   Municipality,
-  ViolenceType
+  ViolenceType,
 } from 'src/common/entities/';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   controllers: [CasesController],
   providers: [CasesService, CasePersonService, CaseViolenceTypeService],
   imports: [
     TypeOrmModule.forFeature([
-      Case, 
-      CasePerson, 
+      Case,
+      CasePerson,
       CaseViolence,
-      Person, 
-      RoleInCase, 
-      VictimRelationship, 
-      Career, 
+      Person,
+      RoleInCase,
+      VictimRelationship,
+      Career,
       Workplace,
       JobPosition,
       AcademicLevel,
@@ -39,8 +44,9 @@ import {
       Municipality,
       ViolenceType,
     ]),
-    AuthModule
+    AuthModule,
+    CommonModule,
   ],
-  exports: [CasesService]
+  exports: [CasesService],
 })
 export class CasesModule {}

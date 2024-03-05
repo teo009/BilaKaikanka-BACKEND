@@ -2,6 +2,7 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -43,22 +44,40 @@ export class Person {
   @OneToMany(() => CasePerson, (casePerson) => casePerson.person_id)
   casePerson: CasePerson;
 
+  @Column('varchar')
+  career_id: string;
   @ManyToOne(() => Career, (career) => career.person, { cascade: true })
+  @JoinColumn({ name: 'career_id' })
   career: Career;
 
+  @Column('varchar')
+  workplace_id: string;
   @ManyToOne(() => Workplace, (workplace) => workplace.person)
+  @JoinColumn({ name: 'workplace_id' })
   workplace: Workplace;
 
+  @Column('varchar')
+  municipality_id: string;
   @ManyToOne(() => Municipality, (municipality) => municipality.person)
+  @JoinColumn({ name: 'municipality_id' })
   municipality: Municipality;
 
+  @Column('varchar')
+  jobPosition_id: string;
   @ManyToOne(() => JobPosition, (jobposition) => jobposition.person)
+  @JoinColumn({ name: 'jobPosition' })
   jobposition: JobPosition;
 
+  @Column('varchar')
+  identityType_id: string;
   @ManyToOne(() => IdentityType, (identityType) => identityType.person)
+  @JoinColumn({ name: 'identityType' })
   identityType: IdentityType;
 
+  @Column('varchar')
+  academicLevel_id: string;
   @ManyToOne(() => AcademicLevel, (academicLevel) => academicLevel.person)
+  @JoinColumn({ name: 'academicLevel_id' })
   academicLevel: AcademicLevel;
 
   @DeleteDateColumn()

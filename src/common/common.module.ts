@@ -3,22 +3,21 @@ import { Module } from '@nestjs/common';
 
 import { CommonController } from './common.controller';
 
-import { 
-  AcademicLevelService, 
-  CareerService, 
-  CommonService, 
-  IdentityTypeService, 
-  JobPositionService, 
-  MunicipalityService, 
-  RegionalCenterService, 
-  RoleInCaseService, 
-  VictimRelationshipService, 
-  ViolenceTypeService, 
-  WorkPlaceService
+import {
+  AcademicLevelService,
+  CareerService,
+  CommonService,
+  IdentityTypeService,
+  JobPositionService,
+  MunicipalityService,
+  RegionalCenterService,
+  RoleInCaseService,
+  VictimRelationshipService,
+  ViolenceTypeService,
+  WorkPlaceService,
 } from './services/';
-
-import { 
-  RoleInCase, 
+import {
+  RoleInCase,
   VictimRelationship,
   Career,
   Workplace,
@@ -27,13 +26,13 @@ import {
   RegionalCenter,
   Municipality,
   ViolenceType,
-  IdentityType
+  IdentityType,
 } from './entities/';
 
 @Module({
-  controllers: [ CommonController ],
-  providers: [ 
-    CommonService, 
+  controllers: [CommonController],
+  providers: [
+    CommonService,
     AcademicLevelService,
     RoleInCaseService,
     VictimRelationshipService,
@@ -43,13 +42,13 @@ import {
     RegionalCenterService,
     MunicipalityService,
     ViolenceTypeService,
-    IdentityTypeService
+    IdentityTypeService,
   ],
   imports: [
-    TypeOrmModule.forFeature([ 
-      RoleInCase, 
-      VictimRelationship, 
-      Career, 
+    TypeOrmModule.forFeature([
+      RoleInCase,
+      VictimRelationship,
+      Career,
       Workplace,
       JobPosition,
       AcademicLevel,
@@ -57,7 +56,8 @@ import {
       Municipality,
       ViolenceType,
       IdentityType,
-    ])
-  ]
+    ]),
+  ],
+  exports: [CommonService],
 })
 export class CommonModule {}

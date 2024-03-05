@@ -4,27 +4,32 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PeopleService } from './people.service';
 import { PeopleController } from './people.controller';
 import { Person } from './entities/person.entity';
-import { Career } from 'src/common/entities/Career.entity';
-import { Workplace } from 'src/common/entities/Workplace.entity';
-import { Municipality } from 'src/common/entities/municipality.entity';
-import { JobPosition } from 'src/common/entities/jobPosition.entity';
-import { IdentityType } from 'src/common/entities/IdentityType.entity';
-import { AcademicLevel } from 'src/common/entities/AcademicLevel.entity';
+import { CommonModule } from 'src/common/common.module';
+
+import {
+  Municipality,
+  JobPosition,
+  IdentityType,
+  AcademicLevel,
+  Workplace,
+  Career,
+} from 'src/common/entities/';
 
 @Module({
   controllers: [PeopleController],
   providers: [PeopleService],
   imports: [
-    TypeOrmModule.forFeature([ 
-      Person, 
-      Career, 
-      Workplace, 
+    TypeOrmModule.forFeature([
+      Person,
+      Career,
+      Workplace,
       Municipality,
       JobPosition,
       IdentityType,
-      AcademicLevel
-    ])
+      AcademicLevel,
+    ]),
+    CommonModule,
   ],
-  exports: [PeopleService]
+  exports: [PeopleService],
 })
 export class PeopleModule {}

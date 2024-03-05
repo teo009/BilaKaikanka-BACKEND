@@ -1,11 +1,23 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsString, IsUUID, MinLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsDate,
+  IsInt,
+  IsString,
+  IsUUID,
+  Length,
+  MinLength,
+} from 'class-validator';
 
 export class CreatePersonDto {
   @IsString()
+  @MinLength(3)
   firstName: string;
 
   @IsString()
+  @MinLength(3)
   secondName: string;
 
   @IsDate()
@@ -13,14 +25,18 @@ export class CreatePersonDto {
   birthDate: Date;
 
   @IsArray() //Check others validations later
-  //@MinLength(8)
+  //@IsInt()
+  //@Length(8, 8, { each: true })
+  @ArrayMinSize(1)
+  @ArrayMaxSize(2)
   phoneNumbers: number[];
 
   @IsString()
+  @MinLength(5)
   homeAddress: string;
 
   @IsString()
-  @MinLength(13)
+  @MinLength(16)
   //@MinLength(10)
   identity: string;
 

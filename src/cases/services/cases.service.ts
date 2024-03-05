@@ -5,42 +5,34 @@ import { DataSource, Repository } from 'typeorm';
 import { Case } from '../entities';
 import { CreateCaseDto, UpdateCaseDto } from '../dto/';
 import { RegionalCenter, Municipality } from 'src/common/entities';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class CasesService {
   constructor(
     @InjectRepository(Case)
     private readonly CaseRepository: Repository<Case>,
-
     @InjectRepository(RegionalCenter)
     private readonly RegionalCenterRepository: Repository<RegionalCenter>,
-
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
 
+    private readonly dbExceptionsService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
   async createAcase(createCaseDto: CreateCaseDto) {
     const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
     try {
-      const regionalCenterById = await this.getOne(
-        regionalCenter,
-        this.RegionalCenterRepository,
-      );
-      const municipalityById = await this.getOne(
-        municipality,
-        this.MunicipalityRepository,
-      );
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
-        regionalCenter: regionalCenterById,
-        municipality: municipalityById,
+        regionalCenter_id: regionalCenter,
+        municipality_id: municipality,
       });
       await this.CaseRepository.save(caseResponse);
       return caseResponse;
     } catch (error) {
-      console.log(error);
+      this.dbExceptionsService.handleDBExceptions(error);
     }
   }
 
