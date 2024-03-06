@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -126,7 +126,10 @@ export class PeopleService {
         ...dataToUpdate,
       });
       if (!people)
-        throw new NotFoundException(`La persona no ha sido encontrada`);
+        this.dbExceptionsService.handleDBExceptions({
+          code: '23503',
+          detail: 'Person not found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let careerUpdated: object;
@@ -200,7 +203,7 @@ export class PeopleService {
             code: '23503',
             detail: 'No person found to delete',
           })
-        : `La persona id: ${id} ha sido eliminada exitosamente`;
+        : `The person: ${id} has been succesfully removed`;
     } catch (error) {
       this.dbExceptionsService.handleDBExceptions(error);
     }

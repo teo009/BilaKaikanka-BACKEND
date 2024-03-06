@@ -14,6 +14,7 @@ import {
   JobPosition,
   AcademicLevel,
 } from 'src/common/entities/';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class CasePersonService {
@@ -43,6 +44,7 @@ export class CasePersonService {
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
     private readonly dataSource: DataSource,
+    private readonly commonService: CommonService,
   ) {}
 
   async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
@@ -51,7 +53,7 @@ export class CasePersonService {
         this.CasePersonRepository.create(CreateCasePerson);
       return await this.CasePersonRepository.save(caseHasPersonResponse);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
@@ -60,61 +62,58 @@ export class CasePersonService {
       const casePersonToUpdate = await this.CasePersonRepository.preload({
         id,
       });
-      if (!casePersonToUpdate)
-        throw new NotFoundException(`El caso no ha sido encontrado`);
+      if (!casePersonToUpdate) return new NotFoundException('Cas not found'); //Change this for the common method
 
       //Check if there is an foreignKey update and doing it if there is one
       let personUpdated: object;
       if (updateCasePersonDto.person_id) {
-        personUpdated = await this.getOne(
+        personUpdated = await this.commonService.getOne(
           updateCasePersonDto.person_id,
           this.PersonRepository,
         );
-        console.log(personUpdated);
       }
       let roleInCaseUpdated: object;
       if (updateCasePersonDto.roleInCase_id) {
-        roleInCaseUpdated = await this.getOne(
+        roleInCaseUpdated = await this.commonService.getOne(
           updateCasePersonDto.roleInCase_id,
           this.RoleInCaseRepository,
         );
       }
       let victimRelationshipUpdated: object;
       if (updateCasePersonDto.victimRelationship_id) {
-        victimRelationshipUpdated = await this.getOne(
+        victimRelationshipUpdated = await this.commonService.getOne(
           updateCasePersonDto.victimRelationship_id,
           this.VictimRelationshipRepository,
         );
       }
       let careerUpdated: object;
       if (updateCasePersonDto.career_id) {
-        careerUpdated = await this.getOne(
+        careerUpdated = await this.commonService.getOne(
           updateCasePersonDto.career_id,
           this.CareerRepository,
         );
       }
       let workplaceUpdated: object;
       if (updateCasePersonDto.workplace_id) {
-        workplaceUpdated = await this.getOne(
+        workplaceUpdated = await this.commonService.getOne(
           updateCasePersonDto.workplace_id,
           this.WorkplaceRepository,
         );
       }
       let jobPositionUpdated: object;
       if (updateCasePersonDto.jobPosition_id) {
-        jobPositionUpdated = await this.getOne(
+        jobPositionUpdated = await this.commonService.getOne(
           updateCasePersonDto.jobPosition_id,
           this.JobPositionRepository,
         );
       }
       let academicLevelUpdated: object;
       if (updateCasePersonDto.academicLevel_id) {
-        academicLevelUpdated = await this.getOne(
+        academicLevelUpdated = await this.commonService.getOne(
           updateCasePersonDto.academicLevel_id,
           this.AcademicLevelRepository,
         );
       }
-
       return await this.CasePersonRepository.save({
         ...casePersonToUpdate,
         person: personUpdated,
@@ -126,31 +125,47 @@ export class CasePersonService {
         academicLevel: academicLevelUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
   async removeCasePerson(id: string) {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(CasePerson)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El caso - persona id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: `No "case - person" found to delete`,
+          })
+        : `The "case - person": ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
   async getAllCasePeople() {
-    return await this.CasePersonRepository.find({
-      relations: {
-        case: true,
-        person: true,
-      },
-    });
+    try {
+      const response = await this.CasePersonRepository.find({
+        relations: {
+          case: true,
+          person: true,
+        },
+      });
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'No data found, its seems that "case - person" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
   async getOne(id: string, repository?: any): Promise<any> {
