@@ -17,11 +17,11 @@ export class CasesService {
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
 
-    private readonly dbExceptionsService: CommonService,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async createAcase(createCaseDto: CreateCaseDto) {
+  async createAcase(createCaseDto: CreateCaseDto): Promise<Case> {
     const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
     try {
       const caseResponse = this.CaseRepository.create({
@@ -32,80 +32,84 @@ export class CasesService {
       await this.CaseRepository.save(caseResponse);
       return caseResponse;
     } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
   async getAllCases() {
-    return await this.CaseRepository.find({
-      relations: {
-        regionalCenter: true,
-        municipality: true,
-      },
-    });
-  }
-
-  async getOne(id: string, repository?: any): Promise<any> {
-    let singleCase: any;
-    if (!repository) {
-      singleCase = await this.CaseRepository.findOneBy({
-        id,
+    try {
+      const response = await this.CaseRepository.find({
+        relations: {
+          regionalCenter: true,
+          municipality: true,
+        },
       });
-    } else {
-      singleCase = await repository.findOneBy({
-        id,
-      });
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Data not found, its seems that cases schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
     }
-    if (!singleCase) throw new NotFoundException('Register was not found');
-    return singleCase;
   }
 
-  async update(id: string, updateCaseDto: UpdateCaseDto) {
-    const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
+  async getOne(id: string): Promise<Case> {
+    return this.commonService.getOne(id, this.CaseRepository);
+  }
 
+  async update(id: string, updateCaseDto: UpdateCaseDto): Promise<any> {
+    const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
     try {
       const caseToUpdate = await this.CaseRepository.preload({
         id,
         ...dataToUpdate,
       });
+      if (!caseToUpdate)
+        return new NotFoundException('Case to update not found'); //Change this for the common method
 
       //Check if there is an foreignKey update and doing it if there is one
       let municipalityUpdated: object;
       if (municipality) {
-        municipalityUpdated = await this.getOne(
+        municipalityUpdated = await this.commonService.getOne(
           municipality,
           this.MunicipalityRepository,
         );
       }
       let regionalCenterUpdated: object;
       if (regionalCenter) {
-        regionalCenterUpdated = await this.getOne(
+        regionalCenterUpdated = await this.commonService.getOne(
           regionalCenter,
           this.RegionalCenterRepository,
         );
       }
-
       return await this.CaseRepository.save({
         ...caseToUpdate,
         municipality: municipalityUpdated,
         regionalCenter: regionalCenterUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
   async removeCase(id: string) {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(Case)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El caso id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: 'No case found to remove',
+          })
+        : `The case: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

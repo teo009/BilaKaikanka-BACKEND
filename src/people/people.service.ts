@@ -128,7 +128,7 @@ export class PeopleService {
       if (!people)
         this.dbExceptionsService.handleDBExceptions({
           code: '23503',
-          detail: 'Person not found',
+          detail: 'Person to update not found',
         });
 
       //Check if there is an foreignKey update and doing it if there is one
@@ -201,7 +201,7 @@ export class PeopleService {
       return response.affected === 0
         ? this.dbExceptionsService.handleDBExceptions({
             code: '23503',
-            detail: 'No person found to delete',
+            detail: 'No person found to remove',
           })
         : `The person: ${id} has been succesfully removed`;
     } catch (error) {

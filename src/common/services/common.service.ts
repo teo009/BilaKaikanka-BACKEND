@@ -12,6 +12,11 @@ export class CommonService {
     //let data: object;
     try {
       const data = await repository.findOneBy({ id });
+      if (data === null)
+        this.handleDBExceptions({
+          code: '23503',
+          detail: `Register with "id: ${id}" was not found in ${repository.target}`,
+        });
       return data;
     } catch (error) {
       this.handleDBExceptions(error);
