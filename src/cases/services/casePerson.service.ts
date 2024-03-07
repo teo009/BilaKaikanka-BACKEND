@@ -62,7 +62,8 @@ export class CasePersonService {
       const casePersonToUpdate = await this.CasePersonRepository.preload({
         id,
       });
-      if (!casePersonToUpdate) return new NotFoundException('Cas not found'); //Change this for the common method
+      if (!casePersonToUpdate)
+        return new NotFoundException('Case Person not found'); //Change this for the common method
 
       //Check if there is an foreignKey update and doing it if there is one
       let personUpdated: object;
@@ -140,7 +141,7 @@ export class CasePersonService {
       return response.affected === 0
         ? this.commonService.handleDBExceptions({
             code: '23503',
-            detail: `No "case - person" found to delete`,
+            detail: `No "case - person" found to remove`,
           })
         : `The "case - person": ${id} has been succesfully removed`;
     } catch (error) {

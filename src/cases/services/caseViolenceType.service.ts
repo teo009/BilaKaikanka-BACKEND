@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -7,6 +7,7 @@ import { CaseViolence } from '../entities/case-violenctetype.entity';
 import { Case } from '../entities';
 import { ViolenceType } from 'src/common/entities/violenceType.entity';
 import { UpdateCaseViolencetypeDto } from '../dto/caseViolencetype/update-caseViolencetype.dto';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class CaseViolenceTypeService {
@@ -20,52 +21,44 @@ export class CaseViolenceTypeService {
     @InjectRepository(ViolenceType)
     private readonly ViolenceTypeRepository: Repository<ViolenceType>,
 
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
   async createCaseViolenceType(createViolencetype: CreateViolencetypeDto) {
-    const { violenceType } = createViolencetype;
     try {
-      const caseById = await this.CaseRepository.findOneBy({
-        id: createViolencetype.case,
-      });
-      const violenceTypeById = await this.ViolenceTypeRepository.findOneBy({
-        id: violenceType,
-      });
-
       const caseViolenceResponse = this.CaseViolencetypeRepository.create({
-        case: caseById,
-        violenceType: violenceTypeById,
+        case_id: createViolencetype.case,
+        violenceType_id: createViolencetype.violenceType,
       });
       return await this.CaseViolencetypeRepository.save(caseViolenceResponse);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getOne(id: string, repository?: any): Promise<any> {
-    let singleCaseViolenceTye: any;
-    if (!repository) {
-      singleCaseViolenceTye = await this.CaseViolencetypeRepository.findOneBy({
-        id,
-      });
-    } else {
-      singleCaseViolenceTye = await repository.findOneBy({
-        id,
-      });
-    }
-    if (!singleCaseViolenceTye)
-      throw new NotFoundException('Register was not found');
-    return singleCaseViolenceTye;
+  async getOne(id: string): Promise<CaseViolence> {
+    return this.commonService.getOne(id, this.CaseViolencetypeRepository);
   }
 
   async getAllCaseViolenceType() {
-    return await this.CaseViolencetypeRepository.find({
-      relations: {
-        case: true,
-        violenceType: true,
-      },
-    });
+    try {
+      const response = await this.CaseViolencetypeRepository.find({
+        relations: {
+          case: true,
+          violenceType: true,
+        },
+      });
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'No data found, its seems that "case - violenceType" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
   async updateCaseViolenceType(
@@ -75,19 +68,26 @@ export class CaseViolenceTypeService {
     try {
       const caseViolenceTypeUpdated =
         await this.CaseViolencetypeRepository.preload({ id });
+      if (!caseViolenceTypeUpdated)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'CaseViolenceType not Found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let caseUpdated: object;
       if (updateCaseViolencetype.case) {
-        caseUpdated = await this.CaseRepository.findOneBy({
-          id: updateCaseViolencetype.case,
-        });
+        caseUpdated = await this.commonService.getOne(
+          updateCaseViolencetype.case,
+          this.CaseRepository,
+        );
       }
       let violenceTypeUpdated: object;
       if (updateCaseViolencetype.violenceType) {
-        violenceTypeUpdated = await this.ViolenceTypeRepository.findOneBy({
-          id: updateCaseViolencetype.violenceType,
-        });
+        violenceTypeUpdated = await this.commonService.getOne(
+          updateCaseViolencetype.violenceType,
+          this.ViolenceTypeRepository,
+        );
       }
       return await this.CaseViolencetypeRepository.save({
         ...caseViolenceTypeUpdated,
@@ -95,21 +95,26 @@ export class CaseViolenceTypeService {
         violenceType: violenceTypeUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
   async removeCaseViolenceType(id: string) {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(CaseViolence)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El caso - tipo de violencia id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: 'No "Case - ViolenceType" found to remove',
+          })
+        : `The "Case - ViolenceType" id: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }
