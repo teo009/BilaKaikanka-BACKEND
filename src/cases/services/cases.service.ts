@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -36,7 +36,7 @@ export class CasesService {
     }
   }
 
-  async getAllCases() {
+  async getAllCases(): Promise<Array<Case>> {
     try {
       const response = await this.CaseRepository.find({
         relations: {
@@ -59,7 +59,7 @@ export class CasesService {
     return this.commonService.getOne(id, this.CaseRepository);
   }
 
-  async update(id: string, updateCaseDto: UpdateCaseDto): Promise<any> {
+  async update(id: string, updateCaseDto: UpdateCaseDto): Promise<Case> {
     const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
     try {
       const caseToUpdate = await this.CaseRepository.preload({
@@ -67,7 +67,10 @@ export class CasesService {
         ...dataToUpdate,
       });
       if (!caseToUpdate)
-        return new NotFoundException('Case to update not found'); //Change this for the common method
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: '"Case" to update not found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let municipalityUpdated: object;
@@ -94,7 +97,7 @@ export class CasesService {
     }
   }
 
-  async removeCase(id: string) {
+  async removeCase(id: string): Promise<void | string> {
     try {
       const response = await this.dataSource
         .getRepository(Case)

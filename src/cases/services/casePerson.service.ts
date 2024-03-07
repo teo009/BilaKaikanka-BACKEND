@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -47,23 +47,30 @@ export class CasePersonService {
     private readonly commonService: CommonService,
   ) {}
 
-  async createCasePerson(CreateCasePerson: CreateCasePersonDto) {
+  async createCasePerson(
+    CreateCasePerson: CreateCasePersonDto,
+  ): Promise<CasePerson> {
     try {
-      const caseHasPersonResponse =
-        this.CasePersonRepository.create(CreateCasePerson);
-      return await this.CasePersonRepository.save(caseHasPersonResponse);
+      const response = this.CasePersonRepository.create(CreateCasePerson);
+      return await this.CasePersonRepository.save(response);
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }
   }
 
-  async updateCasePerson(id: string, updateCasePersonDto: UpdateCasePersonDto) {
+  async updateCasePerson(
+    id: string,
+    updateCasePersonDto: UpdateCasePersonDto,
+  ): Promise<CasePerson> {
     try {
       const casePersonToUpdate = await this.CasePersonRepository.preload({
         id,
       });
       if (!casePersonToUpdate)
-        return new NotFoundException('Case Person not found'); //Change this for the common method
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: '"Case Person" to update not found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let personUpdated: object;
@@ -130,7 +137,7 @@ export class CasePersonService {
     }
   }
 
-  async removeCasePerson(id: string) {
+  async removeCasePerson(id: string): Promise<void | string> {
     try {
       const response = await this.dataSource
         .getRepository(CasePerson)
@@ -149,7 +156,7 @@ export class CasePersonService {
     }
   }
 
-  async getAllCasePeople() {
+  async getAllCasePeople(): Promise<Array<CasePerson>> {
     try {
       const response = await this.CasePersonRepository.find({
         relations: {
@@ -169,19 +176,7 @@ export class CasePersonService {
     }
   }
 
-  async getOne(id: string, repository?: any): Promise<any> {
-    let singleCasePerson: any;
-    if (!repository) {
-      singleCasePerson = await this.CasePersonRepository.findOneBy({
-        id,
-      });
-    } else {
-      singleCasePerson = await repository.findOneBy({
-        id,
-      });
-    }
-    if (!singleCasePerson)
-      throw new NotFoundException('Register was not found');
-    return singleCasePerson;
+  async getOne(id: string): Promise<CasePerson> {
+    return this.commonService.getOne(id, this.CasePersonRepository);
   }
 }

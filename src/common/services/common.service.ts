@@ -35,6 +35,10 @@ export class CommonService {
         );
       case undefined:
         throw new NotFoundException(error.message);
+      /*default:
+        // Manejar cualquier otro error de base de datos
+        const errorMessage = error.detail || error.message || 'Error desconocido de base de datos';
+        throw new Error(errorMessage);*/
     }
   }
 }

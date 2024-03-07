@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { Person } from './entities/person.entity';
+import { CommonService } from 'src/common/services';
 import { CreatePersonDto, UpdatePersonDto } from './dto/';
 
 import {
@@ -13,7 +14,6 @@ import {
   IdentityType,
   AcademicLevel,
 } from 'src/common/entities/';
-import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class PeopleService {
@@ -33,12 +33,11 @@ export class PeopleService {
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
-    private readonly dbExceptionsService: CommonService,
-    private readonly getOneCommonMethod: CommonService,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createPersonDto: CreatePersonDto) {
+  async create(createPersonDto: CreatePersonDto): Promise<Person> {
     const {
       career,
       workplace,
@@ -58,17 +57,15 @@ export class PeopleService {
         identityType_id: identityType,
         academicLevel_id: academicLevel,
       });
-      await this.PersonRepository.save(peopleResponse);
-      return peopleResponse;
+      return await this.PersonRepository.save(peopleResponse);
     } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    let response: any;
+  async getAll(): Promise<Array<Person>> {
     try {
-      response = await this.PersonRepository.find({
+      const response = await this.PersonRepository.find({
         relations: {
           career: true,
           workplace: true,
@@ -78,38 +75,23 @@ export class PeopleService {
           academicLevel: true,
         },
       });
-    } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
-    }
-    if (response.length === 0) {
-      this.dbExceptionsService.handleDBExceptions({
-        code: '23503',
-        detail: 'Data not found, Its seems that people schema is empty',
-      });
-    }
-    return response;
-  }
-
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    try {
-      if (!repository) {
-        data = await this.PersonRepository.findOneBy({ id });
-      } else {
-        data = await repository.findOneBy({ id });
+      if (response.length === 0) {
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Data not found, Its seems that people schema is empty',
+        });
       }
+      return response;
     } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
+      this.commonService.handleDBExceptions(error);
     }
-    if (data === null)
-      this.dbExceptionsService.handleDBExceptions({
-        code: '23503',
-        detail: 'Person not found',
-      });
-    return data;
   }
 
-  async update(id: string, updatePersonDto: UpdatePersonDto) {
+  async getOne(id: string): Promise<Person> {
+    return this.commonService.getOne(id, this.PersonRepository);
+  }
+
+  async update(id: string, updatePersonDto: UpdatePersonDto): Promise<Person> {
     const {
       career,
       workplace,
@@ -119,14 +101,13 @@ export class PeopleService {
       academicLevel,
       ...dataToUpdate
     } = updatePersonDto;
-
     try {
       const people = await this.PersonRepository.preload({
         id,
         ...dataToUpdate,
       });
       if (!people)
-        this.dbExceptionsService.handleDBExceptions({
+        this.commonService.handleDBExceptions({
           code: '23503',
           detail: 'Person to update not found',
         });
@@ -134,47 +115,46 @@ export class PeopleService {
       //Check if there is an foreignKey update and doing it if there is one
       let careerUpdated: object;
       if (career) {
-        careerUpdated = await this.getOneCommonMethod.getOne(
+        careerUpdated = await this.commonService.getOne(
           career,
           this.CareerRepository,
         );
       }
       let workplaceUpdated: object;
       if (workplace) {
-        workplaceUpdated = await this.getOneCommonMethod.getOne(
+        workplaceUpdated = await this.commonService.getOne(
           workplace,
           this.WorkplaceRepository,
         );
       }
       let municipalityUpdated: object;
       if (municipality) {
-        municipalityUpdated = await this.getOneCommonMethod.getOne(
+        municipalityUpdated = await this.commonService.getOne(
           municipality,
           this.MunicipalityRepository,
         );
       }
       let jobpositionUpdated: object;
       if (jobposition) {
-        jobpositionUpdated = await this.getOneCommonMethod.getOne(
+        jobpositionUpdated = await this.commonService.getOne(
           jobposition,
           this.JobpositionRepository,
         );
       }
       let identityTypeUpdated: object;
       if (identityType) {
-        identityTypeUpdated = await this.getOneCommonMethod.getOne(
+        identityTypeUpdated = await this.commonService.getOne(
           identityType,
           this.IdentityTypeRepository,
         );
       }
       let academicLevelUpdated: object;
       if (academicLevel) {
-        academicLevelUpdated = await this.getOneCommonMethod.getOne(
+        academicLevelUpdated = await this.commonService.getOne(
           academicLevel,
           this.AcademicLevelRepository,
         );
       }
-
       return await this.PersonRepository.save({
         ...people,
         career: careerUpdated,
@@ -185,11 +165,11 @@ export class PeopleService {
         academicLevel: academicLevelUpdated,
       });
     } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void | string> {
     try {
       const response = await this.dataSource
         .getRepository(Person)
@@ -197,15 +177,14 @@ export class PeopleService {
         .softDelete()
         .where('id = :id', { id })
         .execute();
-
       return response.affected === 0
-        ? this.dbExceptionsService.handleDBExceptions({
+        ? this.commonService.handleDBExceptions({
             code: '23503',
             detail: 'No person found to remove',
           })
         : `The person: ${id} has been succesfully removed`;
     } catch (error) {
-      this.dbExceptionsService.handleDBExceptions(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

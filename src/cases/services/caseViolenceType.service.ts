@@ -25,7 +25,9 @@ export class CaseViolenceTypeService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createCaseViolenceType(createViolencetype: CreateViolencetypeDto) {
+  async createCaseViolenceType(
+    createViolencetype: CreateViolencetypeDto,
+  ): Promise<CaseViolence> {
     try {
       const caseViolenceResponse = this.CaseViolencetypeRepository.create({
         case_id: createViolencetype.case,
@@ -41,7 +43,7 @@ export class CaseViolenceTypeService {
     return this.commonService.getOne(id, this.CaseViolencetypeRepository);
   }
 
-  async getAllCaseViolenceType() {
+  async getAllCaseViolenceType(): Promise<Array<CaseViolence>> {
     try {
       const response = await this.CaseViolencetypeRepository.find({
         relations: {
@@ -64,7 +66,7 @@ export class CaseViolenceTypeService {
   async updateCaseViolenceType(
     id: string,
     updateCaseViolencetype: UpdateCaseViolencetypeDto,
-  ) {
+  ): Promise<CaseViolence> {
     try {
       const caseViolenceTypeUpdated =
         await this.CaseViolencetypeRepository.preload({ id });
@@ -99,7 +101,7 @@ export class CaseViolenceTypeService {
     }
   }
 
-  async removeCaseViolenceType(id: string) {
+  async removeCaseViolenceType(id: string): Promise<void | string> {
     try {
       const response = await this.dataSource
         .getRepository(CaseViolence)
