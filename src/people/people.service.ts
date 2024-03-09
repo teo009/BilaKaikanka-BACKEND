@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { Person } from './entities/person.entity';
+import { CommonService } from 'src/common/services';
 import { CreatePersonDto, UpdatePersonDto } from './dto/';
 
 import {
@@ -19,29 +20,24 @@ export class PeopleService {
   constructor(
     @InjectRepository(Person)
     private readonly PersonRepository: Repository<Person>,
-
     @InjectRepository(Career)
     private readonly CareerRepository: Repository<Career>,
-
     @InjectRepository(Workplace)
     private readonly WorkplaceRepository: Repository<Workplace>,
-
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
-
     @InjectRepository(JobPosition)
     private readonly JobpositionRepository: Repository<JobPosition>,
-
     @InjectRepository(IdentityType)
     private readonly IdentityTypeRepository: Repository<IdentityType>,
-
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createPersonDto: CreatePersonDto) {
+  async create(createPersonDto: CreatePersonDto): Promise<Person> {
     const {
       career,
       workplace,
@@ -52,141 +48,143 @@ export class PeopleService {
       ...createPersonData
     } = createPersonDto;
     try {
-      const careerById = await this.CareerRepository.findOneBy({ id: career });
-      const workplaceById = await this.WorkplaceRepository.findOneBy({
-        id: workplace,
-      });
-      const municipalityById = await this.MunicipalityRepository.findOneBy({
-        id: municipality,
-      });
-      const jobpositionById = await this.JobpositionRepository.findOneBy({
-        id: jobposition,
-      });
-      const identityTypeById = await this.IdentityTypeRepository.findOneBy({
-        id: identityType,
-      });
-      const academicLevelById = await this.AcademicLevelRepository.findOneBy({
-        id: academicLevel,
-      });
-
       const peopleResponse = this.PersonRepository.create({
         ...createPersonData,
-        career: careerById,
-        workplace: workplaceById,
-        municipality: municipalityById,
-        jobposition: jobpositionById,
-        identityType: identityTypeById,
-        academicLevel: academicLevelById,
+        career_id: career,
+        workplace_id: workplace,
+        municipality_id: municipality,
+        jobPosition_id: jobposition,
+        identityType_id: identityType,
+        academicLevel_id: academicLevel,
       });
-      await this.PersonRepository.save(peopleResponse);
-      return peopleResponse;
+      return await this.PersonRepository.save(peopleResponse);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    return await this.PersonRepository.find({
-      relations: {
-        career: true,
-        workplace: true,
-        municipality: true,
-        jobposition: true,
-        identityType: true,
-        academicLevel: true,
-      },
-    });
-  }
-
-  //Working on Find one for people module
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    if (!repository) {
-      data = await this.PersonRepository.findOneBy({
-        id,
+  async getAll(): Promise<Array<Person>> {
+    try {
+      const response = await this.PersonRepository.find({
+        relations: {
+          career: true,
+          workplace: true,
+          municipality: true,
+          jobposition: true,
+          identityType: true,
+          academicLevel: true,
+        },
       });
-    } else {
-      data = await repository.findOneBy({
-        id,
-      });
+      if (response.length === 0) {
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Data not found, Its seems that people schema is empty',
+        });
+      }
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
     }
-    if (!data) throw new NotFoundException('Register was not found');
-    return data;
   }
 
-  async update(id: string, updatePersonDto: UpdatePersonDto) {
+  async getOne(id: string): Promise<Person> {
+    return this.commonService.getOne(id, this.PersonRepository);
+  }
+
+  async update(id: string, updatePersonDto: UpdatePersonDto): Promise<Person> {
     const {
       career,
       workplace,
       municipality,
       jobposition,
-      identityType, // => PENDING TO UPDATE
+      identityType,
       academicLevel,
       ...dataToUpdate
     } = updatePersonDto;
-
     try {
       const people = await this.PersonRepository.preload({
         id,
         ...dataToUpdate,
       });
       if (!people)
-        throw new NotFoundException(`La persona no ha sido encontrada`);
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Person to update not found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let careerUpdated: object;
       if (career) {
-        careerUpdated = await this.CareerRepository.findOneBy({ id: career });
+        careerUpdated = await this.commonService.getOne(
+          career,
+          this.CareerRepository,
+        );
       }
       let workplaceUpdated: object;
       if (workplace) {
-        workplaceUpdated = await this.WorkplaceRepository.findOneBy({
-          id: workplace,
-        });
+        workplaceUpdated = await this.commonService.getOne(
+          workplace,
+          this.WorkplaceRepository,
+        );
       }
       let municipalityUpdated: object;
       if (municipality) {
-        municipalityUpdated = await this.MunicipalityRepository.findOneBy({
-          id: municipality,
-        });
+        municipalityUpdated = await this.commonService.getOne(
+          municipality,
+          this.MunicipalityRepository,
+        );
       }
       let jobpositionUpdated: object;
       if (jobposition) {
-        jobpositionUpdated = await this.JobpositionRepository.findOneBy({
-          id: jobposition,
-        });
+        jobpositionUpdated = await this.commonService.getOne(
+          jobposition,
+          this.JobpositionRepository,
+        );
+      }
+      let identityTypeUpdated: object;
+      if (identityType) {
+        identityTypeUpdated = await this.commonService.getOne(
+          identityType,
+          this.IdentityTypeRepository,
+        );
       }
       let academicLevelUpdated: object;
       if (academicLevel) {
-        academicLevelUpdated = await this.AcademicLevelRepository.findOneBy({
-          id: academicLevel,
-        });
+        academicLevelUpdated = await this.commonService.getOne(
+          academicLevel,
+          this.AcademicLevelRepository,
+        );
       }
-
       return await this.PersonRepository.save({
         ...people,
         career: careerUpdated,
         workplace: workplaceUpdated,
         municipality: municipalityUpdated,
         jobposition: jobpositionUpdated,
+        identityType: identityTypeUpdated,
         academicLevel: academicLevelUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(Person)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `La persona id: ${id} ha sido eliminada exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: 'No person found to remove',
+          })
+        : `The person: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

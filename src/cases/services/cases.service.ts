@@ -1,119 +1,118 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { Case } from '../entities';
 import { CreateCaseDto, UpdateCaseDto } from '../dto/';
 import { RegionalCenter, Municipality } from 'src/common/entities';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class CasesService {
   constructor(
     @InjectRepository(Case)
     private readonly CaseRepository: Repository<Case>,
-
     @InjectRepository(RegionalCenter)
     private readonly RegionalCenterRepository: Repository<RegionalCenter>,
-
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
 
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async createAcase(createCaseDto: CreateCaseDto) {
+  async createAcase(createCaseDto: CreateCaseDto): Promise<Case> {
     const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
     try {
-      const regionalCenterById = await this.getOne(
-        regionalCenter,
-        this.RegionalCenterRepository,
-      );
-      const municipalityById = await this.getOne(
-        municipality,
-        this.MunicipalityRepository,
-      );
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
-        regionalCenter: regionalCenterById,
-        municipality: municipalityById,
+        regionalCenter_id: regionalCenter,
+        municipality_id: municipality,
       });
       await this.CaseRepository.save(caseResponse);
       return caseResponse;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAllCases() {
-    return await this.CaseRepository.find({
-      relations: {
-        regionalCenter: true,
-        municipality: true,
-      },
-    });
-  }
-
-  async getOne(id: string, repository?: any): Promise<any> {
-    let singleCase: any;
-    if (!repository) {
-      singleCase = await this.CaseRepository.findOneBy({
-        id,
+  async getAllCases(): Promise<Array<Case>> {
+    try {
+      const response = await this.CaseRepository.find({
+        relations: {
+          regionalCenter: true,
+          municipality: true,
+        },
       });
-    } else {
-      singleCase = await repository.findOneBy({
-        id,
-      });
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Data not found, its seems that cases schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
     }
-    if (!singleCase) throw new NotFoundException('Register was not found');
-    return singleCase;
   }
 
-  async update(id: string, updateCaseDto: UpdateCaseDto) {
+  async getOne(id: string): Promise<Case> {
+    return this.commonService.getOne(id, this.CaseRepository);
+  }
+
+  async update(id: string, updateCaseDto: UpdateCaseDto): Promise<Case> {
     const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
-
     try {
       const caseToUpdate = await this.CaseRepository.preload({
         id,
         ...dataToUpdate,
       });
+      if (!caseToUpdate)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: '"Case" to update not found',
+        });
 
       //Check if there is an foreignKey update and doing it if there is one
       let municipalityUpdated: object;
       if (municipality) {
-        municipalityUpdated = await this.getOne(
+        municipalityUpdated = await this.commonService.getOne(
           municipality,
           this.MunicipalityRepository,
         );
       }
       let regionalCenterUpdated: object;
       if (regionalCenter) {
-        regionalCenterUpdated = await this.getOne(
+        regionalCenterUpdated = await this.commonService.getOne(
           regionalCenter,
           this.RegionalCenterRepository,
         );
       }
-
       return await this.CaseRepository.save({
         ...caseToUpdate,
         municipality: municipalityUpdated,
         regionalCenter: regionalCenterUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async removeCase(id: string) {
+  async removeCase(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(Case)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El caso id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: 'No case found to remove',
+          })
+        : `The case: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

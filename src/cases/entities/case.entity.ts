@@ -2,6 +2,7 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -49,10 +50,16 @@ export class Case {
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.case)
   caseViolence: CaseViolence;
 
+  @Column('varchar')
+  regionalCenter_id: string;
   @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.cases)
+  @JoinColumn({ name: 'regionalCenter_id' })
   regionalCenter: RegionalCenter;
 
+  @Column('varchar')
+  municipality_id: string;
   @ManyToOne(() => Municipality, (municipality) => municipality.case)
+  @JoinColumn({ name: 'municipality_id' })
   municipality: Municipality;
 
   @DeleteDateColumn()
