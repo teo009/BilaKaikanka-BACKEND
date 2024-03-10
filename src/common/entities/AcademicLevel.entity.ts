@@ -13,7 +13,7 @@ export class AcademicLevel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
+  @Column('text', { unique: true })
   academicLevel: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.academicLevel)

@@ -1,82 +1,92 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { VictimRelationship } from '../entities/VictimRelationship.entity';
 import { CreateVictimRelationship } from '../dto/create/create-victimRelationship';
 import { UpdateVictimRelationshipDto } from '../dto/update/update-victimRelationship.dto';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class VictimRelationshipService {
   constructor(
     @InjectRepository(VictimRelationship)
     private readonly VictimrelationshipRepository: Repository<VictimRelationship>,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
   async createAvictimRelationship(
     createVictimRelationship: CreateVictimRelationship,
-  ) {
+  ): Promise<VictimRelationship> {
     try {
-      const victimRelationshipResponse =
-        this.VictimrelationshipRepository.create(createVictimRelationship);
-      return await this.VictimrelationshipRepository.save(
-        victimRelationshipResponse,
+      const response = this.VictimrelationshipRepository.create(
+        createVictimRelationship,
       );
+      return await this.VictimrelationshipRepository.save(response);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    return await this.VictimrelationshipRepository.find();
+  async getAll(): Promise<Array<VictimRelationship>> {
+    try {
+      const response = await this.VictimrelationshipRepository.find();
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'No data found, its seems that "victim - relationship" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    if (!repository) {
-      data = await this.VictimrelationshipRepository.findOneBy({
-        id,
-      });
-    } else {
-      data = await repository.findOneBy({
-        id,
-      });
-    }
-    if (!data) throw new NotFoundException('Register was not found');
-    return data;
+  async getOne(id: string): Promise<VictimRelationship> {
+    return this.commonService.getOne(id, this.VictimrelationshipRepository);
   }
 
   async updateVictimRelationship(
     id: string,
     updateVictimRelationshipDto: UpdateVictimRelationshipDto,
-  ) {
+  ): Promise<VictimRelationship> {
     try {
       const victimRelationshipToUpdate =
         await this.VictimrelationshipRepository.preload({
           id,
           ...updateVictimRelationshipDto,
         });
+      if (!victimRelationshipToUpdate)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: `Victim relationship to update not Found`,
+        });
       return await this.VictimrelationshipRepository.save(
         victimRelationshipToUpdate,
       );
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
-    return { id, updateVictimRelationshipDto };
   }
 
-  async removeVictimRelationship(id: string) {
+  async removeVictimRelationship(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(VictimRelationship)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `La relación con la víctima id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: `No "victim - relationship" found to remove`,
+          })
+        : `Victim relationship with id: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

@@ -1,76 +1,89 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { AcademicLevel } from '../entities/';
 import { CreateAcademicLevel } from '../dto/create/';
 import { UpdateAcademicLevelDto } from '../dto/update/';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class AcademicLevelService {
   constructor(
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async createAcademicLevel(createAcademicLevel: CreateAcademicLevel) {
+  async createAcademicLevel(
+    createAcademicLevel: CreateAcademicLevel,
+  ): Promise<AcademicLevel> {
     try {
-      const academicLevelResponse =
-        this.AcademicLevelRepository.create(createAcademicLevel);
-      return await this.AcademicLevelRepository.save(academicLevelResponse);
+      const response = this.AcademicLevelRepository.create(createAcademicLevel);
+      return await this.AcademicLevelRepository.save(response);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    return await this.AcademicLevelRepository.find();
+  async getAll(): Promise<Array<AcademicLevel>> {
+    try {
+      const response = await this.AcademicLevelRepository.find();
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'No data found, its seems that "academic - level" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    if (!repository) {
-      data = await this.AcademicLevelRepository.findOneBy({
-        id,
-      });
-    } else {
-      data = await repository.findOneBy({
-        id,
-      });
-    }
-    if (!data) throw new NotFoundException('Register was not found');
-    return data;
+  async getOne(id: string): Promise<AcademicLevel> {
+    return this.commonService.getOne(id, this.AcademicLevelRepository);
   }
 
   async updateAcademicLevel(
     id: string,
     updateAcademicLevelDto: UpdateAcademicLevelDto,
-  ) {
+  ): Promise<AcademicLevel> {
     try {
       const academicLevelUpdated = await this.AcademicLevelRepository.preload({
         id,
         ...updateAcademicLevelDto,
       });
+      if (!academicLevelUpdated)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: `Academic level to update not Found`,
+        });
       return await this.AcademicLevelRepository.save({
         ...academicLevelUpdated,
       });
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async removeAcademicLevel(id: string) {
+  async removeAcademicLevel(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(AcademicLevel)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El Nivel Académico id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: `No "Academic - Level" found to remove`,
+          })
+        : `Academic level with id: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

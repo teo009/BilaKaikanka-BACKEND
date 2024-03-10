@@ -1,71 +1,87 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { JobPosition } from '../entities/jobPosition.entity';
 import { CreateJobPositionDto } from '../dto/create/create-jobPosition.dto';
 import { UpdateJobPositionDto } from '../dto/update/update-jobPosition.dto';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class JobPositionService {
   constructor(
     @InjectRepository(JobPosition)
     private readonly JobPositionRepository: Repository<JobPosition>,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async createJobPosition(createJobPosition: CreateJobPositionDto) {
+  async createJobPosition(
+    createJobPosition: CreateJobPositionDto,
+  ): Promise<JobPosition> {
     try {
-      const jobPositionResponse =
-        this.JobPositionRepository.create(createJobPosition);
-      return await this.JobPositionRepository.save(jobPositionResponse);
+      const response = this.JobPositionRepository.create(createJobPosition);
+      return await this.JobPositionRepository.save(response);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    return await this.JobPositionRepository.find();
-  }
-
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    if (!repository) {
-      data = await this.JobPositionRepository.findOneBy({
-        id,
-      });
-    } else {
-      data = await repository.findOneBy({
-        id,
-      });
+  async getAll(): Promise<Array<JobPosition>> {
+    try {
+      const response = await this.JobPositionRepository.find();
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'No data found, its seems that "job - position" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
     }
-    if (!data) throw new NotFoundException('Register was not found');
-    return data;
   }
 
-  async updateJobPosition(id: string, updateJobPosition: UpdateJobPositionDto) {
+  async getOne(id: string): Promise<JobPosition> {
+    return this.commonService.getOne(id, this.JobPositionRepository);
+  }
+
+  async updateJobPosition(
+    id: string,
+    updateJobPosition: UpdateJobPositionDto,
+  ): Promise<JobPosition> {
     try {
       const jobPositionUpdated = await this.JobPositionRepository.preload({
         id,
         ...updateJobPosition,
       });
+      if (!jobPositionUpdated)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Job position to update not found',
+        });
       return await this.JobPositionRepository.save(jobPositionUpdated);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async removeJobPosition(id: string) {
+  async removeJobPosition(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(JobPosition)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El Puesto de trabajo id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: 'No "job position" found to remove',
+          })
+        : `The job position with id: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }

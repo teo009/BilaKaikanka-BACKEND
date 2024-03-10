@@ -1,72 +1,86 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { Workplace } from '../entities/Workplace.entity';
 import { CreateWorkplaceDto } from '../dto/create/create-workplace.dto';
 import { UpdateWorkplaceDto } from '../dto/update/update-workplace.dto';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class WorkPlaceService {
   constructor(
     @InjectRepository(Workplace)
     private readonly WorkplaceRepository: Repository<Workplace>,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async createWorkplace(createWorkplace: CreateWorkplaceDto) {
+  async createWorkplace(
+    createWorkplace: CreateWorkplaceDto,
+  ): Promise<Workplace> {
     try {
-      const workplaceResponse =
-        this.WorkplaceRepository.create(createWorkplace);
-      return await this.WorkplaceRepository.save(workplaceResponse);
+      const response = this.WorkplaceRepository.create(createWorkplace);
+      return await this.WorkplaceRepository.save(response);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 
-  async getAll() {
-    return await this.WorkplaceRepository.find();
-  }
-
-  async getOne(id: string, repository?: any): Promise<any> {
-    let data: any;
-    if (!repository) {
-      data = await this.WorkplaceRepository.findOneBy({
-        id,
-      });
-    } else {
-      data = await repository.findOneBy({
-        id,
-      });
+  async getAll(): Promise<Array<Workplace>> {
+    try {
+      const response = await this.WorkplaceRepository.find();
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'No data found, its seems that "workplace" schema is empty',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
     }
-    if (!data) throw new NotFoundException('Register was not found');
-    return data;
   }
 
-  async updateWorkplace(id: string, updateWorkplaceDto: UpdateWorkplaceDto) {
+  async getOne(id: string): Promise<Workplace> {
+    return this.commonService.getOne(id, this.WorkplaceRepository);
+  }
+
+  async updateWorkplace(
+    id: string,
+    updateWorkplaceDto: UpdateWorkplaceDto,
+  ): Promise<Workplace> {
     try {
       const workplaceUpdated = await this.WorkplaceRepository.preload({
         id,
         ...updateWorkplaceDto,
       });
+      if (!workplaceUpdated)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: `Workplace to update not Found`,
+        });
       return await this.WorkplaceRepository.save(workplaceUpdated);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
-    return { id, updateWorkplaceDto };
   }
 
-  async removeWorkplace(id: string) {
+  async removeWorkplace(id: string): Promise<void | string> {
     try {
-      await this.dataSource
+      const response = await this.dataSource
         .getRepository(Workplace)
         .createQueryBuilder()
         .softDelete()
         .where('id = :id', { id })
         .execute();
-      return `El Centro de trabajo id: ${id} ha sido eliminado exitosamente`;
+      return response.affected === 0
+        ? this.commonService.handleDBExceptions({
+            code: '23503',
+            detail: `No "Worlplace" found to remove`,
+          })
+        : `Workplace with id: ${id} has been succesfully removed`;
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 }
