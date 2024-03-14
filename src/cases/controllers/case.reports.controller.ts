@@ -7,6 +7,11 @@ export class CaseReportsController {
 
   @Get('cases-by-regionalCenter')
   getCasesReports(@Query() parameters: { regionalCenter: string }) {
-    return this.reportsService.getCasesReports(parameters);
+    return this.reportsService.getCasesReportsByRegionalCenter(parameters);
+  }
+
+  @Get('cases-by-gender')
+  test(@Query() parameters: { gender: string }) {
+    return this.reportsService.getCasesReportsByGender(parameters);
   }
 }

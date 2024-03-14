@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { RegionalCenter } from 'src/common/entities';
+import { CasePerson } from 'src/cases/entities';
 
 @Injectable()
 export class CasesReportsService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async getCasesReports(parameters: { regionalCenter: string }) {
+  async getCasesReportsByRegionalCenter(parameters: {
+    regionalCenter: string;
+  }) {
     try {
       const regionalCenter = await this.dataSource
         .getRepository(RegionalCenter)
@@ -28,50 +31,29 @@ export class CasesReportsService {
     }
   }
 
-  /*
-  async reporteModalidades(params: FiltroModalidadesDto) {
-    const rows = this.dataSource
-      .getRepository(LaboratoryUse)
-      .createQueryBuilder('use')
-      .leftJoin(Docentes, 'docente', 'docente.id = use.docenteId')
-      .leftJoin(Asignatura, 'asignatura', 'asignatura.id = use.classNameId')
+  async getCasesReportsByGender(parameters: { gender: string }) {
+    const casesByGender = await this.dataSource
+      .getRepository(CasePerson)
+      .createQueryBuilder('casePerson')
+      .leftJoin('casePerson.person', 'person')
+      .leftJoin('casePerson.case', 'case')
       .select([
-        'docente.nombre as docente',
-        'asignatura.nombre as asignatura',
-        'extract(month from use.date) as mes',
-        'extract(year from use.date) as anio',
-        'SUM(use.hours) as horas',
+        'casePerson.id',
+        'case',
+        'casePerson.roleInCase_id',
+        'casePerson.victimRelationship_id',
+        'casePerson.career_id',
+        'casePerson.workplace_id',
+        'casePerson.jobPosition_id',
+        'casePerson.academicLevel_id',
+        'person.firstName',
+        'person.secondName',
+        'person.gender',
       ])
-      .groupBy(
-        'docente.nombre, asignatura.nombre, extract(month from use.date), extract(year from use.date)',
-      );
-
-    // Primer where
-    rows.where('use.id <> 0');
-
-    // Agregando los filtros del reporte
-
-    if (params.mes)
-      rows.andWhere('extract(month from use.date) = :mes', {
-        mes: params.mes,
-      });
-
-    if (params.anio)
-      rows.andWhere('extract(year from use.date) = :anio', {
-        anio: params.anio,
-      });
-
-    if (params.docente)
-      rows.andWhere('use.docenteId = :docente', {
-        docente: params.docente,
-      });
-
-    if (params.asignatura)
-      rows.andWhere('use.classNameId = :asignatura', {
-        asignatura: params.asignatura,
-      });
-
-    return await rows.getRawMany();
+      .where('person.gender = :genderParam', {
+        genderParam: parameters.gender,
+      })
+      .getRawMany();
+    return casesByGender;
   }
-  */
 }
