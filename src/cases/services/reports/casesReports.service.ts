@@ -56,4 +56,61 @@ export class CasesReportsService {
       .getRawMany();
     return casesByGender;
   }
+
+  async getCaseReceptionFormat(caseId: string) {
+    try {
+      const rows = await this.dataSource
+        .getRepository(CasePerson)
+        .createQueryBuilder('casePerson')
+        .leftJoin('casePerson.case', 'case')
+        .leftJoin('casePerson.person', 'person')
+        .leftJoin('casePerson.roleInCase', 'roleInCase')
+        .leftJoin('casePerson.academicLevel', 'academicLevel')
+        .leftJoin('casePerson.workplace', 'workplace')
+        .leftJoin('casePerson.jobPosition', 'jobPosition')
+        .leftJoin('casePerson.victimRelationship', 'victimRelationship')
+        .leftJoin('case.caseViolence', 'caseViolence')
+        .leftJoin('caseViolence.violenceType', 'violenceType')
+        .select([
+          'violenceType.id',
+          'violenceType.violenceType',
+          'case.id',
+          'case.code', //file number (número del expediente)
+          'case.case_number',
+          'case.reception_date', //day / month / year / hour
+          'case.occurrence_date', //day / month / year / hour
+          'case.occurrence_time',
+          'case.place_of_events',
+          'case.narration',
+          'case.place_of_events',
+          'case.narration',
+          'person.id',
+          'roleInCase.roleName',
+          'person.firstName',
+          'person.secondName',
+          'person.birthDate', //get age from here
+          //Add ethnicity here
+          'person.gender',
+          'person.identity',
+          'person.phoneNumbers',
+          'person.homeAddress',
+          //Add marital status here
+          'academicLevel.id',
+          'academicLevel.academicLevel',
+          'workplace.workplace',
+          'jobPosition.jobPosition',
+          'victimRelationship.victimRelationship',
+        ])
+        .where('casePerson.case = :caseId', { caseId })
+        .getRawMany();
+      return rows;
+    } catch (error) {
+      console.log(error);
+    }
+    /*
+    etnia
+    estado civil
+    centro de estudio / carrera y año
+    */
+  }
 }
