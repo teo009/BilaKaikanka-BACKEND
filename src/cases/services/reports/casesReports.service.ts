@@ -4,26 +4,31 @@ import { DataSource } from 'typeorm';
 import { RegionalCenter } from 'src/common/entities';
 import { CasePerson } from 'src/cases/entities';
 
+import {
+  CaseReceptionFormatDto,
+  CasesReportsByRegionalCenterDto,
+} from 'src/cases/dto/reportsDtos';
+
 @Injectable()
 export class CasesReportsService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async getCasesReportsByRegionalCenter(parameters: {
-    regionalCenter: string;
-  }) {
+  async getCasesReportsByRegionalCenter(
+    parameter: CasesReportsByRegionalCenterDto,
+  ) {
     try {
       const regionalCenter = await this.dataSource
         .getRepository(RegionalCenter)
         .createQueryBuilder('cur')
         .leftJoinAndSelect('cur.cases', 'case')
         .where('cur.regionalCenter = :regionalCenter', {
-          regionalCenter: parameters.regionalCenter,
+          regionalCenter: parameter.regionalCenter,
         })
         .getMany();
       return regionalCenter.length === 0
         ? {
             status: 'Error',
-            detail: `No cases registered in ${parameters.regionalCenter} CUR`,
+            detail: `No cases registered in ${parameter.regionalCenter} CUR`,
           }
         : regionalCenter;
     } catch (error) {
@@ -57,7 +62,7 @@ export class CasesReportsService {
     return casesByGender;
   }
 
-  async getCaseReceptionFormat(caseId: string) {
+  async getCaseReceptionFormat(parameter: CaseReceptionFormatDto) {
     try {
       const rows = await this.dataSource
         .getRepository(CasePerson)
@@ -101,7 +106,7 @@ export class CasesReportsService {
           'jobPosition.jobPosition',
           'victimRelationship.victimRelationship',
         ])
-        .where('casePerson.case = :caseId', { caseId })
+        .where('casePerson.case = :caseId', { parameter })
         .getRawMany();
       return rows;
     } catch (error) {

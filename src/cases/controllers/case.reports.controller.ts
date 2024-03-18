@@ -1,13 +1,18 @@
 import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+
 import { CasesReportsService } from '../services/reports/casesReports.service';
+import {
+  CaseReceptionFormatDto,
+  CasesReportsByRegionalCenterDto,
+} from '../dto/reportsDtos';
 
 @Controller('cases-reports')
 export class CaseReportsController {
   constructor(private readonly reportsService: CasesReportsService) {}
 
   @Get('cases-by-regionalCenter')
-  getCasesReports(@Query() parameters: { regionalCenter: string }) {
-    return this.reportsService.getCasesReportsByRegionalCenter(parameters);
+  getCasesReports(@Query() parameter: CasesReportsByRegionalCenterDto) {
+    return this.reportsService.getCasesReportsByRegionalCenter(parameter);
   }
 
   @Get('cases-by-gender')
@@ -16,7 +21,9 @@ export class CaseReportsController {
   }
 
   @Get('cases-received/:id')
-  getCaseReceptionFormat(@Param('id', ParseUUIDPipe) id: string) {
-    return this.reportsService.getCaseReceptionFormat(id);
+  getCaseReceptionFormat(
+    @Param('id', ParseUUIDPipe) parameter: CaseReceptionFormatDto,
+  ) {
+    return this.reportsService.getCaseReceptionFormat(parameter);
   }
 }
