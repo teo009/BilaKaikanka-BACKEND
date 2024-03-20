@@ -3,11 +3,7 @@ import { DataSource } from 'typeorm';
 
 import { RegionalCenter } from 'src/common/entities';
 import { CasePerson } from 'src/cases/entities';
-
-import {
-  CaseReceptionFormatDto,
-  CasesReportsByRegionalCenterDto,
-} from 'src/cases/dto/reportsDtos';
+import { CasesReportsByRegionalCenterDto } from 'src/cases/dto/reportsDtos';
 
 @Injectable()
 export class CasesReportsService {
@@ -62,7 +58,7 @@ export class CasesReportsService {
     return casesByGender;
   }
 
-  async getCaseReceptionFormat(parameter: CaseReceptionFormatDto) {
+  async getCaseReceptionFormat(parameter: { caseId: string }) {
     try {
       const rows = await this.dataSource
         .getRepository(CasePerson)
@@ -106,7 +102,7 @@ export class CasesReportsService {
           'jobPosition.jobPosition',
           'victimRelationship.victimRelationship',
         ])
-        .where('casePerson.case = :caseId', { parameter })
+        .where('casePerson.case = :caseId', { caseId: parameter })
         .getRawMany();
       return rows;
     } catch (error) {
@@ -117,5 +113,24 @@ export class CasesReportsService {
     estado civil
     centro de estudio / carrera y año
     */
+  }
+
+  async getViolenceTypeByRegionalCenter(parameter: { regionalCenter: string }) {
+    try {
+      const rows = await this.dataSource
+        .getRepository(RegionalCenter)
+        .createQueryBuilder('cur')
+        .leftJoin('cur.cases', 'case')
+        .leftJoin('case.caseViolence', 'caseViolenceType')
+        .leftJoin('caseViolenceType.violenceType', 'violenceType')
+        .select(['cur', 'violenceType'])
+        .where('cur.regionalCenter = :regionalCenterParam', {
+          regionalCenterParam: parameter.regionalCenter,
+        })
+        .getRawMany();
+      return rows;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

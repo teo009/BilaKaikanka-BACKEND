@@ -1,10 +1,7 @@
 import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 
 import { CasesReportsService } from '../services/reports/casesReports.service';
-import {
-  CaseReceptionFormatDto,
-  CasesReportsByRegionalCenterDto,
-} from '../dto/reportsDtos';
+import { CasesReportsByRegionalCenterDto } from '../dto/reportsDtos';
 
 @Controller('cases-reports')
 export class CaseReportsController {
@@ -22,8 +19,15 @@ export class CaseReportsController {
 
   @Get('cases-received/:id')
   getCaseReceptionFormat(
-    @Param('id', ParseUUIDPipe) parameter: CaseReceptionFormatDto,
+    @Param('id', ParseUUIDPipe) parameter: { caseId: string },
   ) {
     return this.reportsService.getCaseReceptionFormat(parameter);
+  }
+
+  @Get('violencetype-by-regionalcenter')
+  getViolenceTypeByRegionalCenter(
+    @Query() parameter: { regionalCenter: string }, //validate RegionalCenter as UUID later
+  ) {
+    return this.reportsService.getViolenceTypeByRegionalCenter(parameter);
   }
 }
