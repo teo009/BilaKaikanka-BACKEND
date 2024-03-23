@@ -1,4 +1,12 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Response } from 'express';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Query,
+  Res,
+} from '@nestjs/common';
 
 import { CasesReportsService } from '../services/reports/casesReports.service';
 import { CasesReportsByRegionalCenterDto } from '../dto/reportsDtos';
@@ -18,10 +26,15 @@ export class CaseReportsController {
   }
 
   @Get('cases-received/:id')
-  getCaseReceptionFormat(
+  async getCaseReceptionFormat(
+    @Res() response: Response,
     @Param('id', ParseUUIDPipe) parameter: { caseId: string },
   ) {
-    return this.reportsService.getCaseReceptionFormat(parameter);
+    response.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment;filename=Case.pdf',
+    });
+    response.end(await this.reportsService.getCaseReceptionFormat(parameter));
   }
 
   @Get('violencetype-by-regionalcenter')
@@ -29,5 +42,10 @@ export class CaseReportsController {
     @Query() parameter: { regionalCenter: string }, //validate RegionalCenter as UUID later
   ) {
     return this.reportsService.getViolenceTypeByRegionalCenter(parameter);
+  }
+
+  @Get('roleincase-relation-by-regionalcenter')
+  getRoleInCaseRelation(@Query() parameter: { regionalCenter: string }) {
+    return this.reportsService.getRolesRelation(parameter);
   }
 }

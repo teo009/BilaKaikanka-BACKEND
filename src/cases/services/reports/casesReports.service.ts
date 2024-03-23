@@ -4,10 +4,14 @@ import { DataSource } from 'typeorm';
 import { RegionalCenter } from 'src/common/entities';
 import { CasePerson } from 'src/cases/entities';
 import { CasesReportsByRegionalCenterDto } from 'src/cases/dto/reportsDtos';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class CasesReportsService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly commonService: CommonService,
+  ) {}
 
   async getCasesReportsByRegionalCenter(
     parameter: CasesReportsByRegionalCenterDto,
@@ -73,38 +77,61 @@ export class CasesReportsService {
         .leftJoin('case.caseViolence', 'caseViolence')
         .leftJoin('caseViolence.violenceType', 'violenceType')
         .select([
-          'violenceType.id',
-          'violenceType.violenceType',
-          'case.id',
-          'case.code', //file number (número del expediente)
-          'case.case_number',
-          'case.reception_date', //day / month / year / hour
-          'case.occurrence_date', //day / month / year / hour
-          'case.occurrence_time',
-          'case.place_of_events',
-          'case.narration',
-          'case.place_of_events',
-          'case.narration',
-          'person.id',
-          'roleInCase.roleName',
-          'person.firstName',
-          'person.secondName',
-          'person.birthDate', //get age from here
-          //Add ethnicity here
-          'person.gender',
-          'person.identity',
-          'person.phoneNumbers',
-          'person.homeAddress',
-          //Add marital status here
-          'academicLevel.id',
-          'academicLevel.academicLevel',
-          'workplace.workplace',
-          'jobPosition.jobPosition',
-          'victimRelationship.victimRelationship',
+          'violenceType',
+          'case',
+          'person',
+          'roleInCase',
+          'academicLevel',
+          'workplace',
+          'jobPosition',
+          'victimRelationship',
         ])
         .where('casePerson.case = :caseId', { caseId: parameter })
         .getRawMany();
-      return rows;
+      const sortedResponse = rows.reduce((acc, curr) => {
+        let response;
+        if (!acc[curr.case_id]) {
+          response = {
+            case: {
+              id: curr.case_id,
+              code: curr.case_code,
+              number: curr.case_case_number,
+              narration: curr.case_narration,
+              place_of_events: curr.case_place_of_events,
+              occurrence_time: curr.case_occurrence_time,
+              occurrence_date: curr.case_occurrence_date.toISOString(),
+              reception_date: curr.case_reception_date.toISOString(),
+              person: [],
+            },
+          };
+        }
+        return response;
+      }, {});
+      rows.map((person) => {
+        sortedResponse.case.person.push({
+          id: person.person_id,
+          role_in_case: person.roleInCase_roleName,
+          firstName: person.person_firstName,
+          secondName: person.person_secondName,
+          birthDate: person.person_birthDate.toISOString(),
+          gender: person.person_gender,
+          phoneNumbers: person.person_phoneNumbers,
+          homeAddress: person.person_homeAddress,
+          identity: person.person_identity,
+          workplace: person.workplace_workplace,
+          jobPosition: person.jobPosition_jobPosition,
+          victimRelationship: person.victimRelationship_victimRelationship,
+          academicLevel: {
+            id: person.academicLevel_id,
+            academicLevel: person.academicLevel_academicLevel,
+          },
+          violenceType: {
+            id: person.violenceType_id,
+            violenceType: person.violenceType_violenceType,
+          },
+        });
+      });
+      return this.commonService.generatePdf(sortedResponse.case);
     } catch (error) {
       console.log(error);
     }
@@ -126,6 +153,26 @@ export class CasesReportsService {
         .select(['cur', 'violenceType'])
         .where('cur.regionalCenter = :regionalCenterParam', {
           regionalCenterParam: parameter.regionalCenter,
+        })
+        .getRawMany();
+      return rows;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getRolesRelation(parameter: { regionalCenter: string }) {
+    try {
+      console.log(parameter.regionalCenter);
+      const rows = await this.dataSource
+        .getRepository(CasePerson)
+        .createQueryBuilder('casePerson')
+        .leftJoin('casePerson.person', 'person')
+        .leftJoin('casePerson.case', 'case')
+        .leftJoin('case.regionalCenter', 'regionalCenter')
+        .select(['case.case_number', 'person.gender'])
+        .where('regionalCenter.regionalCenter = :regionalCenter', {
+          regionalCenter: parameter.regionalCenter,
         })
         .getRawMany();
       return rows;
