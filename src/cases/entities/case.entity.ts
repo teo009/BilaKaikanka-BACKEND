@@ -70,15 +70,10 @@ export class Case {
     default: () => 'CURRENT_TIME' 
   })
   created_at: Date;
-
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIME'
   })
   updated_at: Date;*/
-
-  /*FOREIGN KEYS
   //user_update_id: ???;
-  municipio_id
-  */
 }

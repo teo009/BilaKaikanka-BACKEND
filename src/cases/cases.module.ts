@@ -6,6 +6,9 @@ import { CasesController } from './cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
 import { CaseViolence } from './entities/case-violenctetype.entity';
+import { CommonModule } from 'src/common/common.module';
+import { CaseReportsController } from './controllers/case.reports.controller';
+import { CasesReportsService } from './services/reports/casesReports.service';
 
 import {
   CasesService,
@@ -23,11 +26,15 @@ import {
   Municipality,
   ViolenceType,
 } from 'src/common/entities/';
-import { CommonModule } from 'src/common/common.module';
 
 @Module({
-  controllers: [CasesController],
-  providers: [CasesService, CasePersonService, CaseViolenceTypeService],
+  controllers: [CasesController, CaseReportsController],
+  providers: [
+    CasesService,
+    CasePersonService,
+    CaseViolenceTypeService,
+    CasesReportsService,
+  ],
   imports: [
     TypeOrmModule.forFeature([
       Case,

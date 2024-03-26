@@ -9,7 +9,6 @@ export class CommonService {
   constructor() {}
 
   async getOne(id: string, repository: any): Promise<any> {
-    //let data: object;
     try {
       const data = await repository.findOneBy({ id });
       if (data === null)
@@ -35,10 +34,11 @@ export class CommonService {
         );
       case undefined:
         throw new NotFoundException(error.message);
-      /*default:
-        // Manejar cualquier otro error de base de datos
-        const errorMessage = error.detail || error.message || 'Error desconocido de base de datos';
-        throw new Error(errorMessage);*/
+      default:
+        // Handle any other database error
+        const errorMessage =
+          error.detail || error.message || 'Unrecognized database Error';
+        throw new Error(errorMessage);
     }
   }
 }

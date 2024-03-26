@@ -1,9 +1,6 @@
-import { IsString } from "class-validator";
-
+import { IsString } from 'class-validator';
 
 export class CreateAcademicLevel {
-
   @IsString()
   academicLevel: string;
-
 }

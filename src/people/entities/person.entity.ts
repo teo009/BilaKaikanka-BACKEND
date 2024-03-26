@@ -32,6 +32,9 @@ export class Person {
   @Column({ type: 'timestamptz' })
   birthDate: Date;
 
+  @Column('text')
+  gender: string;
+
   @Column('int', { array: true })
   phoneNumbers: number[];
 

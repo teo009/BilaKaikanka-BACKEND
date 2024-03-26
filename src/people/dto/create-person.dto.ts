@@ -4,10 +4,9 @@ import {
   ArrayMinSize,
   IsArray,
   IsDate,
-  IsInt,
   IsString,
   IsUUID,
-  Length,
+  Matches,
   MinLength,
 } from 'class-validator';
 
@@ -23,6 +22,12 @@ export class CreatePersonDto {
   @IsDate()
   @Type(() => Date)
   birthDate: Date;
+
+  @IsString()
+  @Matches(/^(male|female)$/, {
+    message: '(Error) gender must contain (male or female)',
+  })
+  gender: string;
 
   @IsArray() //Check others validations later
   //@IsInt()
