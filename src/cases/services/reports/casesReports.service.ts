@@ -101,35 +101,29 @@ export class CasesReportsService {
               occurrence_time: curr.case_occurrence_time,
               occurrence_date: curr.case_occurrence_date.toISOString(),
               reception_date: curr.case_reception_date.toISOString(),
-              person: [],
+              person: {
+                victim: [],
+                complainant: [],
+                aggressor: [],
+              },
             },
           };
         }
         return response;
       }, {});
       rows.map((person) => {
-        sortedResponse.case.person.push({
-          id: person.person_id,
-          role_in_case: person.roleInCase_roleName,
-          firstName: person.person_firstName,
-          secondName: person.person_secondName,
-          birthDate: person.person_birthDate.toISOString(),
-          gender: person.person_gender,
-          phoneNumbers: person.person_phoneNumbers,
-          homeAddress: person.person_homeAddress,
-          identity: person.person_identity,
-          workplace: person.workplace_workplace,
-          jobPosition: person.jobPosition_jobPosition,
-          victimRelationship: person.victimRelationship_victimRelationship,
-          academicLevel: {
-            id: person.academicLevel_id,
-            academicLevel: person.academicLevel_academicLevel,
-          },
-          violenceType: {
-            id: person.violenceType_id,
-            violenceType: person.violenceType_violenceType,
-          },
-        });
+        if (person.roleInCase_roleName === 'Victima')
+          sortedResponse.case.person.victim.push(
+            this.buildPersonByRoleInCaseResponse(person),
+          );
+        if (person.roleInCase_roleName === 'Denunciante')
+          sortedResponse.case.person.complainant.push(
+            this.buildPersonByRoleInCaseResponse(person),
+          );
+        if (person.roleInCase_roleName === 'Agresor')
+          sortedResponse.case.person.aggressor.push(
+            this.buildPersonByRoleInCaseResponse(person),
+          );
       });
       return this.commonService.generatePdf(sortedResponse.case);
     } catch (error) {
@@ -179,5 +173,30 @@ export class CasesReportsService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  buildPersonByRoleInCaseResponse(person) {
+    return {
+      id: person.person_id,
+      role_in_case: person.roleInCase_roleName,
+      firstName: person.person_firstName,
+      secondName: person.person_secondName,
+      birthDate: person.person_birthDate.toISOString(),
+      gender: person.person_gender,
+      phoneNumbers: person.person_phoneNumbers,
+      homeAddress: person.person_homeAddress,
+      identity: person.person_identity,
+      workplace: person.workplace_workplace,
+      jobPosition: person.jobPosition_jobPosition,
+      victimRelationship: person.victimRelationship_victimRelationship,
+      academicLevel: {
+        id: person.academicLevel_id,
+        academicLevel: person.academicLevel_academicLevel,
+      },
+      violenceType: {
+        id: person.violenceType_id,
+        violenceType: person.violenceType_violenceType,
+      },
+    };
   }
 }

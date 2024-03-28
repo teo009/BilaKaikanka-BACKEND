@@ -28,6 +28,8 @@ import {
   ViolenceType,
   IdentityType,
 } from './entities/';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   controllers: [CommonController],
@@ -57,6 +59,9 @@ import {
       ViolenceType,
       IdentityType,
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'static'),
+    }),
   ],
   exports: [CommonService],
 })
