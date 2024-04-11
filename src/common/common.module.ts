@@ -60,7 +60,7 @@ import { join } from 'path';
       IdentityType,
     ]),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
+      rootPath: join(__dirname, '..', 'public'),
     }),
   ],
   exports: [CommonService],

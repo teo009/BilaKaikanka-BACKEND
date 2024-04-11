@@ -13,16 +13,18 @@ export class CommonService {
   generatePdf(caseData) {
     const pdf = new jsPDF();
     const xOffSet = pdf.internal.pageSize.width / 2;
-    const logo = fs.readFileSync('./static/logoUraccan.jpg', {
-      encoding: 'base64',
-    });
     const occurrenceDate = new Date(caseData.occurrence_date);
     const receptionDate = new Date(caseData.reception_date);
+
+    const pathFile = 'public/logo.png';
+    const logo = fs.readFileSync(pathFile, {
+      encoding: 'base64',
+    });
 
     pdf.setLineWidth(0.1);
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'bold');
-    pdf.addImage(logo, 'JPEG', 20, 14, 20, 20);
+    pdf.addImage(logo, 'PNG', 20, 14, 20, 20);
     pdf.text('UNIVERSIDAD DE LAS REGIONES AUTONOMAS DE LA COSTA', xOffSet, 20, {
       align: 'center',
     });
@@ -218,7 +220,9 @@ export class CommonService {
       y + 44,
     );
 
-    return pdf.output();
+    const pdfContent = pdf.output('datauristring');
+    const buffer = Buffer.from(pdfContent.split('base64,')[1], 'base64');
+    return buffer;
   }
 
   async getOne(id: string, repository: any): Promise<any> {
