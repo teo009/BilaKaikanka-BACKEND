@@ -38,12 +38,15 @@ export class CasesService {
 
   async getAllCases(): Promise<Array<Case>> {
     try {
-      const response = await this.CaseRepository.find({
-        relations: {
-          regionalCenter: true,
-          municipality: true,
-        },
-      });
+      const response = await this.dataSource
+        .getRepository(Case)
+        .createQueryBuilder('case')
+        .leftJoin('case.regionalCenter', 'regionalCenter')
+        .leftJoin('case.municipality', 'municipality')
+        .leftJoin('case.caseViolence', 'caseViolence')
+        .leftJoin('caseViolence.violenceType', 'violenceType')
+        .select(['case', 'regionalCenter', 'municipality', 'violenceType'])
+        .getRawMany();
       if (response.length === 0)
         this.commonService.handleDBExceptions({
           code: '23503',
