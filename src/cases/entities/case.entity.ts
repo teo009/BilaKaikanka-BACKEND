@@ -44,7 +44,7 @@ export class Case {
   })
   reception_date: Date; //save reception_hour too
 
-  @OneToMany(() => CasePerson, (casePerson) => casePerson.case_id)
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.case)
   casePerson: CasePerson;
 
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.case)

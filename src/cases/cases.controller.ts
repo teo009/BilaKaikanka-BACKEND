@@ -40,7 +40,7 @@ export class CasesController {
   }
   @Get('case/:id')
   findOneCase(@Param('id', ParseUUIDPipe) id: string) {
-    return this.casesService.getOne(id);
+    return this.casesService.getOneWithDetails(id);
   }
   @Patch(':id')
   update(

@@ -118,4 +118,30 @@ export class CasesService {
       this.commonService.handleDBExceptions(error);
     }
   }
+
+  async getOneWithDetails(id: string): Promise<any> {
+    try {
+      const response = await this.dataSource
+        .getRepository(Case)
+        .createQueryBuilder('case')
+        .leftJoin('case.regionalCenter', 'regionalCenter')
+        .leftJoin('case.municipality', 'municipality')
+        .leftJoin('case.caseViolence', 'caseViolence')
+        .leftJoin('caseViolence.violenceType', 'violenceType')
+        .leftJoin('case.casePerson', 'casePerson')
+        .leftJoin('casePerson.person', 'person')
+        .select([
+          'case',
+          'municipality',
+          'violenceType',
+          'casePerson',
+          'person',
+        ])
+        .where('case.id = :id', { id })
+        .getOne();
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }
