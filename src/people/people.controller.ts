@@ -29,7 +29,7 @@ export class PeopleController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.peopleService.getOne(id);
+    return this.peopleService.getOneWithDetails(id);
   }
 
   @Patch(':id')

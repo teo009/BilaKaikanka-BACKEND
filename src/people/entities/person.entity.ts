@@ -44,7 +44,7 @@ export class Person {
   @Column('text', { unique: true })
   identity: string;
 
-  @OneToMany(() => CasePerson, (casePerson) => casePerson.person_id)
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.person)
   casePerson: CasePerson;
 
   @Column('varchar')

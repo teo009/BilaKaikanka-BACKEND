@@ -91,6 +91,36 @@ export class PeopleService {
     return this.commonService.getOne(id, this.PersonRepository);
   }
 
+  async getOneWithDetails(id: string): Promise<Person> {
+    const response = await this.dataSource
+      .getRepository(Person)
+      .createQueryBuilder('person')
+      .leftJoin('person.casePerson', 'casePerson')
+      .leftJoin('casePerson.case', 'case')
+      .leftJoin('casePerson.roleInCase', 'roleInCase')
+      .leftJoin('person.career', 'career')
+      .leftJoin('person.workplace', 'workplace')
+      .leftJoin('person.municipality', 'municipality')
+      .leftJoin('person.jobposition', 'jobposition')
+      .leftJoin('person.identityType', 'identityType')
+      .leftJoin('person.academicLevel', 'academicLevel')
+      .select([
+        'person',
+        'casePerson.id',
+        'roleInCase',
+        'case',
+        'career',
+        'workplace',
+        'municipality',
+        'jobposition',
+        'identityType',
+        'academicLevel',
+      ])
+      .where('person.id = :id', { id })
+      .getOne();
+    return response;
+  }
+
   async update(id: string, updatePersonDto: UpdatePersonDto): Promise<Person> {
     const {
       career,
