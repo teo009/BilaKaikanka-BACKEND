@@ -14,7 +14,7 @@ export class RoleInCase {
   id: string;
 
   @Column('text', { unique: true })
-  roleName: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (CasePerson) => CasePerson.roleInCase)
   casePerson: Case;

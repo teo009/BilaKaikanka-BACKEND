@@ -1,9 +1,6 @@
-import { IsString } from "class-validator";
-
+import { IsString } from 'class-validator';
 
 export class CreateCareerDto {
-
   @IsString()
-  careerName: string;
-
+  name: string;
 }

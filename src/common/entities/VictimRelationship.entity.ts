@@ -14,7 +14,7 @@ export class VictimRelationship {
   id: string;
 
   @Column('text', { unique: true })
-  victimRelationship: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.victimRelationship)
   casePerson: CasePerson;

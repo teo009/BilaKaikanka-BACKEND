@@ -13,7 +13,7 @@ export class IdentityType {
   id: string;
 
   @Column('text', { unique: true })
-  identityType: string;
+  name: string;
 
   @OneToMany(() => Person, (person) => person.identityType)
   person: Person;

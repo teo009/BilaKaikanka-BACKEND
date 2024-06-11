@@ -1,8 +1,6 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class CreateJobPositionDto {
-
   @IsString()
-  jobPosition: string;
-
+  name: string;
 }

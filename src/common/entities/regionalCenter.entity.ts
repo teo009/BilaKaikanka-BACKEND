@@ -13,7 +13,7 @@ export class RegionalCenter {
   id: string;
 
   @Column('text', { unique: true })
-  regionalCenter: string;
+  name: string;
 
   @OneToMany(() => Case, (Case) => Case.regionalCenter)
   cases: Case;

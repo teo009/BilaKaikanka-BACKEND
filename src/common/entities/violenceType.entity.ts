@@ -13,7 +13,7 @@ export class ViolenceType {
   id: string;
 
   @Column('text', { unique: true })
-  violenceType: string;
+  name: string;
 
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.violenceType)
   caseViolencetype: CaseViolence;

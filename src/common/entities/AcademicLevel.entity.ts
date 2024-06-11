@@ -14,7 +14,7 @@ export class AcademicLevel {
   id: string;
 
   @Column('text', { unique: true })
-  academicLevel: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.academicLevel)
   casePerson: CasePerson;

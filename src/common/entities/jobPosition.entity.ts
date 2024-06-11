@@ -14,7 +14,7 @@ export class JobPosition {
   id: string;
 
   @Column('text')
-  jobPosition: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.jobPosition)
   casePerson: CasePerson;

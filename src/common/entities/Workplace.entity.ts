@@ -15,7 +15,7 @@ export class Workplace {
   id: string;
 
   @Column('text', { unique: true })
-  workplace: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.workplace)
   casePerson: CasePerson;
