@@ -13,7 +13,7 @@ export class JobPosition {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
+  @Column('text', { unique: true })
   name: string;
 
   @OneToMany(() => CasePerson, (casePerson) => casePerson.jobPosition)

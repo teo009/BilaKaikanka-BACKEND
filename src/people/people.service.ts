@@ -53,7 +53,7 @@ export class PeopleService {
         career_id: career,
         workplace_id: workplace,
         municipality_id: municipality,
-        jobPosition_id: jobposition,
+        jobposition_id: jobposition,
         identityType_id: identityType,
         academicLevel_id: academicLevel,
       });
@@ -71,7 +71,7 @@ export class PeopleService {
           workplace: true,
           municipality: true,
           jobposition: true,
-          identityType: true,
+          identitytype: true,
           academicLevel: true,
         },
       });
@@ -92,33 +92,47 @@ export class PeopleService {
   }
 
   async getOneWithDetails(id: string): Promise<Person> {
-    const response = await this.dataSource
-      .getRepository(Person)
-      .createQueryBuilder('person')
-      .leftJoin('person.casePerson', 'casePerson')
-      .leftJoin('casePerson.case', 'case')
-      .leftJoin('casePerson.roleInCase', 'roleInCase')
-      .leftJoin('person.career', 'career')
-      .leftJoin('person.workplace', 'workplace')
-      .leftJoin('person.municipality', 'municipality')
-      .leftJoin('person.jobposition', 'jobposition')
-      .leftJoin('person.identityType', 'identityType')
-      .leftJoin('person.academicLevel', 'academicLevel')
-      .select([
-        'person',
-        'casePerson.id',
-        'roleInCase',
-        'case',
-        'career',
-        'workplace',
-        'municipality',
-        'jobposition',
-        'identityType',
-        'academicLevel',
-      ])
-      .where('person.id = :id', { id })
-      .getOne();
-    return response;
+    try {
+      const response = await this.dataSource
+        .getRepository(Person)
+        .createQueryBuilder('person')
+        .leftJoin('person.casePerson', 'casePerson')
+        .leftJoin('casePerson.case', 'case')
+        .leftJoin('case.caseViolence', 'caseViolence')
+        .leftJoin('caseViolence.violenceType', 'violenceType')
+        .leftJoin('casePerson.roleInCase', 'roleInCase')
+        .leftJoin('person.career', 'career')
+        .leftJoin('person.workplace', 'workplace')
+        .leftJoin('person.municipality', 'municipality')
+        .leftJoin('person.jobposition', 'jobposition')
+        .leftJoin('person.identitytype', 'identitytype')
+        .leftJoin('person.academicLevel', 'academicLevel')
+        .select([
+          'person',
+          'casePerson.id',
+          'roleInCase',
+          'case',
+          'caseViolence.id',
+          'violenceType',
+          'career',
+          'workplace',
+          'municipality',
+          'jobposition',
+          'identitytype',
+          'academicLevel',
+        ])
+        .where('person.id = :id', { id })
+        .getOne();
+      if (!response)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail:
+            'Datos no encontrados, al parecer no hay registro de personas por acá',
+        });
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
   async update(id: string, updatePersonDto: UpdatePersonDto): Promise<Person> {

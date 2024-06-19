@@ -66,16 +66,16 @@ export class Person {
   municipality: Municipality;
 
   @Column('varchar')
-  jobPosition_id: string;
+  jobposition_id: string;
   @ManyToOne(() => JobPosition, (jobposition) => jobposition.person)
-  @JoinColumn({ name: 'jobPosition' })
+  @JoinColumn({ name: 'jobposition_id' })
   jobposition: JobPosition;
 
   @Column('varchar')
   identityType_id: string;
-  @ManyToOne(() => IdentityType, (identityType) => identityType.person)
-  @JoinColumn({ name: 'identityType' })
-  identityType: IdentityType;
+  @ManyToOne(() => IdentityType, (identitytype) => identitytype.person)
+  @JoinColumn({ name: 'identityType_id' })
+  identitytype: IdentityType;
 
   @Column('varchar')
   academicLevel_id: string;

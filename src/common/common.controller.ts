@@ -312,12 +312,11 @@ export class CommonController {
   updateViolenceType(
     @Param('id', ParseUUIDPipe) id: string,
     @Body()
-    updateViolenceTypeDto: UpdateViolenceTypeDto,
+    updateViolenceType: UpdateViolenceTypeDto,
   ) {
-    return this.ViolenceTypeService.updateViolenceType(
-      id,
-      updateViolenceTypeDto,
-    );
+    console.log(id);
+    console.log(updateViolenceType);
+    return this.ViolenceTypeService.updateViolenceType(id, updateViolenceType);
   }
   @Delete('violencetype/:id')
   deleteViolenceType(@Param('id', ParseUUIDPipe) id: string) {
