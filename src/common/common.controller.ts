@@ -314,8 +314,6 @@ export class CommonController {
     @Body()
     updateViolenceType: UpdateViolenceTypeDto,
   ) {
-    console.log(id);
-    console.log(updateViolenceType);
     return this.ViolenceTypeService.updateViolenceType(id, updateViolenceType);
   }
   @Delete('violencetype/:id')

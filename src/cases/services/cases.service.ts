@@ -130,12 +130,18 @@ export class CasesService {
         .leftJoin('caseViolence.violenceType', 'violenceType')
         .leftJoin('case.casePerson', 'casePerson')
         .leftJoin('casePerson.person', 'person')
+        .leftJoin('casePerson.roleInCase', 'roleInCase')
+        .leftJoin('casePerson.victimRelationship', 'victimRelationship')
         .select([
           'case',
+          'regionalCenter',
           'municipality',
+          'caseViolence',
           'violenceType',
           'casePerson',
           'person',
+          'roleInCase',
+          'victimRelationship',
         ])
         .where('case.id = :id', { id })
         .getOne();
