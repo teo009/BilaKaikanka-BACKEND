@@ -7,7 +7,14 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,6 +63,8 @@ import {
   UpdateViolenceTypeDto,
   UpdateWorkplaceDto,
 } from './dto/update/';
+import { diskStorage } from 'multer';
+import { postDocumentFiler } from './helpers/postDocumentFilter.helper';
 
 @Controller('common')
 export class CommonController {
@@ -71,6 +80,35 @@ export class CommonController {
     private readonly ViolenceTypeService: ViolenceTypeService,
     private readonly IdentityTypeService: IdentityTypeService,
   ) {}
+
+  //Files
+  @Post('upload-document')
+  @UseInterceptors(
+    FileInterceptor('document', {
+      fileFilter: postDocumentFiler,
+      storage: diskStorage({
+        destination: './static/politics',
+      }),
+    }),
+  )
+  uploadDocument(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+      }),
+    )
+    document: Express.Multer.File,
+  ) {
+    if (!document)
+      throw new BadRequestException(
+        'Formato de documento incorrecto, se necesita el tipo pdf',
+      );
+    console.log({ status: 'Ok', file: document });
+    return {
+      status: 'Ok',
+      message: `Documento "${document.originalname}" guardado exitosamente`,
+    };
+  }
 
   //ACADEMIC LEVEL
   @Post('academicLevel')
