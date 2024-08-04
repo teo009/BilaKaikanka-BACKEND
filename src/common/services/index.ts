@@ -1,3 +1,4 @@
+export { DocumentService } from './Document.service';
 export { IdentityTypeService } from './identityType.service';
 export { ViolenceTypeService } from './violenceType.service';
 export { MunicipalityService } from './municipality.service';
@@ -8,4 +9,4 @@ export { CareerService } from './career.service';
 export { VictimRelationshipService } from './victimRelationship.service';
 export { RoleInCaseService } from './roleInCase.service';
 export { CommonService } from './common.service';
-export { AcademicLevelService } from "./academicLevel.service";
+export { AcademicLevelService } from './academicLevel.service';

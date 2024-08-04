@@ -7,6 +7,7 @@ import {
   AcademicLevelService,
   CareerService,
   CommonService,
+  DocumentService,
   IdentityTypeService,
   JobPositionService,
   MunicipalityService,
@@ -27,6 +28,7 @@ import {
   Municipality,
   ViolenceType,
   IdentityType,
+  Document,
 } from './entities/';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -35,6 +37,7 @@ import { join } from 'path';
   controllers: [CommonController],
   providers: [
     CommonService,
+    DocumentService,
     AcademicLevelService,
     RoleInCaseService,
     VictimRelationshipService,
@@ -58,6 +61,7 @@ import { join } from 'path';
       Municipality,
       ViolenceType,
       IdentityType,
+      Document,
     ]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),

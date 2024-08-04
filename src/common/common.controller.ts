@@ -12,15 +12,19 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   BadRequestException,
+  Res,
 } from '@nestjs/common';
+import { Express, Response } from 'express';
+import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
 
 import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   AcademicLevelService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CareerService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  DocumentService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   IdentityTypeService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,8 +67,7 @@ import {
   UpdateViolenceTypeDto,
   UpdateWorkplaceDto,
 } from './dto/update/';
-import { diskStorage } from 'multer';
-import { postDocumentFiler } from './helpers/postDocumentFilter.helper';
+import { documentNamer, postDocumentFiler } from './helpers/';
 
 @Controller('common')
 export class CommonController {
@@ -79,6 +82,7 @@ export class CommonController {
     private readonly MunicipalityService: MunicipalityService,
     private readonly ViolenceTypeService: ViolenceTypeService,
     private readonly IdentityTypeService: IdentityTypeService,
+    private readonly DocumentService: DocumentService,
   ) {}
 
   //Files
@@ -88,6 +92,7 @@ export class CommonController {
       fileFilter: postDocumentFiler,
       storage: diskStorage({
         destination: './static/politics',
+        filename: documentNamer,
       }),
     }),
   )
@@ -103,11 +108,17 @@ export class CommonController {
       throw new BadRequestException(
         'Formato de documento incorrecto, se necesita el tipo pdf',
       );
-    console.log({ status: 'Ok', file: document });
-    return {
-      status: 'Ok',
-      message: `Documento "${document.originalname}" guardado exitosamente`,
-    };
+    return this.DocumentService.createDocument(
+      document.originalname.split('.')[0],
+    );
+  }
+  @Get('get-document/:documentName')
+  getOneDocument(
+    @Res() response: Response,
+    @Param('documentName') documentName: string,
+  ) {
+    const path = this.DocumentService.getStaticDocument(documentName);
+    response.sendFile(path);
   }
 
   //ACADEMIC LEVEL

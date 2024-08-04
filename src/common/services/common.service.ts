@@ -1,9 +1,9 @@
+import * as fs from 'fs';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import * as fs from 'fs';
 import jsPDF from 'jspdf';
 
 @Injectable()
@@ -42,11 +42,6 @@ export class CommonService {
           error.detail || error.message || 'Unrecognized database Error';
         throw new Error(errorMessage);
     }
-  }
-
-  //FILES
-  postDocument(document: any): any {
-    return document;
   }
 
   //PDF GENERATION
