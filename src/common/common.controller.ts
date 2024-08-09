@@ -118,7 +118,12 @@ export class CommonController {
     @Param('documentName') documentName: string,
   ) {
     const path = this.DocumentService.getStaticDocument(documentName);
+    console.log('Pidiendo documento :' + documentName);
     response.sendFile(path);
+  }
+  @Get('get-all-documents')
+  getAllTheDocuments() {
+    return this.DocumentService.getAllTheDocuments();
   }
 
   //ACADEMIC LEVEL

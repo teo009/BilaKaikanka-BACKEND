@@ -36,4 +36,20 @@ export class DocumentService {
       );
     return documentPath;
   }
+
+  async getAllTheDocuments() {
+    try {
+      const response = await this.DocumentRepository.find();
+      if (response.length === 0) {
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Documentos no encontrados | parece que no hay registros por acá',
+        });
+      }
+      console.log(response.length);
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }
