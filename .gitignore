@@ -2,6 +2,9 @@
 .env
 /postgres 
 
+# Local volume files
+/static/politics/*
+
 # compiled output
 /dist
 /node_modules

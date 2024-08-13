@@ -29,6 +29,13 @@ export class CreatePersonDto {
   })
   gender: string;
 
+  @IsString()
+  @Matches(/^(mestiza|creole|miskito|rama|garifona)$/, {
+    message:
+      '(Error) La etnia solo debe de contener alguna de las siguientes: (mestiza|creole|miskito|rama|garifona)',
+  })
+  ethnicity: string;
+
   @IsArray() //Check others validations later
   //@IsInt()
   //@Length(8, 8, { each: true })

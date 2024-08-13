@@ -104,6 +104,7 @@ export class CommonController {
     )
     document: Express.Multer.File,
   ) {
+    console.log('Subiendo documentoooo');
     if (!document)
       throw new BadRequestException(
         'Formato de documento incorrecto, se necesita el tipo pdf',

@@ -35,6 +35,9 @@ export class Person {
   @Column('text')
   gender: string;
 
+  @Column('text')
+  ethnicity: string;
+
   @Column('int', { array: true })
   phoneNumbers: number[];
 
