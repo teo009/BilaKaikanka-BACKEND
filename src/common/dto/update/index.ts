@@ -1,3 +1,4 @@
+export { UpdateTrackingStatusTypeDto } from './updateTrackingStatus.dto';
 export { UpdateAcademicLevelDto } from './update-academicLevel.dto';
 export { UpdateCareerDto } from './update-career.dto';
 export { UpdateIdentityType } from './update-identityType.dto';

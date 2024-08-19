@@ -7,8 +7,11 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_NAME: ${DB_NAME}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
     container_name: BKbackend
     volumes:
       - ./postgres:/var/lib/postgresql/data

@@ -13,6 +13,7 @@ import {
   MunicipalityService,
   RegionalCenterService,
   RoleInCaseService,
+  TrackingStatusService,
   VictimRelationshipService,
   ViolenceTypeService,
   WorkPlaceService,
@@ -29,6 +30,7 @@ import {
   ViolenceType,
   IdentityType,
   Document,
+  TrackingStatus,
 } from './entities/';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -48,6 +50,7 @@ import { join } from 'path';
     MunicipalityService,
     ViolenceTypeService,
     IdentityTypeService,
+    TrackingStatusService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -62,6 +65,7 @@ import { join } from 'path';
       ViolenceType,
       IdentityType,
       Document,
+      TrackingStatus,
     ]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),

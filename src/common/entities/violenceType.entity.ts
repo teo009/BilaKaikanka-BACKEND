@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CaseViolence } from 'src/cases/entities/case-violenctetype.entity';
+import { CaseViolence } from 'src/cases/entities/caseViolenctetype.entity';
 
 @Entity()
 export class ViolenceType {

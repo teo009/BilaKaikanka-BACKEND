@@ -1,3 +1,4 @@
+export { CreateTrackingStatusTypeDto } from './createTrackingStatus.dto';
 export { CreateAcademicLevel } from './create-AcademicLevel.dto';
 export { CreateCareerDto } from './create-career.dto';
 export { CreateIdentityType } from './create-identityType.dto';

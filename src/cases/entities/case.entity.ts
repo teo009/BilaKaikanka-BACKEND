@@ -8,9 +8,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { CasePerson } from './case-person.entity';
-import { CaseViolence } from './case-violenctetype.entity';
+import { CasePerson } from './casePerson.entity';
+import { CaseViolence } from './caseViolenctetype.entity';
 import { RegionalCenter, Municipality } from 'src/common/entities/';
+import { CaseTracking } from './caseTracking.entity';
 
 @Entity('case')
 export class Case {
@@ -49,6 +50,9 @@ export class Case {
 
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.case)
   caseViolence: CaseViolence;
+
+  @OneToMany(() => CaseTracking, (caseTracking) => caseTracking.case)
+  caseTracking: CaseTracking;
 
   @Column('varchar')
   regionalCenter_id: string;

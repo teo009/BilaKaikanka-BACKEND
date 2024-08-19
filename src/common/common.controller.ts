@@ -35,6 +35,7 @@ import {
   RegionalCenterService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   RoleInCaseService,
+  TrackingStatusService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   VictimRelationshipService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,6 +54,7 @@ import {
   CreateMunicipalityDto,
   CreateViolenceTypeDto,
   CreateIdentityType,
+  CreateTrackingStatusTypeDto,
 } from './dto/create/';
 
 import {
@@ -83,6 +85,7 @@ export class CommonController {
     private readonly ViolenceTypeService: ViolenceTypeService,
     private readonly IdentityTypeService: IdentityTypeService,
     private readonly DocumentService: DocumentService,
+    private readonly TrackingStatusService: TrackingStatusService,
   ) {}
 
   //Files
@@ -125,6 +128,12 @@ export class CommonController {
   @Get('get-all-documents')
   getAllTheDocuments() {
     return this.DocumentService.getAllTheDocuments();
+  }
+
+  //TRACKING STATUS
+  @Post('trackingStatus')
+  createTrackingStatus(@Body() trackingStatus: CreateTrackingStatusTypeDto) {
+    return this.TrackingStatusService.createTrackingStatus(trackingStatus);
   }
 
   //ACADEMIC LEVEL

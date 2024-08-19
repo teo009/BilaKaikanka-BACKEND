@@ -1,3 +1,4 @@
+export { TrackingStatusService } from './trackingStatus.service';
 export { DocumentService } from './Document.service';
 export { IdentityTypeService } from './identityType.service';
 export { ViolenceTypeService } from './violenceType.service';
