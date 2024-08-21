@@ -7,7 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
 import { CaseViolence } from './entities/caseViolenctetype.entity';
 import { CommonModule } from 'src/common/common.module';
-import { CaseReportsController } from './controllers/case.reports.controller';
+import { CaseReportsController, CasePivotsController } from './controllers/';
 import { CasesReportsService } from './services/reports/casesReports.service';
 
 import {
@@ -28,7 +28,11 @@ import {
 } from 'src/common/entities/';
 
 @Module({
-  controllers: [CasesController, CaseReportsController],
+  controllers: [
+    CasesController,
+    CaseReportsController,
+    CasePivotsController
+  ],
   providers: [
     CasesService,
     CasePersonService,
