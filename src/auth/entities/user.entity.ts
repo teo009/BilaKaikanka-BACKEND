@@ -1,8 +1,13 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,9 +23,9 @@ export class User {
   @Column('bool', { default: true })
   isActive: boolean;
 
-  @Column('text', { 
-    array: true, 
-    default: ['user'] 
+  @Column('text', {
+    array: true,
+    default: ['user'],
   })
   roles: string[];
 
@@ -33,5 +38,4 @@ export class User {
   checkFieldsBeforeUpdate() {
     this.checkFieldsBeforeInsert();
   }
-
 }

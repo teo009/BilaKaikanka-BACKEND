@@ -14,6 +14,7 @@ import {
   CasesService,
   CasePersonService,
   CaseViolenceTypeService,
+  CasePivotService,
 } from './services/';
 import {
   RoleInCase,
@@ -25,19 +26,17 @@ import {
   RegionalCenter,
   Municipality,
   ViolenceType,
+  TrackingStatus,
 } from 'src/common/entities/';
 
 @Module({
-  controllers: [
-    CasesController,
-    CaseReportsController,
-    CasePivotsController
-  ],
+  controllers: [CasesController, CaseReportsController, CasePivotsController],
   providers: [
     CasesService,
     CasePersonService,
     CaseViolenceTypeService,
     CasesReportsService,
+    CasePivotService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -55,6 +54,7 @@ import {
       RegionalCenter,
       Municipality,
       ViolenceType,
+      TrackingStatus,
     ]),
     AuthModule,
     CommonModule,

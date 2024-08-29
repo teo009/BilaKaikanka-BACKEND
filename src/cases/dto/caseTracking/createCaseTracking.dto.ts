@@ -1,12 +1,12 @@
-import { IsString, IsUUID } from "class-validator";
+import { IsString, IsUUID } from 'class-validator';
 
 export class CreateCaseTrackingDto {
   @IsString()
   description: string;
 
   @IsUUID()
-  case: string;
+  caseId: string;
 
   @IsUUID()
-  trackingStatus: string;
+  trackingStatusId: string;
 }
