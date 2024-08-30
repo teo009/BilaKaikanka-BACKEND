@@ -1,5 +1,11 @@
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { CaseTracking } from "src/cases/entities/caseTracking.entity";
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CaseTracking } from 'src/cases/entities/caseTracking.entity';
 
 @Entity()
 export class TrackingStatus {
@@ -9,9 +15,7 @@ export class TrackingStatus {
   @Column('text', { unique: true })
   name: string;
 
-  @OneToMany(
-    () => CaseTracking, (caseTracking) => caseTracking.trackingStatus
-  )
+  @OneToMany(() => CaseTracking, (caseTracking) => caseTracking.trackingStatus)
   caseTracking: CaseTracking;
 
   @DeleteDateColumn()

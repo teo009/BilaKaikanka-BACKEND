@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -23,6 +23,8 @@ export class CasePivotService {
     private readonly CaseRepository: Repository<Case>,
 
     private readonly commonService: CommonService,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async createCaseTracking(
@@ -50,13 +52,19 @@ export class CasePivotService {
     updateCaseTracking: UpdateCaseTrackingDto,
   ): Promise<CaseTracking> {
     try {
-      const toUpdate = await this.CaseTrackingRepository.preload({ id });
-      if (!toUpdate)
+      const caseTrackingToUpdate = await this.CaseTrackingRepository.preload({
+        id,
+        ...updateCaseTracking,
+      });
+
+      //Check if there is no caseTracking found in database
+      if (!caseTrackingToUpdate)
         this.commonService.handleDBExceptions({
           code: '23503',
           detail: 'No se encontró caseTracking para actualizar',
         });
 
+      //Update trackingStatus foreign key if is requested
       let trackingStatusUpdated: object;
       if (updateCaseTracking.trackingStatusId) {
         trackingStatusUpdated = await this.commonService.getOne(
@@ -65,18 +73,9 @@ export class CasePivotService {
         );
       }
 
-      /*let caseUpdated: object;
-      if (updateCaseTracking.caseId) {
-        caseUpdated = await this.commonService.getOne(
-          updateCaseTracking.caseId,
-          this.CaseRepository,
-        );
-      }*/
-
       return await this.CaseTrackingRepository.save({
-        ...updateCaseTracking,
+        ...caseTrackingToUpdate,
         trackingStatus: trackingStatusUpdated,
-        //case: updateCaseTracking.caseId,
       });
     } catch (error) {
       this.commonService.handleDBExceptions(error);
