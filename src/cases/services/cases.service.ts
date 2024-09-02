@@ -128,6 +128,8 @@ export class CasesService {
         .leftJoin('case.municipality', 'municipality')
         .leftJoin('case.caseViolence', 'caseViolence')
         .leftJoin('caseViolence.violenceType', 'violenceType')
+        .leftJoin('case.caseTracking', 'caseTracking')
+        .leftJoin('caseTracking.trackingStatus', 'trackingStatus')
         .leftJoin('case.casePerson', 'casePerson')
         .leftJoin('casePerson.person', 'person')
         .leftJoin('casePerson.roleInCase', 'roleInCase')
@@ -137,6 +139,8 @@ export class CasesService {
           'regionalCenter',
           'municipality',
           'caseViolence',
+          'caseTracking.description',
+          'trackingStatus.name',
           'violenceType',
           'casePerson',
           'person',
