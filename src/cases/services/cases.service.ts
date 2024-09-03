@@ -139,7 +139,7 @@ export class CasesService {
           'regionalCenter',
           'municipality',
           'caseViolence',
-          'caseTracking.description',
+          'caseTracking',
           'trackingStatus.name',
           'violenceType',
           'casePerson',

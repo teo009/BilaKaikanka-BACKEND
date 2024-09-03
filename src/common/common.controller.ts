@@ -133,7 +133,11 @@ export class CommonController {
   //TRACKING STATUS
   @Post('trackingStatus')
   createTrackingStatus(@Body() trackingStatus: CreateTrackingStatusTypeDto) {
-    return this.TrackingStatusService.createTrackingStatus(trackingStatus);
+    return this.TrackingStatusService.create(trackingStatus);
+  }
+  @Get('trackingStatus')
+  findAllTrackingStatus() {
+    return this.TrackingStatusService.findAll();
   }
 
   //ACADEMIC LEVEL
