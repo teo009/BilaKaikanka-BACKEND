@@ -71,6 +71,6 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'public'),
     }),
   ],
-  exports: [CommonService],
+  exports: [CommonService, TrackingStatusService],
 })
 export class CommonModule {}

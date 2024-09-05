@@ -4,19 +4,26 @@ import { DataSource, Repository } from 'typeorm';
 
 import { Case } from '../entities';
 import { CreateCaseDto, UpdateCaseDto } from '../dto/';
-import { RegionalCenter, Municipality } from 'src/common/entities';
-import { CommonService } from 'src/common/services';
+import {
+  RegionalCenter,
+  Municipality,
+  TrackingStatus,
+} from 'src/common/entities';
+import { CommonService, TrackingStatusService } from 'src/common/services';
+import { CasePivotService } from './casePivot.service';
 
 @Injectable()
 export class CasesService {
   constructor(
     @InjectRepository(Case)
     private readonly CaseRepository: Repository<Case>,
-    @InjectRepository(RegionalCenter)
-    private readonly RegionalCenterRepository: Repository<RegionalCenter>,
     @InjectRepository(Municipality)
     private readonly MunicipalityRepository: Repository<Municipality>,
+    @InjectRepository(RegionalCenter)
+    private readonly RegionalCenterRepository: Repository<RegionalCenter>,
 
+    private readonly trackingStatusService: TrackingStatusService,
+    private readonly caseTrackingservice: CasePivotService,
     private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
@@ -30,6 +37,7 @@ export class CasesService {
         municipality_id: municipality,
       });
       await this.CaseRepository.save(caseResponse);
+      await this.getDeffaultTrackingStatus(caseResponse.id);
       return caseResponse;
     } catch (error) {
       this.commonService.handleDBExceptions(error);
@@ -44,8 +52,16 @@ export class CasesService {
         .leftJoin('case.regionalCenter', 'regionalCenter')
         .leftJoin('case.municipality', 'municipality')
         .leftJoin('case.caseViolence', 'caseViolence')
+        .leftJoin('case.caseTracking', 'caseTracking')
+        .leftJoin('caseTracking.trackingStatus', 'trackingStatus')
         .leftJoin('caseViolence.violenceType', 'violenceType')
-        .select(['case', 'regionalCenter', 'municipality', 'violenceType'])
+        .select([
+          'case',
+          'regionalCenter',
+          'municipality',
+          'violenceType',
+          'trackingStatus',
+        ])
         .getRawMany();
       if (response.length === 0)
         this.commonService.handleDBExceptions({
@@ -150,6 +166,25 @@ export class CasesService {
         .where('case.id = :id', { id })
         .getOne();
       return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
+
+  async getDeffaultTrackingStatus(caseId: string) {
+    try {
+      //Getting redy trackingStatus deffault ID
+      let deffaultTrackingStatusId: string;
+      const trackingStatusResponse = await this.trackingStatusService.findAll();
+      trackingStatusResponse.map((singleTs: TrackingStatus) => {
+        if (singleTs.name === 'pending') deffaultTrackingStatusId = singleTs.id;
+      });
+      //Creating the deffault caseTracking register
+      await this.caseTrackingservice.createCaseTracking({
+        caseId: caseId,
+        trackingStatusId: deffaultTrackingStatusId,
+        description: 'Caso pendiente de revisión',
+      });
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }
