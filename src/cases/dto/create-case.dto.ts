@@ -22,6 +22,12 @@ export class CreateCaseDto {
   narration: string;
 
   @IsString()
+  victim_story: string;
+
+  @IsString()
+  aggressor_story: string;
+
+  @IsString()
   @MinLength(3)
   place_of_events: string;
 

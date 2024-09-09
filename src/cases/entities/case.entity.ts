@@ -28,6 +28,12 @@ export class Case {
   narration: string;
 
   @Column('text')
+  victim_story: string;
+
+  @Column('text')
+  aggressor_story: string;
+
+  @Column('text')
   place_of_events: string;
 
   @Column('text')
