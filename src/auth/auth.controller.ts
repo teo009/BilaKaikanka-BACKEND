@@ -21,7 +21,7 @@ export class AuthController {
   }
 
   @Get('private')
-  @Auth(ValidRoles.superUser)
+  @Auth(ValidRoles.director)
   testingPrivateRoutes(
     @GetUser() user: User
   ) {

@@ -1,5 +1,7 @@
 export enum ValidRoles {
   admin = 'admin',
-  superUser = 'super-user',
-  user = 'user',
+  director = 'director',
+  CURcoordinator = 'coordinator',
+  digitizer = 'digitizer',
+  psychologist = 'psychologist',
 }
