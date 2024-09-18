@@ -12,6 +12,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   ),
+    // eslint-disable-next-line prettier/prettier
   app.enableCors();
   await app.listen(3000);
 }

@@ -33,8 +33,7 @@ export class CasesService {
     try {
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
-        //victim_story: 'Pendiente...',
-        //aggressor_story: 'pendiente...',
+        need_psychologist: false,
         regionalCenter_id: regionalCenter,
         municipality_id: municipality,
       });

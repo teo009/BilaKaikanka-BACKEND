@@ -1,22 +1,22 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { PassportStrategy } from "@nestjs/passport";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ConfigService } from "@nestjs/config";
-import { Repository } from "typeorm";
+import { PassportStrategy } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
 
-import { User } from "../entities/user.entity";
-import { JwtPayload } from "../interfaces/jwt.payload.interface";
+import { User } from '../entities/user.entity';
+import { JwtPayload } from '../interfaces/jwt.payload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    ConfigService: ConfigService
+    ConfigService: ConfigService,
   ) {
-    super({ 
+    super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: ConfigService.get('JWT_SECRET'),
     });
@@ -26,8 +26,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const { id } = payload;
     const user = await this.userRepository.findOneBy({ id });
 
-    if(!user) throw new UnauthorizedException('Token not valid');
-    if(!user.isActive) throw new UnauthorizedException('User is inactive');
+    if (!user) throw new UnauthorizedException('Token not valid');
+    if (!user.isActive) throw new UnauthorizedException('User is inactive');
 
     return user;
   }

@@ -33,6 +33,9 @@ export class Case {
   @Column('text')
   aggressor_story: string;
 
+  @Column('boolean', { default: false })
+  need_psychologist: boolean;
+
   @Column('text')
   place_of_events: string;
 

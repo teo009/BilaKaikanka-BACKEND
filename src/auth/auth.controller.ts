@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto/';
 import { Auth, GetUser } from './decorators/';
 import { User } from './entities/user.entity';
-import { ValidRoles } from './interfaces/valid-roles.interface';
+import { ValidRoles } from '../common/enums/valid-roles.interface';
 
 @Controller('auth')
 export class AuthController {

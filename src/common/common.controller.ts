@@ -11,7 +11,6 @@ import {
   UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
-  BadRequestException,
   Res,
 } from '@nestjs/common';
 import { Express, Response } from 'express';
@@ -35,6 +34,7 @@ import {
   RegionalCenterService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   RoleInCaseService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TrackingStatusService,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   VictimRelationshipService,
@@ -107,22 +107,21 @@ export class CommonController {
     )
     document: Express.Multer.File,
   ) {
-    console.log('Subiendo documentoooo');
-    if (!document)
+    /*if (!document)
       throw new BadRequestException(
         'Formato de documento incorrecto, se necesita el tipo pdf',
-      );
+      );*/
     return this.DocumentService.createDocument(
       document.originalname.split('.')[0],
     );
   }
+
   @Get('get-document/:documentName')
   getOneDocument(
     @Res() response: Response,
     @Param('documentName') documentName: string,
   ) {
     const path = this.DocumentService.getStaticDocument(documentName);
-    console.log('Pidiendo documento :' + documentName);
     response.sendFile(path);
   }
   @Get('get-all-documents')

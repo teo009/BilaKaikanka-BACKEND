@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsDate,
   IsNumber,
   IsPositive,
@@ -26,6 +27,9 @@ export class CreateCaseDto {
 
   @IsString()
   aggressor_story: string;
+
+  @IsBoolean()
+  need_psychologist: boolean;
 
   @IsString()
   @MinLength(3)

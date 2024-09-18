@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -10,11 +15,10 @@ import { JwtPayload } from './interfaces/jwt.payload.interface';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -22,15 +26,15 @@ export class AuthService {
       const { password, ...userData } = createUserDto;
       const userToSave = this.userRepository.create({
         ...userData,
-        password: bcrypt.hashSync(password, 10)
+        password: bcrypt.hashSync(password, 10),
       });
       const response = await this.userRepository.save(userToSave);
       delete response.password;
       return {
         ...response,
-        token: this.getJwtToken({ id: response.id })
+        token: this.getJwtToken({ id: response.id }),
       };
-    } catch(error) {
+    } catch (error) {
       this.handleDBerrors(error);
     }
   }
@@ -38,18 +42,23 @@ export class AuthService {
   async login(LoginUserDto: LoginUserDto) {
     const { password, email } = LoginUserDto;
     const user = await this.userRepository.findOne({
-      where: { email }, select: { email: true, password: true, id: true }
+      where: { email },
+      select: { email: true, password: true, id: true, role: true },
     });
 
-    if(!user) 
+    if (!user)
       throw new UnauthorizedException(`Credenciales inválidas para ${email}`);
-    if(!bcrypt.compareSync(password, user.password))
-      throw new UnauthorizedException(`Credenciales inválidas para (contraseña)`);
+    if (!bcrypt.compareSync(password, user.password))
+      throw new UnauthorizedException(
+        `Credenciales inválidas para (contraseña)`,
+      );
 
     delete user.id;
+    delete user.password;
+
     return {
-      ...user, 
-      token: this.getJwtToken({ id: user.id })
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 
@@ -63,11 +72,12 @@ export class AuthService {
 
   //Own methods
   private handleDBerrors(error: any) {
-    if(error.code === '23505') throw new BadRequestException(error.detail);
-    throw new InternalServerErrorException('Error 500, please check server logs');
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+    throw new InternalServerErrorException(
+      'Error 500, please check server logs',
+    );
   }
   private getJwtToken(payload: JwtPayload) {
     return this.jwtService.sign(payload);
   }
-
 }
