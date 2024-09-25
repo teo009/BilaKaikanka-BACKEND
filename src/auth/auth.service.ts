@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto, LoginUserDto } from './dto/';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces/jwt.payload.interface';
+import { CommonService } from 'src/common/services';
 
 @Injectable()
 export class AuthService {
@@ -19,13 +20,15 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly commonService: CommonService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { password, ...userData } = createUserDto;
+      const { password, regionalCenter, ...userData } = createUserDto;
       const userToSave = this.userRepository.create({
         ...userData,
+        regionalCenterId: regionalCenter,
         password: bcrypt.hashSync(password, 10),
       });
       const response = await this.userRepository.save(userToSave);
@@ -35,7 +38,7 @@ export class AuthService {
         token: this.getJwtToken({ id: response.id }),
       };
     } catch (error) {
-      this.handleDBerrors(error);
+      this.commonService.handleDBExceptions(error);
     }
   }
 

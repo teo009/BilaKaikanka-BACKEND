@@ -3,9 +3,13 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { ValidRoles } from 'src/common/enums/valid-roles.interface';
+import { RegionalCenter } from 'src/common/entities';
 
 @Entity('users')
 export class User {
@@ -26,10 +30,15 @@ export class User {
 
   @Column({
     type: 'enum',
-    default: ValidRoles.digitizer,
     enum: ValidRoles,
   })
   role: ValidRoles;
+
+  @Column('varchar', { nullable: true })
+  regionalCenterId: string;
+  @ManyToMany(() => RegionalCenter, (regionalCenter) => regionalCenter.user)
+  @JoinColumn({ name: 'regionalCenterId' })
+  regionalCenter: RegionalCenter;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
