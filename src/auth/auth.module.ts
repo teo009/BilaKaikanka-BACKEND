@@ -9,13 +9,14 @@ import { AuthController } from './auth.controller';
 import { User } from './entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { CommonModule } from 'src/common/common.module';
+import { RegionalCenter } from 'src/common/entities';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, RegionalCenter]),
     CommonModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

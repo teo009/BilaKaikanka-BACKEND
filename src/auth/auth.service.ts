@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -13,24 +13,35 @@ import { CreateUserDto, LoginUserDto } from './dto/';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces/jwt.payload.interface';
 import { CommonService } from 'src/common/services';
+import { RegionalCenter } from 'src/common/entities';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(RegionalCenter)
+    private readonly regionalCenterRrepository: Repository<RegionalCenter>,
     private readonly jwtService: JwtService,
     private readonly commonService: CommonService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, regionalCenter, ...userData } = createUserDto;
+
+      const regionalCenterToSave = await this.commonService.getOne(
+        regionalCenter,
+        this.regionalCenterRrepository,
+      );
+
       const userToSave = this.userRepository.create({
         ...userData,
-        regionalCenterId: regionalCenter,
+        regionalCenter: regionalCenterToSave,
         password: bcrypt.hashSync(password, 10),
       });
+
       const response = await this.userRepository.save(userToSave);
       delete response.password;
       return {
@@ -44,17 +55,19 @@ export class AuthService {
 
   async login(LoginUserDto: LoginUserDto) {
     const { password, email } = LoginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: { email: true, password: true, id: true, role: true },
-    });
+
+    const user = await this.dataSource
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.regionalCenter', 'regionalCenter')
+      .select(['user', 'user.password', 'regionalCenter.id'])
+      .where('user.email = :email', { email })
+      .getOne();
 
     if (!user)
-      throw new UnauthorizedException(`Credenciales inválidas para ${email}`);
+      throw new UnauthorizedException(`Correo inexistente o incorrecto`);
     if (!bcrypt.compareSync(password, user.password))
-      throw new UnauthorizedException(
-        `Credenciales inválidas para (contraseña)`,
-      );
+      throw new UnauthorizedException(`Contraseña incorrecta`);
 
     delete user.id;
     delete user.password;

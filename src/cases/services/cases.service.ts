@@ -45,7 +45,7 @@ export class CasesService {
     }
   }
 
-  async getAllCases(): Promise<Array<Case>> {
+  async getAllCases(regionalCenterId: string): Promise<Array<Case>> {
     try {
       const response = await this.dataSource
         .getRepository(Case)
@@ -63,11 +63,12 @@ export class CasesService {
           'violenceType',
           'trackingStatus',
         ])
+        .where('regionalCenter.id = :regionalCenterId', { regionalCenterId })
         .getRawMany();
       if (response.length === 0)
         this.commonService.handleDBExceptions({
           code: '23503',
-          detail: 'Data not found, its seems that cases schema is empty',
+          detail: 'No se encontraron casos registrados aún',
         });
       return response;
     } catch (error) {

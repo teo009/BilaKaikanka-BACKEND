@@ -2,6 +2,7 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,7 +17,7 @@ export class RegionalCenter {
   @Column('text', { unique: true })
   name: string;
 
-  @OneToMany(() => Case, (Case) => Case.regionalCenter)
+  @ManyToOne(() => Case, (Case) => Case.regionalCenter)
   cases: Case;
 
   @OneToMany(() => User, (user) => user.regionalCenter)

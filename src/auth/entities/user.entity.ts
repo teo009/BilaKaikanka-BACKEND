@@ -3,8 +3,8 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  JoinColumn,
-  ManyToMany,
+  //JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -34,10 +34,7 @@ export class User {
   })
   role: ValidRoles;
 
-  @Column('varchar', { nullable: true })
-  regionalCenterId: string;
-  @ManyToMany(() => RegionalCenter, (regionalCenter) => regionalCenter.user)
-  @JoinColumn({ name: 'regionalCenterId' })
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.user)
   regionalCenter: RegionalCenter;
 
   @BeforeInsert()
