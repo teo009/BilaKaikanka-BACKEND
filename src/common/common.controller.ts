@@ -9,8 +9,6 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
   Res,
 } from '@nestjs/common';
 import { Express, Response } from 'express';
@@ -69,7 +67,9 @@ import {
   UpdateViolenceTypeDto,
   UpdateWorkplaceDto,
 } from './dto/update/';
+
 import { documentNamer, postDocumentFiler } from './helpers/';
+import { ParseFilePipe } from './pipes/ParseFile.pipe';
 
 @Controller('common')
 export class CommonController {
@@ -99,18 +99,7 @@ export class CommonController {
       }),
     }),
   )
-  uploadDocument(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
-      }),
-    )
-    document: Express.Multer.File,
-  ) {
-    /*if (!document)
-      throw new BadRequestException(
-        'Formato de documento incorrecto, se necesita el tipo pdf',
-      );*/
+  uploadDocument(@UploadedFile(ParseFilePipe) document: Express.Multer.File) {
     return this.DocumentService.createDocument(
       document.originalname.split('.')[0],
     );

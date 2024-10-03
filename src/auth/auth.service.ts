@@ -60,7 +60,12 @@ export class AuthService {
       .getRepository(User)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.regionalCenter', 'regionalCenter')
-      .select(['user', 'user.password', 'regionalCenter.id'])
+      .select([
+        'user',
+        'user.password',
+        'regionalCenter.id',
+        'regionalCenter.name',
+      ])
       .where('user.email = :email', { email })
       .getOne();
 
