@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsOptional,
   IsString,
   IsUUID,
   Matches,
@@ -32,6 +33,7 @@ export class CreateUserDto {
   })
   role: ValidRoles;
 
+  @IsOptional()
   @IsUUID()
   regionalCenter: string;
 }

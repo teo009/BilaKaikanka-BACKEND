@@ -34,7 +34,7 @@ export class CasesController {
   createCase(@Body() createCaseDto: CreateCaseDto) {
     return this.casesService.createAcase(createCaseDto);
   }
-  @Get('case/:id') //The ID is from regional center user information.
+  @Get('cases/:id') //The ID is from regional center user information.
   findAllCases(@Param('id', ParseUUIDPipe) id: string) {
     return this.casesService.getAllCases(id);
   }

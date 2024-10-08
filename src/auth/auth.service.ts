@@ -31,10 +31,12 @@ export class AuthService {
     try {
       const { password, regionalCenter, ...userData } = createUserDto;
 
-      const regionalCenterToSave = await this.commonService.getOne(
-        regionalCenter,
-        this.regionalCenterRrepository,
-      );
+      let regionalCenterToSave;
+      if (regionalCenter)
+        regionalCenterToSave = await this.commonService.getOne(
+          regionalCenter,
+          this.regionalCenterRrepository,
+        );
 
       const userToSave = this.userRepository.create({
         ...userData,

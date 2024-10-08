@@ -34,8 +34,10 @@ export class User {
   })
   role: ValidRoles;
 
-  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.user)
-  regionalCenter: RegionalCenter;
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.user, {
+    nullable: true,
+  })
+  regionalCenter: RegionalCenter | null;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
