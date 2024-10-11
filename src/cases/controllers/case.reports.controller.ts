@@ -25,7 +25,7 @@ export class CaseReportsController {
     return this.reportsService.getCasesReportsByGender(parameters);
   }
 
-  @Get('cases-received/:id')
+  @Get('case-received/:id')
   async getCaseReceptionFormat(
     @Res() response: Response,
     @Param('id', ParseUUIDPipe) parameter: { caseId: string },

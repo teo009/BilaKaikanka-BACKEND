@@ -89,6 +89,7 @@ export class CasesController {
   //CASE HAS PERSON PIVOTE TABLE
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
+    console.log('Creandoooooo');
     return this.casePersonService.createCasePerson(CreateCasePerson);
   }
   @Get('case-has-person/:id')
@@ -110,5 +111,10 @@ export class CasesController {
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
+  }
+
+  @Get('checkRolesInOneCase/:id')
+  checkRolesInOneCase(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casesService.checkRolesInOnecase(id);
   }
 }

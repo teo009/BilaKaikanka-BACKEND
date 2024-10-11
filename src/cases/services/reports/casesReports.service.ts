@@ -88,6 +88,7 @@ export class CasesReportsService {
         ])
         .where('casePerson.case = :caseId', { caseId: parameter })
         .getRawMany();
+      console.log({ rows });
       const sortedResponse = rows.reduce((acc, curr) => {
         let response;
         if (!acc[curr.case_id]) {

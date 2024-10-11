@@ -191,4 +191,25 @@ export class CasesService {
       this.commonService.handleDBExceptions(error);
     }
   }
+
+  async checkRolesInOnecase(caseId: string): Promise<any> {
+    try {
+      const response = await this.dataSource
+        .getRepository(Case)
+        .createQueryBuilder('case')
+        .leftJoin('case.casePerson', 'casePerson')
+        .leftJoin('casePerson.roleInCase', 'roleInCase')
+        .select(['case.id', 'casePerson.id', 'roleInCase.name'])
+        .where('case.id = :id', { id: caseId })
+        .getMany();
+      //console.log(response.map((aaa) => aaa.casePerson.roleInCase_id));
+      if (response.length === 0) this.commonService.handleDBExceptions({
+        code: 23503,
+        detail: 'No se encontraron datos para evaluar los roles en el caso',
+      });
+      return response.map((caseresponse) => caseresponse.casePerson);
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }
