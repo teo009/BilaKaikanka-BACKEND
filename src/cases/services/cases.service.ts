@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
-import { Case } from '../entities';
+import { Case, CasePerson } from '../entities';
 import { CreateCaseDto, UpdateCaseDto } from '../dto/';
 import {
   RegionalCenter,
@@ -192,22 +192,39 @@ export class CasesService {
     }
   }
 
-  async checkRolesInOnecase(caseId: string): Promise<any> {
+  async checkRolesInOnecase(caseId: string): Promise<boolean> {
+  
+    const validRoleaToSaveTheCase: Array<string> = ['Victima', 'Denunciante'];
+    const checkedRoles: Array<boolean> = [];
+
     try {
       const response = await this.dataSource
-        .getRepository(Case)
-        .createQueryBuilder('case')
-        .leftJoin('case.casePerson', 'casePerson')
+        .getRepository(CasePerson)
+        .createQueryBuilder('casePerson')
+        .leftJoin('casePerson.case', 'case')
         .leftJoin('casePerson.roleInCase', 'roleInCase')
-        .select(['case.id', 'casePerson.id', 'roleInCase.name'])
+        .select(['casePerson.id', 'roleInCase.name'])
         .where('case.id = :id', { id: caseId })
         .getMany();
-      //console.log(response.map((aaa) => aaa.casePerson.roleInCase_id));
+
       if (response.length === 0) this.commonService.handleDBExceptions({
         code: 23503,
         detail: 'No se encontraron datos para evaluar los roles en el caso',
       });
-      return response.map((caseresponse) => caseresponse.casePerson);
+
+      const rolesStored = response.map((singleCP) => {
+        return singleCP.roleInCase.name 
+      });
+
+      for (let i: number = 0; i < validRoleaToSaveTheCase.length; i++) {
+        if (rolesStored.includes(validRoleaToSaveTheCase[i])) {
+            checkedRoles.push(true);
+        } else {
+          checkedRoles.push(false);
+        }
+      }
+
+      return checkedRoles.includes(false) ? false : true;
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }

@@ -89,7 +89,6 @@ export class CasesController {
   //CASE HAS PERSON PIVOTE TABLE
   @Post('case-has-person')
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
-    console.log('Creandoooooo');
     return this.casePersonService.createCasePerson(CreateCasePerson);
   }
   @Get('case-has-person/:id')

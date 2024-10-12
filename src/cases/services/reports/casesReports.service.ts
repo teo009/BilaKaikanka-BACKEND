@@ -88,7 +88,7 @@ export class CasesReportsService {
         ])
         .where('casePerson.case = :caseId', { caseId: parameter })
         .getRawMany();
-      console.log({ rows });
+      //console.log( rows );
       const sortedResponse = rows.reduce((acc, curr) => {
         let response;
         if (!acc[curr.case_id]) {
@@ -113,19 +113,23 @@ export class CasesReportsService {
         return response;
       }, {});
       rows.map((person) => {
-        if (person.roleInCase_roleName === 'Victima')
+        //console.log({ 'Victim compare': person.roleInCase_name });
+        if (person.roleInCase_name === 'Victima')
+          //console.log('Agregando Victima');
           sortedResponse.case.person.victim.push(
             this.buildPersonByRoleInCaseResponse(person),
           );
-        if (person.roleInCase_roleName === 'Denunciante')
+        if (person.roleInCase_name === 'Denunciante')
+        //console.log('Agregando Denunciante');
           sortedResponse.case.person.complainant.push(
             this.buildPersonByRoleInCaseResponse(person),
           );
-        if (person.roleInCase_roleName === 'Agresor')
+        if (person.roleInCase_name === 'Agresor')
           sortedResponse.case.person.aggressor.push(
             this.buildPersonByRoleInCaseResponse(person),
           );
       });
+      //console.log(sortedResponse.case.person);
       return this.commonService.generatePdf(sortedResponse.case);
     } catch (error) {
       console.log(error);
@@ -177,9 +181,10 @@ export class CasesReportsService {
   }
 
   buildPersonByRoleInCaseResponse(person) {
+    //console.log(person);
     return {
       id: person.person_id,
-      role_in_case: person.roleInCase_roleName,
+      role_in_case: person.roleInCase_name,
       firstName: person.person_firstName,
       secondName: person.person_secondName,
       birthDate: person.person_birthDate.toISOString(),
@@ -187,16 +192,16 @@ export class CasesReportsService {
       phoneNumbers: person.person_phoneNumbers,
       homeAddress: person.person_homeAddress,
       identity: person.person_identity,
-      workplace: person.workplace_workplace,
-      jobPosition: person.jobPosition_jobPosition,
-      victimRelationship: person.victimRelationship_victimRelationship,
+      workplace: person.workplace_name,
+      jobPosition: person.jobPosition_name,
+      victimRelationship: person.victimRelationship_name,
       academicLevel: {
         id: person.academicLevel_id,
-        academicLevel: person.academicLevel_academicLevel,
+        academicLevel: person.academicLevel_name,
       },
       violenceType: {
         id: person.violenceType_id,
-        violenceType: person.violenceType_violenceType,
+        violenceType: person.violenceType_name,
       },
     };
   }
