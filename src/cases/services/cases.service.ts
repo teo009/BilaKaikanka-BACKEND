@@ -193,7 +193,6 @@ export class CasesService {
   }
 
   async checkRolesInOnecase(caseId: string): Promise<boolean> {
-  
     const validRoleaToSaveTheCase: Array<string> = ['Victima', 'Denunciante'];
     const checkedRoles: Array<boolean> = [];
 
@@ -207,22 +206,27 @@ export class CasesService {
         .where('case.id = :id', { id: caseId })
         .getMany();
 
-      if (response.length === 0) this.commonService.handleDBExceptions({
-        code: 23503,
-        detail: 'No se encontraron datos para evaluar los roles en el caso',
-      });
+      if (response.length === 0)
+        this.commonService.handleDBExceptions({
+          code: 23503,
+          detail: 'No se encontraron datos para evaluar los roles en el caso',
+        });
+
+      console.log(response);
 
       const rolesStored = response.map((singleCP) => {
-        return singleCP.roleInCase.name 
+        return singleCP.roleInCase.name;
       });
 
       for (let i: number = 0; i < validRoleaToSaveTheCase.length; i++) {
         if (rolesStored.includes(validRoleaToSaveTheCase[i])) {
-            checkedRoles.push(true);
+          checkedRoles.push(true);
         } else {
           checkedRoles.push(false);
         }
       }
+
+      console.log(checkedRoles);
 
       return checkedRoles.includes(false) ? false : true;
     } catch (error) {

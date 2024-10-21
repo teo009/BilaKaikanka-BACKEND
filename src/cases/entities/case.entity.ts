@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
@@ -44,13 +45,12 @@ export class Case {
 
   @Column({
     type: 'timestamptz',
-    //default: () => 'CURRENT_TIME'
   })
   occurrence_date: Date; //save occurrence_hour too
 
   @Column({
     type: 'timestamptz',
-    //default: () => 'CURRENT_TIME'
+    //default: () => 'CURRENT_TIME',
   })
   reception_date: Date; //save reception_hour too
 
@@ -78,15 +78,12 @@ export class Case {
   @DeleteDateColumn()
   deleteAt?: Date;
 
-  /*@CreateDateColumn({
-    type: 'timestamp', 
-    default: () => 'CURRENT_TIME' 
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   created_at: Date;
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIME'
-  })
-  updated_at: Date;*/
-  //user_update_id: ???;
+
+  @Column({ nullable: true })
+  created_by?: string;
 }
