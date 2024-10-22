@@ -1,17 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 import { RegionalCenter } from 'src/common/entities';
-import { CasePerson } from 'src/cases/entities';
-import { CasesReportsByRegionalCenterDto } from 'src/cases/dto/reportsDtos';
+import { Case, CasePerson } from 'src/cases/entities';
+import { CasesByQuarterOrMonthlyDto, CasesReportsByRegionalCenterDto } from 'src/cases/dto/reportsDtos';
 import { CommonService } from 'src/common/services';
+import { InjectRepository } from '@nestjs/typeorm';
+import { filterCasesByTimePeriod } from 'src/cases/utils/filterCasesByTimePeriod';
 
 @Injectable()
 export class CasesReportsService {
   constructor(
     private readonly dataSource: DataSource,
     private readonly commonService: CommonService,
+
+    @InjectRepository(RegionalCenter)
+    private readonly RegionalCenterRepository: Repository<RegionalCenter>,
   ) {}
+
+  async getCasesByQuarterOrMonthly(
+    regionalCenter: string,
+    reportOptions: CasesByQuarterOrMonthlyDto,
+  ) {
+    /*****check if the regional center exist in db*****/
+    await this.commonService.getOne(regionalCenter, this.RegionalCenterRepository);
+
+    try {
+      const caseData = await this.dataSource
+        .getRepository(Case)
+        .createQueryBuilder('case')
+        .leftJoinAndSelect('case.casePerson', 'casePerson')
+        .select('case')
+        .where('case.regionalCenter = :regionalCenter', { regionalCenter })
+        .getMany();
+      
+      /*****validate the cases in quarter or monthly using the util method*****/
+      const filteredData = filterCasesByTimePeriod(caseData, reportOptions);
+
+      /*****validate if there aren't cases in that period of time*****/
+      if (filteredData.length === 0) this.commonService.handleDBExceptions({
+        code: '23503',
+        detail: 'Casos no encontrados, parece que aun no hay registro de casos en este periodo'
+      });
+
+      return filteredData;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 
   async getCasesReportsByRegionalCenter(
     parameter: CasesReportsByRegionalCenterDto,
@@ -88,7 +124,6 @@ export class CasesReportsService {
         ])
         .where('casePerson.case = :caseId', { caseId: parameter })
         .getRawMany();
-      //console.log( rows );
       const sortedResponse = rows.reduce((acc, curr) => {
         let response;
         if (!acc[curr.case_id]) {
@@ -113,14 +148,11 @@ export class CasesReportsService {
         return response;
       }, {});
       rows.map((person) => {
-        //console.log({ 'Victim compare': person.roleInCase_name });
         if (person.roleInCase_name === 'Victima')
-          //console.log('Agregando Victima');
           sortedResponse.case.person.victim.push(
             this.buildPersonByRoleInCaseResponse(person),
           );
         if (person.roleInCase_name === 'Denunciante')
-        //console.log('Agregando Denunciante');
           sortedResponse.case.person.complainant.push(
             this.buildPersonByRoleInCaseResponse(person),
           );
@@ -129,10 +161,9 @@ export class CasesReportsService {
             this.buildPersonByRoleInCaseResponse(person),
           );
       });
-      //console.log(sortedResponse.case.person);
       return this.commonService.generatePdf(sortedResponse.case);
     } catch (error) {
-      console.log(error);
+      this.commonService.handleDBExceptions(error);
     }
     /*
     etnia

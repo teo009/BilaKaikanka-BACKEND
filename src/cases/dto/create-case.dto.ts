@@ -51,4 +51,7 @@ export class CreateCaseDto {
   @IsDate()
   @Type(() => Date)
   reception_date: Date; //save reception_hour too
+
+  @IsString()
+  created_by: string
 }

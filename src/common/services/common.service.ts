@@ -5,12 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import jsPDF from 'jspdf';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CommonService {
   constructor() {}
 
-  async getOne(id: string, repository: any): Promise<any> {
+  async getOne(id: string, repository: Repository<any>): Promise<any> {
     try {
       const data = await repository.findOneBy({ id });
       if (data === null)

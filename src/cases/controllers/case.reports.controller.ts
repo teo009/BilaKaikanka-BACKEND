@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -9,7 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { CasesReportsService } from '../services/reports/casesReports.service';
-import { CasesReportsByRegionalCenterDto } from '../dto/reportsDtos';
+import { CasesByQuarterOrMonthlyDto, CasesReportsByRegionalCenterDto } from '../dto/reportsDtos';
 
 @Controller('cases-reports')
 export class CaseReportsController {
@@ -47,5 +48,22 @@ export class CaseReportsController {
   @Get('roleincase-relation-by-regionalcenter')
   getRoleInCaseRelation(@Query() parameter: { regionalCenter: string }) {
     return this.reportsService.getRolesRelation(parameter);
+  }
+
+  /***************************************************************************
+    the next method endpoint have to return all the cases registered in a specific quarter 
+    or month (on depends of the client selection), when CasesByQuarterOrMonthlyDto
+    have the rules to receive that client selection. 
+    Note: that id param is the regionalCenter id becauses the business logic obligates 
+    to separate every CUR information.
+  ****************************************************************************/
+
+  @Get('cases-by-quarter-monthly/:id')
+  getCasesByQuarterMonthly(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() reportOptions: CasesByQuarterOrMonthlyDto,
+  ) {
+    console.log({ 'regionalCenter': id });
+    return this.reportsService.getCasesByQuarterOrMonthly(id, reportOptions);
   }
 }
