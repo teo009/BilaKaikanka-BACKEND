@@ -53,5 +53,5 @@ export class CreateCaseDto {
   reception_date: Date; //save reception_hour too
 
   @IsString()
-  created_by: string
+  created_by: string;
 }

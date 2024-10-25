@@ -1,4 +1,7 @@
-import { IsNumber, IsPositive, IsString, Matches, Max } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsString, Matches } from 'class-validator';
+
+import { IsLongerThan } from 'src/common/decorator/isLongerThan';
 
 export class CasesByQuarterOrMonthlyDto {
   @IsString()
@@ -7,8 +10,14 @@ export class CasesByQuarterOrMonthlyDto {
   })
   timePeriod: string;
 
-  @IsNumber()
-  @IsPositive()
-  @Max(12)
-  exactTime: number;
+  @IsDate()
+  @Type(() => Date)
+  @IsLongerThan('endDate', {
+    message: 'La fecha de inicio no puede ser posterior a la fecha final',
+  })
+  startDate: Date;
+
+  @IsDate()
+  @Type(() => Date)
+  endDate: Date;
 }

@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, Between } from 'typeorm';
 
 import { RegionalCenter } from 'src/common/entities';
 import { Case, CasePerson } from 'src/cases/entities';
-import { CasesByQuarterOrMonthlyDto, CasesReportsByRegionalCenterDto } from 'src/cases/dto/reportsDtos';
+import {
+  CasesByQuarterOrMonthlyDto,
+  CasesReportsByRegionalCenterDto,
+} from 'src/cases/dto/reportsDtos';
 import { CommonService } from 'src/common/services';
 import { InjectRepository } from '@nestjs/typeorm';
-import { filterCasesByTimePeriod } from 'src/cases/utils/filterCasesByTimePeriod';
 
 @Injectable()
 export class CasesReportsService {
@@ -22,29 +24,64 @@ export class CasesReportsService {
     regionalCenter: string,
     reportOptions: CasesByQuarterOrMonthlyDto,
   ) {
-    /*****check if the regional center exist in db*****/
-    await this.commonService.getOne(regionalCenter, this.RegionalCenterRepository);
-
+    await this.commonService.getOne(
+      regionalCenter,
+      this.RegionalCenterRepository,
+    );
     try {
       const caseData = await this.dataSource
         .getRepository(Case)
         .createQueryBuilder('case')
         .leftJoinAndSelect('case.casePerson', 'casePerson')
-        .select('case')
-        .where('case.regionalCenter = :regionalCenter', { regionalCenter })
+        .leftJoinAndSelect('case.caseTracking', 'caseTracking')
+        .leftJoinAndSelect('caseTracking.trackingStatus', 'trackingStatus')
+        .select([
+          'case.occurrence_date',
+          'caseTracking.description',
+          'trackingStatus.name',
+        ])
+        .where({
+          regionalCenter_id: regionalCenter,
+        })
+        .andWhere({
+          occurrence_date: Between(
+            reportOptions.startDate,
+            reportOptions.endDate,
+          ),
+        })
+        //.getSql();
         .getMany();
-      
-      /*****validate the cases in quarter or monthly using the util method*****/
-      const filteredData = filterCasesByTimePeriod(caseData, reportOptions);
 
-      /*****validate if there aren't cases in that period of time*****/
-      if (filteredData.length === 0) this.commonService.handleDBExceptions({
-        code: '23503',
-        detail: 'Casos no encontrados, parece que aun no hay registro de casos en este periodo'
+      const trackinPending: Array<Case> = [];
+      const trackinIn: Array<Case> = [];
+      const trackinDone: Array<Case> = [];
+      const trackinUnsolved: Array<Case> = [];
+      const trackinRemited: Array<Case> = [];
+
+      caseData.map((singleCase: Case) => {
+        if (singleCase.caseTracking[0].trackingStatus.name === 'pending')
+          trackinPending.push(singleCase);
+        if (singleCase.caseTracking[0].trackingStatus.name === 'in')
+          trackinIn.push(singleCase);
+        if (singleCase.caseTracking[0].trackingStatus.name === 'done')
+          trackinDone.push(singleCase);
+        if (singleCase.caseTracking[0].trackingStatus.name === 'unsolved')
+          trackinUnsolved.push(singleCase);
+        if (singleCase.caseTracking[0].trackingStatus.name === 'remited')
+          trackinRemited.push(singleCase);
       });
 
-      return filteredData;
+      return {
+        registeredCasesQuantity: caseData.length,
+        casesPending: trackinPending.length,
+        casesIn: trackinIn.length,
+        casesDone: trackinDone.length,
+        casesUnsolved: trackinUnsolved.length,
+        casesRemited: trackinRemited.length,
+        casesData: caseData,
+      };
     } catch (error) {
+      console.log(error);
       this.commonService.handleDBExceptions(error);
     }
   }
