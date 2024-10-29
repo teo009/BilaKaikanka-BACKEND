@@ -33,10 +33,16 @@ export class CasesReportsService {
         .getRepository(Case)
         .createQueryBuilder('case')
         .leftJoinAndSelect('case.casePerson', 'casePerson')
+        .leftJoinAndSelect('casePerson.roleInCase', 'roleInCase')
+        .leftJoinAndSelect('casePerson.person', 'person')
         .leftJoinAndSelect('case.caseTracking', 'caseTracking')
         .leftJoinAndSelect('caseTracking.trackingStatus', 'trackingStatus')
         .select([
           'case.occurrence_date',
+          'case.code',
+          'casePerson.id',
+          'person.gender',
+          'roleInCase.name',
           'caseTracking.description',
           'trackingStatus.name',
         ])
@@ -49,36 +55,57 @@ export class CasesReportsService {
             reportOptions.endDate,
           ),
         })
-        //.getSql();
         .getMany();
 
-      const trackinPending: Array<Case> = [];
-      const trackinIn: Array<Case> = [];
-      const trackinDone: Array<Case> = [];
-      const trackinUnsolved: Array<Case> = [];
-      const trackinRemited: Array<Case> = [];
+      const casePeople: Array<any> = [];
+      let victimsGender: Array<string> = [];
+      let aggressorsGender: Array<string> = [];
+      const trackingStatus: { [key: string]: Case[] } = {
+        pending: [],
+        in: [],
+        done: [],
+        unsolved: [],
+        remited: [],
+      };
 
-      caseData.map((singleCase: Case) => {
-        if (singleCase.caseTracking[0].trackingStatus.name === 'pending')
-          trackinPending.push(singleCase);
-        if (singleCase.caseTracking[0].trackingStatus.name === 'in')
-          trackinIn.push(singleCase);
-        if (singleCase.caseTracking[0].trackingStatus.name === 'done')
-          trackinDone.push(singleCase);
-        if (singleCase.caseTracking[0].trackingStatus.name === 'unsolved')
-          trackinUnsolved.push(singleCase);
-        if (singleCase.caseTracking[0].trackingStatus.name === 'remited')
-          trackinRemited.push(singleCase);
+      caseData.forEach((singleCase: Case) => {
+        const currentStatus = singleCase.caseTracking[0].trackingStatus.name;
+        trackingStatus[currentStatus].push(singleCase);
+        casePeople.push(singleCase.casePerson);
+      });
+
+      casePeople.forEach((casePeople: []) => {
+        const victimsGenderr = casePeople
+          .filter(
+            (casePerson: CasePerson) =>
+              casePerson.roleInCase.name === 'Victima',
+          )
+          .map((casePerson: CasePerson) => casePerson.person.gender);
+
+        const aggressorsGenderr = casePeople
+          .filter(
+            (casePerson: CasePerson) =>
+              casePerson.roleInCase.name === 'Agresor',
+          )
+          .map((casePerson: CasePerson) => casePerson.person.gender);
+
+        aggressorsGender = [...aggressorsGender, ...aggressorsGenderr];
+        victimsGender = [...victimsGender, ...victimsGenderr];
       });
 
       return {
         registeredCasesQuantity: caseData.length,
-        casesPending: trackinPending.length,
-        casesIn: trackinIn.length,
-        casesDone: trackinDone.length,
-        casesUnsolved: trackinUnsolved.length,
-        casesRemited: trackinRemited.length,
-        casesData: caseData,
+        casesPending: trackingStatus.pending.length,
+        casesIn: trackingStatus.in.length,
+        casesDone: trackingStatus.done.length,
+        casesUnsolved: trackingStatus.unsolved.length,
+        casesRemited: trackingStatus.remited.length,
+        stIncidentCases: 'pending...',
+        repeatedIncidentCases: 'pending...',
+        victimsGender: victimsGender,
+        aggressorsGender: aggressorsGender,
+        casesQuantityByViolencesType: [], //Cantidad de casos por tipo de violencia
+        //casesData: caseData,
       };
     } catch (error) {
       console.log(error);
