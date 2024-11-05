@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, Between } from 'typeorm';
 
 import { RegionalCenter } from 'src/common/entities';
@@ -7,8 +8,8 @@ import {
   CasesByQuarterOrMonthlyDto,
   CasesReportsByRegionalCenterDto,
 } from 'src/cases/dto/reportsDtos';
+
 import { CommonService } from 'src/common/services';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CasesReportsService {
@@ -33,18 +34,21 @@ export class CasesReportsService {
         .getRepository(Case)
         .createQueryBuilder('case')
         .leftJoinAndSelect('case.casePerson', 'casePerson')
-        .leftJoinAndSelect('casePerson.roleInCase', 'roleInCase')
         .leftJoinAndSelect('casePerson.person', 'person')
+        .leftJoinAndSelect('casePerson.roleInCase', 'roleInCase')
         .leftJoinAndSelect('case.caseTracking', 'caseTracking')
         .leftJoinAndSelect('caseTracking.trackingStatus', 'trackingStatus')
+        .leftJoinAndSelect('case.caseViolence', 'caseViolence')
+        .leftJoinAndSelect('caseViolence.violenceType', 'violenceType')
         .select([
-          'case.occurrence_date',
           'case.code',
           'casePerson.id',
           'person.gender',
           'roleInCase.name',
-          'caseTracking.description',
+          'caseTracking.id',
           'trackingStatus.name',
+          'caseViolence.id',
+          'violenceType.name',
         ])
         .where({
           regionalCenter_id: regionalCenter,
@@ -57,9 +61,10 @@ export class CasesReportsService {
         })
         .getMany();
 
-      const casePeople: Array<any> = [];
+      const personas: Array<CasePerson> = [];
       let victimsGender: Array<string> = [];
       let aggressorsGender: Array<string> = [];
+      const violencesTypes: Array<string> = [];
       const trackingStatus: { [key: string]: Case[] } = {
         pending: [],
         in: [],
@@ -68,47 +73,38 @@ export class CasesReportsService {
         remited: [],
       };
 
-      caseData.forEach((singleCase: Case) => {
-        const currentStatus = singleCase.caseTracking[0].trackingStatus.name;
-        trackingStatus[currentStatus].push(singleCase);
-        casePeople.push(singleCase.casePerson);
+      caseData.forEach((singleCase: any) => {
+        personas.push(...singleCase.casePerson);
+        const status: string = singleCase.caseTracking[0].trackingStatus.name;
+        trackingStatus[status].push(singleCase);
+        if (singleCase.caseViolence[0])
+          violencesTypes.push(singleCase.caseViolence[0].violenceType.name);
       });
 
-      casePeople.forEach((casePeople: []) => {
-        const victimsGenderr = casePeople
-          .filter(
-            (casePerson: CasePerson) =>
-              casePerson.roleInCase.name === 'Victima',
-          )
-          .map((casePerson: CasePerson) => casePerson.person.gender);
-
-        const aggressorsGenderr = casePeople
-          .filter(
-            (casePerson: CasePerson) =>
-              casePerson.roleInCase.name === 'Agresor',
-          )
-          .map((casePerson: CasePerson) => casePerson.person.gender);
-
-        aggressorsGender = [...aggressorsGender, ...aggressorsGenderr];
-        victimsGender = [...victimsGender, ...victimsGenderr];
+      personas.forEach((singleCP: CasePerson) => {
+        if (singleCP.roleInCase.name === 'Victima')
+          victimsGender = [...victimsGender, singleCP.person.gender];
+        if (singleCP.roleInCase.name === 'Agresor')
+          aggressorsGender = [...aggressorsGender, singleCP.person.gender];
       });
 
       return {
-        registeredCasesQuantity: caseData.length,
-        casesPending: trackingStatus.pending.length,
-        casesIn: trackingStatus.in.length,
-        casesDone: trackingStatus.done.length,
-        casesUnsolved: trackingStatus.unsolved.length,
-        casesRemited: trackingStatus.remited.length,
+        casos: caseData.length,
+        personas: personas.length,
+        generoDeVictimas: victimsGender,
+        generoDeAgresores: aggressorsGender,
+        casosPendientesDeInvestigacion: trackingStatus.pending.length,
+        casosEnInvestigacion: trackingStatus.in.length,
+        casosResueltos: trackingStatus.done.length,
+        casosNoResueltos: trackingStatus.unsolved.length,
+        casosRemitidos: trackingStatus.remited.length,
+        tiposDeViolencia: violencesTypes,
+      };
+      /*
         stIncidentCases: 'pending...',
         repeatedIncidentCases: 'pending...',
-        victimsGender: victimsGender,
-        aggressorsGender: aggressorsGender,
-        casesQuantityByViolencesType: [], //Cantidad de casos por tipo de violencia
-        //casesData: caseData,
-      };
+        casesQuantityByViolencesType: [], //Cantidad de casos por tipo de violencia*/
     } catch (error) {
-      console.log(error);
       this.commonService.handleDBExceptions(error);
     }
   }

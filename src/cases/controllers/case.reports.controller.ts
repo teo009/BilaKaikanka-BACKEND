@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import {
-  Body,
   Controller,
   Get,
   Param,
@@ -56,8 +55,14 @@ export class CaseReportsController {
   @Get('cases-by-quarter-monthly/:id')
   getCasesByQuarterMonthly(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() reportOptions: CasesByQuarterOrMonthlyDto,
+    @Query() reportOptions: CasesByQuarterOrMonthlyDto,
   ) {
     return this.reportsService.getCasesByQuarterOrMonthly(id, reportOptions);
   }
 }
+
+/*
+  "timePeriod": "quarter",
+    "startDate": "2024-06-01",
+    "endDate": "2024-09-31"
+*/

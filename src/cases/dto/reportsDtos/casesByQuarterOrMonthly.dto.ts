@@ -1,14 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsString, Matches } from 'class-validator';
+import { IsDate } from 'class-validator';
 
 import { IsLongerThan } from 'src/common/decorator/isLongerThan';
 
 export class CasesByQuarterOrMonthlyDto {
-  @IsString()
+  /*@IsString()
   @Matches(/^(quarter|monthly)$/, {
     message: `El periodo de tiempo del reporte solo puede ser: Trimestral o Mensual`,
   })
-  timePeriod: string;
+  timePeriod: string;*/
 
   @IsDate()
   @Type(() => Date)
