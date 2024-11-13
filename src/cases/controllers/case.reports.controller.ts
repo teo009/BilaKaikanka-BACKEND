@@ -57,12 +57,6 @@ export class CaseReportsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query() reportOptions: CasesByQuarterOrMonthlyDto,
   ) {
-    return this.reportsService.getCasesByQuarterOrMonthly(id, reportOptions);
+    return this.reportsService.mainReport(id, reportOptions);
   }
 }
-
-/*
-  "timePeriod": "quarter",
-    "startDate": "2024-06-01",
-    "endDate": "2024-09-31"
-*/

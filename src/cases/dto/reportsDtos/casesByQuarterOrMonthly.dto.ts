@@ -4,12 +4,6 @@ import { IsDate } from 'class-validator';
 import { IsLongerThan } from 'src/common/decorator/isLongerThan';
 
 export class CasesByQuarterOrMonthlyDto {
-  /*@IsString()
-  @Matches(/^(quarter|monthly)$/, {
-    message: `El periodo de tiempo del reporte solo puede ser: Trimestral o Mensual`,
-  })
-  timePeriod: string;*/
-
   @IsDate()
   @Type(() => Date)
   @IsLongerThan('endDate', {
@@ -17,7 +11,7 @@ export class CasesByQuarterOrMonthlyDto {
   })
   startDate: Date;
 
-  @IsDate()
+  @IsDate() //Validate this data is not before startDate
   @Type(() => Date)
   endDate: Date;
 }
