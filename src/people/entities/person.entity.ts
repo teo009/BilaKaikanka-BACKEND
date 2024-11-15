@@ -14,6 +14,7 @@ import {
   JobPosition,
   IdentityType,
   AcademicLevel,
+  RegionalCenter,
 } from 'src/common/entities/';
 
 import { CasePerson } from 'src/cases/entities';
@@ -67,6 +68,12 @@ export class Person {
   @ManyToOne(() => Municipality, (municipality) => municipality.person)
   @JoinColumn({ name: 'municipality_id' })
   municipality: Municipality;
+
+  @Column('varchar')
+  regionalCenter_id: string;
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.person)
+  @JoinColumn({ name: 'regionalCenter_id' })
+  regionalCenter: RegionalCenter;
 
   @Column('varchar')
   jobposition_id: string;

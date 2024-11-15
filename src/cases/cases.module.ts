@@ -8,7 +8,7 @@ import { Person } from 'src/people/entities/person.entity';
 import { CaseViolence } from './entities/caseViolenctetype.entity';
 import { CommonModule } from 'src/common/common.module';
 import { CaseReportsController, CasePivotsController } from './controllers/';
-import { CasesReportsService } from './services/reports/casesReports.service';
+import { CasesReportsService } from './services/casesReports.service';
 
 import {
   CasesService,

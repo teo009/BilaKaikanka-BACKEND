@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Case } from 'src/cases/entities';
 import { User } from 'src/auth/entities/user.entity';
+import { Person } from 'src/people/entities/person.entity';
 
 @Entity()
 export class RegionalCenter {
@@ -22,6 +23,9 @@ export class RegionalCenter {
 
   @OneToMany(() => User, (user) => user.regionalCenter)
   user: User;
+
+  @OneToMany(() => Person, (person) => person.regionalCenter)
+  person: Person;
 
   @DeleteDateColumn()
   deleteAt?: Date;

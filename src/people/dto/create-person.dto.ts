@@ -62,6 +62,9 @@ export class CreatePersonDto {
   municipality: string;
 
   @IsUUID()
+  regionalCenter: string;
+
+  @IsUUID()
   jobposition: string;
 
   @IsUUID()
