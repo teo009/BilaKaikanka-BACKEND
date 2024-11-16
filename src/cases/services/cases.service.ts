@@ -212,8 +212,6 @@ export class CasesService {
           detail: 'No se encontraron datos para evaluar los roles en el caso',
         });
 
-      console.log(response);
-
       const rolesStored = response.map((singleCP) => {
         return singleCP.roleInCase.name;
       });

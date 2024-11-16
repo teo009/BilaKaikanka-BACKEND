@@ -183,61 +183,67 @@ export class CommonService {
       y = y + 40;
     });
 
-    pdf.rect(10, 148, pdf.internal.pageSize.width - 20, 50); 195
+    pdf.rect(10, 148, pdf.internal.pageSize.width - 20, 50);
+    195;
     if (caseData.person.aggressor.length > 0) {
-      caseData.person.aggressor && caseData.person.aggressor.map((person) => {
-        if (!(y + 48 < pdf.internal.pageSize.height)) {
-          pdf.addPage();
-          y = 20;
-        }
-        y = y + 4;
-        pdf.text('PRESUNTO VICTIMARIO', xOffSet, y, { align: `center` });
-        pdf.text(
-          `Nombres y apellidos: ${person.firstName} ${person.secondName}`,
-          12,
-          y + 6,
-        );
-        pdf.text(`Numero de telefono/s: ${person.phoneNumbers}`, 116, y + 6);
-        pdf.text(`Edad: (20) anios`, 174, y + 6);
-        pdf.text(`Cedula: ${person.identity}`, 12, y + 12);
-        pdf.text(`Etnia: (Mestiza)`, 70, y + 12);
-        pdf.text(`Sexo: ${person.gender}`, 110, y + 12);
-        //pdf.text(`Preferencia sexual: (Femenino)`, 151, y + 12);
-        pdf.text(`Estado civil: (Union libre)`, 12, y + 18);
-        pdf.text(
-          `Nivel academico: ${person.academicLevel.academicLevel}`,
-          60,
-          y + 18,
-        );
-        pdf.text(`Carrera y anio: (Ingenieria en Sistemas, II)`, 118, y + 18);
-        pdf.text(
-          `Centro de trabajo y cargo: ${person.workplace}, contadora`,
-          12,
-          y + 24,
-        );
-        pdf.text(
-          `Tipo de violencia: ${person.violenceType.violenceType}`,
-          128,
-          y + 24,
-        );
-        pdf.text(`Lugar ocurrencia: ${caseData.place_of_events}`, 12, y + 30);
-        pdf.text(`Tiempo ocurrencia: ${caseData.occurrence_time}`, 12, y + 36);
-        pdf.text(
-          `Parentezco y/o relacion con el victimario: ${person.victimRelationship}`,
-          90,
-          y + 36,
-        );
-        pdf.text(
-          `Procedencia / direccion: ${person.homeAddress}`,
-          xOffSet,
-          y + 42,
-          {
-            align: `center`,
-          },
-        );
-        pdf.line(12, y + 46, 198, y + 44);
-        y = y + 48;
-      });
+      caseData.person.aggressor &&
+        caseData.person.aggressor.map((person) => {
+          if (!(y + 48 < pdf.internal.pageSize.height)) {
+            pdf.addPage();
+            y = 20;
+          }
+          y = y + 4;
+          pdf.text('PRESUNTO VICTIMARIO', xOffSet, y, { align: `center` });
+          pdf.text(
+            `Nombres y apellidos: ${person.firstName} ${person.secondName}`,
+            12,
+            y + 6,
+          );
+          pdf.text(`Numero de telefono/s: ${person.phoneNumbers}`, 116, y + 6);
+          pdf.text(`Edad: (20) anios`, 174, y + 6);
+          pdf.text(`Cedula: ${person.identity}`, 12, y + 12);
+          pdf.text(`Etnia: (Mestiza)`, 70, y + 12);
+          pdf.text(`Sexo: ${person.gender}`, 110, y + 12);
+          //pdf.text(`Preferencia sexual: (Femenino)`, 151, y + 12);
+          pdf.text(`Estado civil: (Union libre)`, 12, y + 18);
+          pdf.text(
+            `Nivel academico: ${person.academicLevel.academicLevel}`,
+            60,
+            y + 18,
+          );
+          pdf.text(`Carrera y anio: (Ingenieria en Sistemas, II)`, 118, y + 18);
+          pdf.text(
+            `Centro de trabajo y cargo: ${person.workplace}, contadora`,
+            12,
+            y + 24,
+          );
+          pdf.text(
+            `Tipo de violencia: ${person.violenceType.violenceType}`,
+            128,
+            y + 24,
+          );
+          pdf.text(`Lugar ocurrencia: ${caseData.place_of_events}`, 12, y + 30);
+          pdf.text(
+            `Tiempo ocurrencia: ${caseData.occurrence_time}`,
+            12,
+            y + 36,
+          );
+          pdf.text(
+            `Parentezco y/o relacion con el victimario: ${person.victimRelationship}`,
+            90,
+            y + 36,
+          );
+          pdf.text(
+            `Procedencia / direccion: ${person.homeAddress}`,
+            xOffSet,
+            y + 42,
+            {
+              align: `center`,
+            },
+          );
+          pdf.line(12, y + 46, 198, y + 44);
+          y = y + 48;
+        });
     }
 
     if (!(y + 48 < pdf.internal.pageSize.height)) {
@@ -255,11 +261,7 @@ export class CommonService {
     pdf.line(186, y + 40, 131, y + 40);
 
     if (caseData.person.complainant[0].firstName === undefined) {
-      pdf.text(
-        `Denunciante indefinido`,
-        132,
-        y + 44,
-      );
+      pdf.text(`Denunciante indefinido`, 132, y + 44);
     } else {
       pdf.text(
         `${caseData.person.complainant[0].firstName} ${caseData.person.complainant[0].secondName}`,

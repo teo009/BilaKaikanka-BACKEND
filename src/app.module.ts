@@ -39,7 +39,7 @@ export class AppModule implements NestModule {
         'auth',
         'cases',
         'cases-reports',
-        'case-tracking',
+        'cases-to',
         'common',
         'people',
       );
