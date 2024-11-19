@@ -24,7 +24,6 @@ export class PeopleController {
 
   @Get('/allpeoplebycur/:id')
   findAll(@Param('id', ParseUUIDPipe) id: string) {
-    console.log({ id });
     return this.peopleService.getAll(id);
   }
 

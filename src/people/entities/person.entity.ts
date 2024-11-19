@@ -18,6 +18,7 @@ import {
 } from 'src/common/entities/';
 
 import { CasePerson } from 'src/cases/entities';
+import { ValidEthnicities } from 'src/common/enums/';
 
 @Entity('people')
 export class Person {
@@ -36,8 +37,8 @@ export class Person {
   @Column('text')
   gender: string;
 
-  @Column('text')
-  ethnicity: string;
+  @Column({ type: 'enum', enum: ValidEthnicities })
+  ethnicity: ValidEthnicities;
 
   @Column('int', { array: true })
   phoneNumbers: number[];

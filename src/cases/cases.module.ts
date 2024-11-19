@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Case, CasePerson, CaseTracking } from './entities/';
-import { CasesController } from './cases.controller';
+import { CasesController } from './controllers/cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
 import { CaseViolence } from './entities/caseViolenctetype.entity';

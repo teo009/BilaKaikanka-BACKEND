@@ -7,7 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ValidRoles } from 'src/common/enums/valid-roles.interface';
+import { ValidRoles } from 'src/common/enums/';
 
 export class CreateUserDto {
   @IsString()

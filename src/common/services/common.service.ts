@@ -105,7 +105,6 @@ export class CommonService {
     pdf.rect(10, 68, pdf.internal.pageSize.width - 20, 26);
     pdf.text('DENUNCIANTE', xOffSet, 73, { align: `center` });
     caseData.person.complainant.map((person) => {
-      //console.log(person);
       if (person.role_in_case === 'Denunciante') {
         pdf.text(
           `Nombres y apellidos: ${person.firstName} ${person.secondName}`,

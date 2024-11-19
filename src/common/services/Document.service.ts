@@ -16,7 +16,6 @@ export class DocumentService {
   ) {}
 
   async createDocument(documentName: string): Promise<Document> {
-    console.log({ documentName });
     try {
       const response = this.DocumentRepository.create({ name: documentName });
       return await this.DocumentRepository.save(response);
@@ -48,7 +47,6 @@ export class DocumentService {
             'Documentos no encontrados | parece que no hay registros por acá',
         });
       }
-      console.log(response.length);
       return response;
     } catch (error) {
       this.commonService.handleDBExceptions(error);

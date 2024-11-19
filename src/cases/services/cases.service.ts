@@ -224,8 +224,6 @@ export class CasesService {
         }
       }
 
-      console.log(checkedRoles);
-
       return checkedRoles.includes(false) ? false : true;
     } catch (error) {
       this.commonService.handleDBExceptions(error);

@@ -43,6 +43,7 @@ export class CasesReportsService {
           'regionalCenter.name',
           'casePerson.id',
           'person.gender',
+          'person.ethnicity',
           'roleInCase.name',
           'caseTracking.id',
           'trackingStatus.name',
@@ -67,9 +68,25 @@ export class CasesReportsService {
         male: 0,
         female: 0,
       };
+      const aggressorsEthnicity: { [key: string]: number } = {
+        creole: 0,
+        mestiza: 0,
+        miskito: 0,
+        rama: 0,
+        garifona: 0,
+        mayagna: 0,
+      };
       const victimsGender: { [key: string]: number } = {
         male: 0,
         female: 0,
+      };
+      const victimsEthnicity: { [key: string]: number } = {
+        creole: 0,
+        mestiza: 0,
+        miskito: 0,
+        rama: 0,
+        garifona: 0,
+        mayagna: 0,
       };
       const trackingStatus: { [key: string]: Case[] } = {
         pending: [],
@@ -94,10 +111,15 @@ export class CasesReportsService {
 
       personas.forEach((singleCP: CasePerson) => {
         const personGender: string = singleCP.person.gender;
-        if (singleCP.roleInCase.name === 'Victima')
+        const personEthnicity: string = singleCP.person.ethnicity;
+        if (singleCP.roleInCase.name === 'Victima') {
+          victimsEthnicity[personEthnicity] += 1;
           victimsGender[personGender] += 1;
-        if (singleCP.roleInCase.name === 'Agresor')
+        }
+        if (singleCP.roleInCase.name === 'Agresor') {
+          aggressorsEthnicity[personEthnicity] += 1;
           aggressorsGender[personGender] += 1;
+        }
       });
 
       return {
@@ -107,10 +129,12 @@ export class CasesReportsService {
           masculino: victimsGender.male,
           femenino: victimsGender.female,
         },
+        etniaDeVictimas: victimsEthnicity,
         generoDeAgresores: {
           masculino: aggressorsGender.male,
           femenino: aggressorsGender.female,
         },
+        etniaDeAgresores: aggressorsEthnicity,
         estadoDeLosCasos: {
           pendientesDeInvestigacion: trackingStatus.pending.length,
           enInvestigacion: trackingStatus.in.length,

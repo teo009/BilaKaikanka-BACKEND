@@ -9,6 +9,7 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+import { ValidEthnicities } from 'src/common/enums';
 
 export class CreatePersonDto {
   @IsString()
@@ -30,11 +31,11 @@ export class CreatePersonDto {
   gender: string;
 
   @IsString()
-  @Matches(/^(mestiza|creole|miskito|rama|garifona)$/, {
+  @Matches(/^(mestiza|creole|miskito|rama|garifona|mayagna)$/, {
     message:
-      '(Error) La etnia solo debe de contener alguna de las siguientes: (mestiza|creole|miskito|rama|garifona)',
+      '(Error) La etnia solo debe de contener alguna de las siguientes: (mestiza|creole|miskito|rama|garifona|mayagna)',
   })
-  ethnicity: string;
+  ethnicity: ValidEthnicities;
 
   @IsArray() //Check others validations later
   //@IsInt()

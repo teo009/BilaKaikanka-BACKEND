@@ -13,14 +13,14 @@ import {
   CasesService,
   CasePersonService,
   CaseViolenceTypeService,
-} from './services/';
+} from '../services/';
 
-import { CreateCaseDto } from './dto/create-case.dto';
-import { UpdateCaseDto } from './dto/update-case.dto';
-import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
-import { CreateViolencetypeDto } from './dto/caseViolencetype/create-violencetype.dto';
-import { UpdateCasePersonDto } from './dto/casePerson/update-casePerson.dto';
-import { UpdateCaseViolencetypeDto } from './dto/caseViolencetype/update-caseViolencetype.dto';
+import { CreateCaseDto } from '../dto/create-case.dto';
+import { UpdateCaseDto } from '../dto/update-case.dto';
+import { CreateCasePersonDto } from '../dto/casePerson/create-casePerson.dto';
+import { CreateViolencetypeDto } from '../dto/caseViolencetype/create-violencetype.dto';
+import { UpdateCasePersonDto } from '../dto/casePerson/update-casePerson.dto';
+import { UpdateCaseViolencetypeDto } from '../dto/caseViolencetype/update-caseViolencetype.dto';
 
 @Controller('cases')
 export class CasesController {

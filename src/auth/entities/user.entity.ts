@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { ValidRoles } from 'src/common/enums/valid-roles.interface';
+import { ValidRoles } from 'src/common/enums/';
 import { RegionalCenter } from 'src/common/entities';
 
 @Entity('users')
