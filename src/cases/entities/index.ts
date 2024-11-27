@@ -1,2 +1,3 @@
-export { CasePerson } from "./case-person.entity";
+export { CaseTracking } from "./caseTracking.entity";
+export { CasePerson } from "./casePerson.entity";
 export { Case } from "./case.entity";

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CasesModule } from './cases/cases.module';
 import { PeopleModule } from './people/people.module';
 import { CommonModule } from './common/common.module';
+import { appMiddleware } from './app.middleware';
 
 @Module({
   imports: [
@@ -30,4 +31,17 @@ import { CommonModule } from './common/common.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(appMiddleware)
+      .forRoutes(
+        'auth',
+        'cases',
+        'cases-reports',
+        'cases-to',
+        'common',
+        'people',
+      );
+  }
+}

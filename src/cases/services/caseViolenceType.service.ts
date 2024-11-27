@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { CreateViolencetypeDto } from '../dto/caseViolencetype/create-violencetype.dto';
-import { CaseViolence } from '../entities/case-violenctetype.entity';
+import { CaseViolence } from '../entities/caseViolenctetype.entity';
 import { Case } from '../entities';
 import { ViolenceType } from 'src/common/entities/violenceType.entity';
 import { UpdateCaseViolencetypeDto } from '../dto/caseViolencetype/update-caseViolencetype.dto';

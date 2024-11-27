@@ -13,14 +13,14 @@ import {
   CasesService,
   CasePersonService,
   CaseViolenceTypeService,
-} from './services/';
+} from '../services/';
 
-import { CreateCaseDto } from './dto/create-case.dto';
-import { UpdateCaseDto } from './dto/update-case.dto';
-import { CreateCasePersonDto } from './dto/casePerson/create-casePerson.dto';
-import { CreateViolencetypeDto } from './dto/caseViolencetype/create-violencetype.dto';
-import { UpdateCasePersonDto } from './dto/casePerson/update-casePerson.dto';
-import { UpdateCaseViolencetypeDto } from './dto/caseViolencetype/update-caseViolencetype.dto';
+import { CreateCaseDto } from '../dto/create-case.dto';
+import { UpdateCaseDto } from '../dto/update-case.dto';
+import { CreateCasePersonDto } from '../dto/casePerson/create-casePerson.dto';
+import { CreateViolencetypeDto } from '../dto/caseViolencetype/create-violencetype.dto';
+import { UpdateCasePersonDto } from '../dto/casePerson/update-casePerson.dto';
+import { UpdateCaseViolencetypeDto } from '../dto/caseViolencetype/update-caseViolencetype.dto';
 
 @Controller('cases')
 export class CasesController {
@@ -34,13 +34,13 @@ export class CasesController {
   createCase(@Body() createCaseDto: CreateCaseDto) {
     return this.casesService.createAcase(createCaseDto);
   }
-  @Get('case/')
-  findAllCases() {
-    return this.casesService.getAllCases();
+  @Get('cases/:id') //The ID is from regional center user information.
+  findAllCases(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casesService.getAllCases(id);
   }
   @Get('case/:id')
   findOneCase(@Param('id', ParseUUIDPipe) id: string) {
-    return this.casesService.getOne(id);
+    return this.casesService.getOneWithDetails(id);
   }
   @Patch(':id')
   update(
@@ -110,5 +110,10 @@ export class CasesController {
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
+  }
+
+  @Get('checkRolesInOneCase/:id')
+  checkRolesInOneCase(@Param('id', ParseUUIDPipe) id: string) {
+    return this.casesService.checkRolesInOnecase(id);
   }
 }

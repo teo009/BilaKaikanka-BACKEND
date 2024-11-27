@@ -1,9 +1,6 @@
-import { IsString } from "class-validator";
-
+import { IsString } from 'class-validator';
 
 export class CreateRoleInCaseDto {
-
   @IsString()
-  roleName: string;
-
+  name: string;
 }

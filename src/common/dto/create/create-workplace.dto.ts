@@ -1,9 +1,6 @@
-import { IsString } from "class-validator";
-
+import { IsString } from 'class-validator';
 
 export class CreateWorkplaceDto {
-
   @IsString()
-  workplace: string;
-
+  name: string;
 }

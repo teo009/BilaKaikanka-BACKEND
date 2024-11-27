@@ -28,10 +28,7 @@ export class CasePerson {
 
   @Column('varchar')
   case_id: string;
-  @ManyToOne(() => Case, (Case) => Case.casePerson, {
-    eager: true,
-    cascade: true,
-  })
+  @ManyToOne(() => Case, (Case) => Case.casePerson, { eager: true })
   @JoinColumn({ name: 'case_id' })
   case: Case;
 

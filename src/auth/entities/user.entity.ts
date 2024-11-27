@@ -1,8 +1,18 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  //JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { ValidRoles } from 'src/common/enums/';
+import { RegionalCenter } from 'src/common/entities';
 
 @Entity('users')
 export class User {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,11 +28,16 @@ export class User {
   @Column('bool', { default: true })
   isActive: boolean;
 
-  @Column('text', { 
-    array: true, 
-    default: ['user'] 
+  @Column({
+    type: 'enum',
+    enum: ValidRoles,
   })
-  roles: string[];
+  role: ValidRoles;
+
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.user, {
+    nullable: true,
+  })
+  regionalCenter: RegionalCenter | null;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
@@ -33,5 +48,4 @@ export class User {
   checkFieldsBeforeUpdate() {
     this.checkFieldsBeforeInsert();
   }
-
 }

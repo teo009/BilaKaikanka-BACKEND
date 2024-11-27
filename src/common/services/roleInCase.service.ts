@@ -43,7 +43,7 @@ export class RoleInCaseService {
   }
 
   async getOne(id: string): Promise<any> {
-    this.commonService.getOne(id, this.RoleInCaseRepository);
+    return this.commonService.getOne(id, this.RoleInCaseRepository);
   }
 
   async updateRoleInCase(

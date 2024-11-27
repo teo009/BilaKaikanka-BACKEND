@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateUserDto, LoginUserDto } from './dto/';
 import { Auth, GetUser } from './decorators/';
 import { User } from './entities/user.entity';
-import { ValidRoles } from './interfaces/valid-roles.interface';
+import { ValidRoles } from '../common/enums/valid-roles.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -21,10 +22,8 @@ export class AuthController {
   }
 
   @Get('private')
-  @Auth(ValidRoles.superUser)
-  testingPrivateRoutes(
-    @GetUser() user: User
-  ) {
-    return `Bienvenido ${ user.fullName }`;
+  @Auth(ValidRoles.director)
+  testingPrivateRoutes(@GetUser() user: User) {
+    return `Bienvenido ${user.fullName}`;
   }
 }

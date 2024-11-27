@@ -15,7 +15,7 @@ export class Municipality {
   id: string;
 
   @Column('text', { unique: true })
-  municipalityName: string;
+  name: string;
 
   @OneToMany(() => Case, (Case) => Case.municipality)
   case: Case;

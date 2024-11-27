@@ -22,14 +22,14 @@ export class PeopleController {
     return this.peopleService.create(createPersonDto);
   }
 
-  @Get()
-  findAll() {
-    return this.peopleService.getAll();
+  @Get('/allpeoplebycur/:id')
+  findAll(@Param('id', ParseUUIDPipe) id: string) {
+    return this.peopleService.getAll(id);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.peopleService.getOne(id);
+    return this.peopleService.getOneWithDetails(id);
   }
 
   @Patch(':id')

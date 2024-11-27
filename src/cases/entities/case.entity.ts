@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
@@ -8,9 +9,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { CasePerson } from './case-person.entity';
-import { CaseViolence } from './case-violenctetype.entity';
+import { CasePerson } from './casePerson.entity';
+import { CaseViolence } from './caseViolenctetype.entity';
 import { RegionalCenter, Municipality } from 'src/common/entities/';
+import { CaseTracking } from './caseTracking.entity';
 
 @Entity('case')
 export class Case {
@@ -27,6 +29,15 @@ export class Case {
   narration: string;
 
   @Column('text')
+  victim_story: string;
+
+  @Column('text')
+  aggressor_story: string;
+
+  @Column('boolean', { default: false })
+  need_psychologist: boolean;
+
+  @Column('text')
   place_of_events: string;
 
   @Column('text')
@@ -34,21 +45,23 @@ export class Case {
 
   @Column({
     type: 'timestamptz',
-    //default: () => 'CURRENT_TIME'
   })
   occurrence_date: Date; //save occurrence_hour too
 
   @Column({
     type: 'timestamptz',
-    //default: () => 'CURRENT_TIME'
+    //default: () => 'CURRENT_TIME',
   })
   reception_date: Date; //save reception_hour too
 
-  @OneToMany(() => CasePerson, (casePerson) => casePerson.case_id)
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.case)
   casePerson: CasePerson;
 
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.case)
   caseViolence: CaseViolence;
+
+  @OneToMany(() => CaseTracking, (caseTracking) => caseTracking.case)
+  caseTracking: CaseTracking;
 
   @Column('varchar')
   regionalCenter_id: string;
@@ -65,15 +78,12 @@ export class Case {
   @DeleteDateColumn()
   deleteAt?: Date;
 
-  /*@CreateDateColumn({
-    type: 'timestamp', 
-    default: () => 'CURRENT_TIME' 
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   created_at: Date;
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIME'
-  })
-  updated_at: Date;*/
-  //user_update_id: ???;
+
+  @Column({ nullable: true })
+  created_by?: string;
 }

@@ -14,7 +14,7 @@ export class Career {
   id: string;
 
   @Column('text', { unique: true })
-  careerName: string;
+  name: string;
 
   @OneToMany(() => CasePerson, (CasePerson) => CasePerson.career)
   casePerson: CasePerson;

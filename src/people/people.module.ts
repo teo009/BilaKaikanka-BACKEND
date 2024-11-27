@@ -13,6 +13,7 @@ import {
   AcademicLevel,
   Workplace,
   Career,
+  RegionalCenter,
 } from 'src/common/entities/';
 
 @Module({
@@ -24,6 +25,7 @@ import {
       Career,
       Workplace,
       Municipality,
+      RegionalCenter,
       JobPosition,
       IdentityType,
       AcademicLevel,

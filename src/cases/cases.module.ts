@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Case, CasePerson } from './entities/';
-import { CasesController } from './cases.controller';
+import { Case, CasePerson, CaseTracking } from './entities/';
+import { CasesController } from './controllers/cases.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { Person } from 'src/people/entities/person.entity';
-import { CaseViolence } from './entities/case-violenctetype.entity';
+import { CaseViolence } from './entities/caseViolenctetype.entity';
 import { CommonModule } from 'src/common/common.module';
-import { CaseReportsController } from './controllers/case.reports.controller';
-import { CasesReportsService } from './services/reports/casesReports.service';
+import { CaseReportsController, CasePivotsController } from './controllers/';
+import { CasesReportsService } from './services/casesReports.service';
 
 import {
   CasesService,
   CasePersonService,
   CaseViolenceTypeService,
+  CasePivotService,
 } from './services/';
 import {
   RoleInCase,
@@ -25,21 +26,24 @@ import {
   RegionalCenter,
   Municipality,
   ViolenceType,
+  TrackingStatus,
 } from 'src/common/entities/';
 
 @Module({
-  controllers: [CasesController, CaseReportsController],
+  controllers: [CasesController, CaseReportsController, CasePivotsController],
   providers: [
     CasesService,
     CasePersonService,
     CaseViolenceTypeService,
     CasesReportsService,
+    CasePivotService,
   ],
   imports: [
     TypeOrmModule.forFeature([
       Case,
       CasePerson,
       CaseViolence,
+      CaseTracking,
       Person,
       RoleInCase,
       VictimRelationship,
@@ -50,6 +54,7 @@ import {
       RegionalCenter,
       Municipality,
       ViolenceType,
+      TrackingStatus,
     ]),
     AuthModule,
     CommonModule,

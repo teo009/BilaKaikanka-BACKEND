@@ -13,9 +13,9 @@ export class IdentityType {
   id: string;
 
   @Column('text', { unique: true })
-  identityType: string;
+  name: string;
 
-  @OneToMany(() => Person, (person) => person.identityType)
+  @OneToMany(() => Person, (person) => person.identitytype)
   person: Person;
 
   @DeleteDateColumn()

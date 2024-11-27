@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsDate,
   IsNumber,
   IsPositive,
@@ -22,6 +23,15 @@ export class CreateCaseDto {
   narration: string;
 
   @IsString()
+  victim_story: string;
+
+  @IsString()
+  aggressor_story: string;
+
+  @IsBoolean()
+  need_psychologist: boolean;
+
+  @IsString()
   @MinLength(3)
   place_of_events: string;
 
@@ -41,4 +51,7 @@ export class CreateCaseDto {
   @IsDate()
   @Type(() => Date)
   reception_date: Date; //save reception_hour too
+
+  @IsString()
+  created_by: string;
 }

@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CaseViolence } from 'src/cases/entities/case-violenctetype.entity';
+import { CaseViolence } from 'src/cases/entities/caseViolenctetype.entity';
 
 @Entity()
 export class ViolenceType {
@@ -13,7 +13,7 @@ export class ViolenceType {
   id: string;
 
   @Column('text', { unique: true })
-  violenceType: string;
+  name: string;
 
   @OneToMany(() => CaseViolence, (caseViolence) => caseViolence.violenceType)
   caseViolencetype: CaseViolence;

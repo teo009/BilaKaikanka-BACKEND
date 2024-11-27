@@ -14,9 +14,11 @@ import {
   JobPosition,
   IdentityType,
   AcademicLevel,
+  RegionalCenter,
 } from 'src/common/entities/';
 
 import { CasePerson } from 'src/cases/entities';
+import { ValidEthnicities } from 'src/common/enums/';
 
 @Entity('people')
 export class Person {
@@ -35,6 +37,9 @@ export class Person {
   @Column('text')
   gender: string;
 
+  @Column({ type: 'enum', enum: ValidEthnicities })
+  ethnicity: ValidEthnicities;
+
   @Column('int', { array: true })
   phoneNumbers: number[];
 
@@ -44,7 +49,7 @@ export class Person {
   @Column('text', { unique: true })
   identity: string;
 
-  @OneToMany(() => CasePerson, (casePerson) => casePerson.person_id)
+  @OneToMany(() => CasePerson, (casePerson) => casePerson.person)
   casePerson: CasePerson;
 
   @Column('varchar')
@@ -66,16 +71,22 @@ export class Person {
   municipality: Municipality;
 
   @Column('varchar')
-  jobPosition_id: string;
+  regionalCenter_id: string;
+  @ManyToOne(() => RegionalCenter, (regionalCenter) => regionalCenter.person)
+  @JoinColumn({ name: 'regionalCenter_id' })
+  regionalCenter: RegionalCenter;
+
+  @Column('varchar')
+  jobposition_id: string;
   @ManyToOne(() => JobPosition, (jobposition) => jobposition.person)
-  @JoinColumn({ name: 'jobPosition' })
+  @JoinColumn({ name: 'jobposition_id' })
   jobposition: JobPosition;
 
   @Column('varchar')
   identityType_id: string;
-  @ManyToOne(() => IdentityType, (identityType) => identityType.person)
-  @JoinColumn({ name: 'identityType' })
-  identityType: IdentityType;
+  @ManyToOne(() => IdentityType, (identitytype) => identitytype.person)
+  @JoinColumn({ name: 'identityType_id' })
+  identitytype: IdentityType;
 
   @Column('varchar')
   academicLevel_id: string;

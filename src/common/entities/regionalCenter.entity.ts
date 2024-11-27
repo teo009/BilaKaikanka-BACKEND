@@ -2,10 +2,13 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Case } from 'src/cases/entities';
+import { User } from 'src/auth/entities/user.entity';
+import { Person } from 'src/people/entities/person.entity';
 
 @Entity()
 export class RegionalCenter {
@@ -13,10 +16,16 @@ export class RegionalCenter {
   id: string;
 
   @Column('text', { unique: true })
-  regionalCenter: string;
+  name: string;
 
-  @OneToMany(() => Case, (Case) => Case.regionalCenter)
+  @ManyToOne(() => Case, (Case) => Case.regionalCenter)
   cases: Case;
+
+  @OneToMany(() => User, (user) => user.regionalCenter)
+  user: User;
+
+  @OneToMany(() => Person, (person) => person.regionalCenter)
+  person: Person;
 
   @DeleteDateColumn()
   deleteAt?: Date;

@@ -7,11 +7,13 @@ import {
   AcademicLevelService,
   CareerService,
   CommonService,
+  DocumentService,
   IdentityTypeService,
   JobPositionService,
   MunicipalityService,
   RegionalCenterService,
   RoleInCaseService,
+  TrackingStatusService,
   VictimRelationshipService,
   ViolenceTypeService,
   WorkPlaceService,
@@ -27,12 +29,17 @@ import {
   Municipality,
   ViolenceType,
   IdentityType,
+  Document,
+  TrackingStatus,
 } from './entities/';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   controllers: [CommonController],
   providers: [
     CommonService,
+    DocumentService,
     AcademicLevelService,
     RoleInCaseService,
     VictimRelationshipService,
@@ -43,6 +50,7 @@ import {
     MunicipalityService,
     ViolenceTypeService,
     IdentityTypeService,
+    TrackingStatusService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -56,8 +64,13 @@ import {
       Municipality,
       ViolenceType,
       IdentityType,
+      Document,
+      TrackingStatus,
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
   ],
-  exports: [CommonService],
+  exports: [CommonService, TrackingStatusService],
 })
 export class CommonModule {}
