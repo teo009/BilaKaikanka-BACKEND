@@ -21,7 +21,7 @@ import {
   AcademicLevel,
 } from 'src/common/entities/';
 
-@Entity('cases-people')
+@Entity('cases_people')
 export class CasePerson {
   @PrimaryGeneratedColumn('uuid')
   id: string;

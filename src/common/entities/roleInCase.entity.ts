@@ -8,7 +8,7 @@ import {
 
 import { Case, CasePerson } from 'src/cases/entities';
 
-@Entity('role-in-case')
+@Entity('role_in_case')
 export class RoleInCase {
   @PrimaryGeneratedColumn('uuid')
   id: string;

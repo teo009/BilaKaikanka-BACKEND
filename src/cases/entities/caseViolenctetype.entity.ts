@@ -10,7 +10,7 @@ import {
 import { Case } from './case.entity';
 import { ViolenceType } from 'src/common/entities/violenceType.entity';
 
-@Entity('cases-violencetype')
+@Entity('cases_violencetype')
 export class CaseViolence {
   @PrimaryGeneratedColumn('uuid')
   id: string;

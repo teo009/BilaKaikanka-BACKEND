@@ -8,7 +8,7 @@ import {
 import { CasePerson } from 'src/cases/entities';
 
 //Parentezco
-@Entity('victim-relationship')
+@Entity('victim_relationship')
 export class VictimRelationship {
   @PrimaryGeneratedColumn('uuid')
   id: string;

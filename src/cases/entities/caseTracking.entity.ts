@@ -9,7 +9,7 @@ import {
 import { Case } from './case.entity';
 import { TrackingStatus } from 'src/common/entities';
 
-@Entity('cases-tracking')
+@Entity('cases_tracking')
 export class CaseTracking {
   @PrimaryGeneratedColumn('uuid')
   id: string;
