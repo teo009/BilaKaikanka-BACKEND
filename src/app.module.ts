@@ -9,6 +9,7 @@ import { CasesModule } from './cases/cases.module';
 import { PeopleModule } from './people/people.module';
 import { CommonModule } from './common/common.module';
 import { appMiddleware } from './app.middleware';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { appMiddleware } from './app.middleware';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    SeedModule,
     AuthModule,
     CasesModule,
     PeopleModule,
