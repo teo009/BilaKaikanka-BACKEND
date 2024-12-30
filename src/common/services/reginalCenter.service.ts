@@ -87,4 +87,13 @@ export class RegionalCenterService {
       this.commonService.handleDBExceptions(error);
     }
   }
+
+  async deleteAll() {
+    const deleteQuery = this.RegionalCenterRepository.createQueryBuilder('cur');
+    try {
+      return await deleteQuery.delete().where({}).execute();
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }

@@ -39,4 +39,13 @@ export class TrackingStatusService {
       this.commonService.handleDBExceptions(error);
     }
   }
+
+  async deleteAll() {
+    const deleteQuery = this.TrackingStatusRepository.createQueryBuilder('ts');
+    try {
+      return await deleteQuery.delete().where({}).execute();
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }

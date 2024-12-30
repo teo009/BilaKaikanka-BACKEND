@@ -1,10 +1,10 @@
 //This doesnt have to be any in type, check it later
-interface regionalCenterSeed {
+interface regionalCenterInterface {
   name: string;
 }
 
 interface SeedRegionalCenterData {
-  regionalCenters: regionalCenterSeed[];
+  regionalCenters: regionalCenterInterface[];
 }
 
 export const regionalCentersSeed: SeedRegionalCenterData = {

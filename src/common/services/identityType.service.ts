@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
+import { CommonService } from './common.service';
+import { IdentityType } from '../entities/IdentityType.entity';
 import { CreateIdentityType } from '../dto/create/create-identityType.dto';
 import { UpdateIdentityType } from '../dto/update/update-identityType.dto';
-import { IdentityType } from '../entities/IdentityType.entity';
-import { CommonService } from './common.service';
 
 @Injectable()
 export class IdentityTypeService {
@@ -80,6 +80,15 @@ export class IdentityTypeService {
             detail: `No "identity - type" found to remove`,
           })
         : `Identity type with id: ${id} has been succesfully removed`;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
+
+  async deleteAll() {
+    const deleteQuery = this.IdentityTypeRepository.createQueryBuilder('it');
+    try {
+      return await deleteQuery.delete().where({}).execute();
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }
