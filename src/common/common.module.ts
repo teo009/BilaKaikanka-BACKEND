@@ -73,9 +73,10 @@ import { join } from 'path';
   ],
   exports: [
     CommonService,
-    TrackingStatusService,
-    RegionalCenterService,
     IdentityTypeService,
+    AcademicLevelService,
+    RegionalCenterService,
+    TrackingStatusService,
   ],
 })
 export class CommonModule {}

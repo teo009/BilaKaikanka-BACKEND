@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import {
+  academicLevelSeed,
   identityTypeSeed,
   regionalCentersSeed,
   trackingStatusSeed,
 } from './data/';
 import {
+  AcademicLevelService,
   CommonService,
   IdentityTypeService,
   RegionalCenterService,
@@ -16,12 +18,14 @@ export class SeedService {
   constructor(
     private readonly regionalCenterService: RegionalCenterService,
     private readonly trackingStatusService: TrackingStatusService,
+    private readonly academicLevelService: AcademicLevelService,
     private readonly identityTypeService: IdentityTypeService,
     private readonly commonService: CommonService,
   ) {}
 
   async runSeed() {
     this.insertIdentityType();
+    this.insertAcademicLevel();
     this.insertTrackingStatus();
     this.insertRegionalCenters();
     return `Seed executed successfully`;
@@ -71,6 +75,23 @@ export class SeedService {
     try {
       await Promise.all(insertITpromises);
       return `Identity Type from seed executed succesfully`;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
+
+  private async insertAcademicLevel() {
+    await this.academicLevelService.deleteAll();
+    const ALSeed = academicLevelSeed.academicLevel;
+    const insertALPromises = [];
+    ALSeed.forEach((academicLevel) => {
+      insertALPromises.push(
+        this.academicLevelService.createAcademicLevel(academicLevel),
+      );
+    });
+    try {
+      await Promise.all(insertALPromises);
+      return `Academic level from seed excuted succesfully`;
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }

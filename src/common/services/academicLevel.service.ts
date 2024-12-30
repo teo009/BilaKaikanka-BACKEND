@@ -86,4 +86,13 @@ export class AcademicLevelService {
       this.commonService.handleDBExceptions(error);
     }
   }
+
+  async deleteAll() {
+    const deleteQuery = this.AcademicLevelRepository.createQueryBuilder('al');
+    try {
+      return await deleteQuery.delete().where({}).execute();
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
 }
