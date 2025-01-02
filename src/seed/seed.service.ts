@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   academicLevelSeed,
+  directionSeed,
   identityTypeSeed,
   regionalCentersSeed,
   trackingStatusSeed,
@@ -12,6 +13,7 @@ import {
   RegionalCenterService,
   TrackingStatusService,
 } from 'src/common/services';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class SeedService {
@@ -21,14 +23,27 @@ export class SeedService {
     private readonly academicLevelService: AcademicLevelService,
     private readonly identityTypeService: IdentityTypeService,
     private readonly commonService: CommonService,
+    private readonly authService: AuthService,
   ) {}
 
   async runSeed() {
-    this.insertIdentityType();
-    this.insertAcademicLevel();
-    this.insertTrackingStatus();
-    this.insertRegionalCenters();
-    return `Seed executed successfully`;
+    return {
+      identityType: this.insertIdentityType(),
+      academicLevel: this.insertAcademicLevel(),
+      trackingStatus: this.insertTrackingStatus(),
+      regionalCenter: this.insertRegionalCenters(),
+      direction: this.insertDirectorCredentials(),
+    };
+  }
+
+  private async insertDirectorCredentials() {
+    try {
+      const directorData = directionSeed;
+      const response = await this.authService.create(directorData);
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
   private async insertRegionalCenters() {

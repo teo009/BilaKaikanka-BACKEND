@@ -35,5 +35,5 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsUUID()
-  regionalCenter: string;
+  regionalCenter?: string;
 }

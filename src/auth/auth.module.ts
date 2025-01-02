@@ -30,6 +30,6 @@ import { RegionalCenter } from 'src/common/entities';
       },
     }),
   ],
-  exports: [JwtStrategy, PassportModule, JwtModule],
+  exports: [JwtStrategy, PassportModule, JwtModule, AuthService],
 })
 export class AuthModule {}
