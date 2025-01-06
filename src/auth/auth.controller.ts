@@ -21,6 +21,11 @@ export class AuthController {
     return this.authService.login(LoginUserDto);
   }
 
+  @Get('users')
+  getAllUsers() {
+    return this.authService.getAll();
+  }
+
   @Get('private')
   @Auth(ValidRoles.director)
   testingPrivateRoutes(@GetUser() user: User) {

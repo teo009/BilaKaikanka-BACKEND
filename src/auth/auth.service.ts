@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -85,21 +80,23 @@ export class AuthService {
     };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async getAll() {
+    try {
+      const response = await this.userRepository.find({
+        relations: { regionalCenter: true },
+      });
+      if (response.length === 0) {
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Usuarios no encontrados, parece que aun no hay registros',
+        });
+      }
+      return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  //Own methods
-  private handleDBerrors(error: any) {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
-    throw new InternalServerErrorException(
-      'Error 500, please check server logs',
-    );
-  }
   private getJwtToken(payload: JwtPayload) {
     return this.jwtService.sign(payload);
   }
