@@ -40,12 +40,21 @@ export class User {
   regionalCenter: RegionalCenter | null;
 
   @BeforeInsert()
-  checkFieldsBeforeInsert() {
+  checkFieldsBeforeInsert(): void {
     this.email = this.email.toLowerCase().trim();
   }
 
   @BeforeUpdate()
-  checkFieldsBeforeUpdate() {
+  async checkEmailAndPassword(): Promise<void> {
     this.checkFieldsBeforeInsert();
+    /*if (this.password) {
+      try {
+        this.password = await bcrypt.hashSync(this.password, 10);
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Error in hash process before update',
+        );
+      }
+    }*/
   }
 }

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -6,6 +14,7 @@ import { CreateUserDto, LoginUserDto } from './dto/';
 import { Auth, GetUser } from './decorators/';
 import { User } from './entities/user.entity';
 import { ValidRoles } from '../common/enums/valid-roles.interface';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +33,14 @@ export class AuthController {
   @Get('users')
   getAllUsers() {
     return this.authService.getAll();
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateAuthDto,
+  ) {
+    return this.authService.update(id, updateUserDto);
   }
 
   @Get('private')
