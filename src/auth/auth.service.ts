@@ -99,13 +99,12 @@ export class AuthService {
   }
 
   async update(id: string, userData: UpdateAuthDto) {
-    const { regionalCenter, ...userDataToUpdate } = userData;
+    const { regionalCenter, password, ...userDataToUpdate } = userData;
     try {
-      //console.log({ regionalCenter, password, ...userDataToUpdate });
       const response = await this.userRepository.preload({
         id,
-        //password: !password ? null : bcrypt.hashSync(password, 10),
         ...userDataToUpdate,
+        ...(password && { password: bcrypt.hashSync(password, 10) }),
       });
 
       if (!response)

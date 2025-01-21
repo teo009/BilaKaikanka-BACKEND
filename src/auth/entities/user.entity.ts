@@ -45,16 +45,7 @@ export class User {
   }
 
   @BeforeUpdate()
-  async checkEmailAndPassword(): Promise<void> {
+  checkEmail(): void {
     this.checkFieldsBeforeInsert();
-    /*if (this.password) {
-      try {
-        this.password = await bcrypt.hashSync(this.password, 10);
-      } catch (error) {
-        throw new InternalServerErrorException(
-          'Error in hash process before update',
-        );
-      }
-    }*/
   }
 }
