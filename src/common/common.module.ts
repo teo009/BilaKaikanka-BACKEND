@@ -31,6 +31,7 @@ import {
   IdentityType,
   Document,
   TrackingStatus,
+  PsychologicalReport,
 } from './entities/';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -66,6 +67,7 @@ import { join } from 'path';
       IdentityType,
       Document,
       TrackingStatus,
+      PsychologicalReport,
     ]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),

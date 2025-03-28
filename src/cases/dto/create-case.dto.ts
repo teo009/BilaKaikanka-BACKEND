@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsDate,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -43,6 +44,10 @@ export class CreateCaseDto {
 
   @IsUUID()
   municipality: string;
+
+  @IsUUID()
+  @IsOptional()
+  psychologicalReport?: string | null;
 
   @IsDate()
   @Type(() => Date)

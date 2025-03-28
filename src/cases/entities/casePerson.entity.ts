@@ -30,7 +30,7 @@ export class CasePerson {
   case_id: string;
   @ManyToOne(() => Case, (Case) => Case.casePerson, { eager: true })
   @JoinColumn({ name: 'case_id' })
-  case: Case;
+  case: Case; //Check if this relation goes well (manyToOne)
 
   @Column('varchar')
   person_id: string;

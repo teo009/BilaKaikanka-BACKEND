@@ -8,6 +8,7 @@ import {
   RegionalCenter,
   Municipality,
   TrackingStatus,
+  PsychologicalReport,
 } from 'src/common/entities';
 import { CommonService, TrackingStatusService } from 'src/common/services';
 import { CasePivotService } from './casePivot.service';
@@ -21,6 +22,8 @@ export class CasesService {
     private readonly MunicipalityRepository: Repository<Municipality>,
     @InjectRepository(RegionalCenter)
     private readonly RegionalCenterRepository: Repository<RegionalCenter>,
+    @InjectRepository(PsychologicalReport)
+    private readonly PsychoReportRepository: Repository<PsychologicalReport>,
 
     private readonly trackingStatusService: TrackingStatusService,
     private readonly caseTrackingservice: CasePivotService,
@@ -29,13 +32,14 @@ export class CasesService {
   ) {}
 
   async createAcase(createCaseDto: CreateCaseDto): Promise<Case> {
-    const { regionalCenter, municipality, ...caseDetails } = createCaseDto;
+    const { regionalCenter, municipality, psychologicalReport, ...caseDetails } = createCaseDto;
     try {
       const caseResponse = this.CaseRepository.create({
         ...caseDetails,
         need_psychologist: false,
         regionalCenter_id: regionalCenter,
         municipality_id: municipality,
+        //psychologicalReport: psychologicalReport,
       });
       await this.CaseRepository.save(caseResponse);
       await this.getDeffaultTrackingStatus(caseResponse.id);
@@ -81,7 +85,7 @@ export class CasesService {
   }
 
   async update(id: string, updateCaseDto: UpdateCaseDto): Promise<Case> {
-    const { regionalCenter, municipality, ...dataToUpdate } = updateCaseDto;
+    const { regionalCenter, municipality, psychologicalReport, ...dataToUpdate } = updateCaseDto;
     try {
       const caseToUpdate = await this.CaseRepository.preload({
         id,
@@ -94,6 +98,13 @@ export class CasesService {
         });
 
       //Check if there is an foreignKey update and doing it if there is one
+      let psychologicalReportUpdated: object;
+      if (psychologicalReport) {
+        psychologicalReportUpdated = await this.commonService.getOne(
+          psychologicalReport,
+          this.PsychoReportRepository,
+        )
+      }
       let municipalityUpdated: object;
       if (municipality) {
         municipalityUpdated = await this.commonService.getOne(

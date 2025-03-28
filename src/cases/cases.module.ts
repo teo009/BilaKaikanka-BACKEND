@@ -27,6 +27,7 @@ import {
   Municipality,
   ViolenceType,
   TrackingStatus,
+  PsychologicalReport,
 } from 'src/common/entities/';
 
 @Module({
@@ -55,6 +56,7 @@ import {
       Municipality,
       ViolenceType,
       TrackingStatus,
+      PsychologicalReport,
     ]),
     AuthModule,
     CommonModule,

@@ -6,12 +6,13 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { CasePerson } from './casePerson.entity';
 import { CaseViolence } from './caseViolenctetype.entity';
-import { RegionalCenter, Municipality } from 'src/common/entities/';
+import { RegionalCenter, Municipality, PsychologicalReport } from 'src/common/entities/';
 import { CaseTracking } from './caseTracking.entity';
 
 @Entity('case')
@@ -61,7 +62,7 @@ export class Case {
   caseViolence: CaseViolence;
 
   @OneToMany(() => CaseTracking, (caseTracking) => caseTracking.case)
-  caseTracking: CaseTracking;
+  caseTracking: CaseTracking; //This should be @OneToOne relation
 
   @Column('varchar')
   regionalCenter_id: string;
@@ -74,6 +75,10 @@ export class Case {
   @ManyToOne(() => Municipality, (municipality) => municipality.case)
   @JoinColumn({ name: 'municipality_id' })
   municipality: Municipality;
+
+  @OneToOne(() => PsychologicalReport, { nullable: true })
+  @JoinColumn()
+  psychologicalReport?: PsychologicalReport | null;
 
   @DeleteDateColumn()
   deleteAt?: Date;

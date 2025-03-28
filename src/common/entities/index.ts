@@ -1,3 +1,4 @@
+export { PsychologicalReport } from './PsychologicalReport';
 export { TrackingStatus } from './TrackingStatus.entity';
 export { Document } from './Document.entity';
 export { AcademicLevel } from './AcademicLevel.entity';

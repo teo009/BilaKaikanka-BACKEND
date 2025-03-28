@@ -34,14 +34,18 @@ export class CasesController {
   createCase(@Body() createCaseDto: CreateCaseDto) {
     return this.casesService.createAcase(createCaseDto);
   }
+  
   @Get('cases/:id') //The ID is from regional center user information.
   findAllCases(@Param('id', ParseUUIDPipe) id: string) {
+    console.log('Getting all the cases');
     return this.casesService.getAllCases(id);
   }
+
   @Get('case/:id')
   findOneCase(@Param('id', ParseUUIDPipe) id: string) {
     return this.casesService.getOneWithDetails(id);
   }
+
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -49,6 +53,7 @@ export class CasesController {
   ) {
     return this.casesService.update(id, updateCaseDto);
   }
+
   @Delete('case/:id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.casesService.removeCase(id);
@@ -62,14 +67,17 @@ export class CasesController {
   ) {
     return this.caseViolenceType.createCaseViolenceType(createViolencetype);
   }
+
   @Get('case-has-violencetype/:id')
   findOneCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
     return this.caseViolenceType.getOne(id);
   }
+
   @Get('case-has-violencetype/')
   findAllCasesViolenceType() {
     return this.caseViolenceType.getAllCaseViolenceType();
   }
+
   @Patch('case-has-violencetype/:id')
   updateCaseViolencetype(
     @Param('id', ParseUUIDPipe) id: string,
@@ -81,6 +89,7 @@ export class CasesController {
       updateCaseViolencetype,
     );
   }
+
   @Delete('case-has-violencetype/:id')
   deleteCaseViolenceType(@Param('id', ParseUUIDPipe) id: string) {
     return this.caseViolenceType.removeCaseViolenceType(id);
@@ -91,14 +100,17 @@ export class CasesController {
   createCasePeople(@Body() CreateCasePerson: CreateCasePersonDto) {
     return this.casePersonService.createCasePerson(CreateCasePerson);
   }
+
   @Get('case-has-person/:id')
   findOneCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.getOne(id);
   }
+
   @Get('case-has-person')
   findAllCasePeople() {
     return this.casePersonService.getAllCasePeople();
   }
+
   @Patch('case-has-person/:id')
   updateCasePerson(
     @Param('id', ParseUUIDPipe) id: string,
@@ -107,6 +119,7 @@ export class CasesController {
   ) {
     return this.casePersonService.updateCasePerson(id, updateCasePersonDto);
   }
+
   @Delete('case-has-person/:id')
   deleteCasePerson(@Param('id', ParseUUIDPipe) id: string) {
     return this.casePersonService.removeCasePerson(id);
