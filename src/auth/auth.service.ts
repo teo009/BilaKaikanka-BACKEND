@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces/jwt.payload.interface';
 import { CommonService } from 'src/common/services';
 import { RegionalCenter } from 'src/common/entities';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -92,6 +93,41 @@ export class AuthService {
         });
       }
       return response;
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
+
+  async update(id: string, userData: UpdateAuthDto) {
+    const { regionalCenter, password, ...userDataToUpdate } = userData;
+    try {
+      const response = await this.userRepository.preload({
+        id,
+        ...userDataToUpdate,
+        ...(password && { password: bcrypt.hashSync(password, 10) }),
+      });
+
+      if (!response)
+        this.commonService.handleDBExceptions({
+          code: '23503',
+          detail: 'Usuario a actualizar no encontrado',
+        });
+
+      //Check if regionalCenter is gonna update
+      let regionalCenterUpdated: object;
+      if (regionalCenter) {
+        regionalCenterUpdated = await this.commonService.getOne(
+          regionalCenter,
+          this.regionalCenterRrepository,
+        );
+      }
+
+      const responseWithNoPassword = await this.userRepository.save({
+        ...response,
+        regionalCenter: regionalCenterUpdated,
+      });
+      delete responseWithNoPassword.password;
+      return responseWithNoPassword;
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }

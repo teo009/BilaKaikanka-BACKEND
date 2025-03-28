@@ -40,12 +40,12 @@ export class User {
   regionalCenter: RegionalCenter | null;
 
   @BeforeInsert()
-  checkFieldsBeforeInsert() {
+  checkFieldsBeforeInsert(): void {
     this.email = this.email.toLowerCase().trim();
   }
 
   @BeforeUpdate()
-  checkFieldsBeforeUpdate() {
+  checkEmail(): void {
     this.checkFieldsBeforeInsert();
   }
 }

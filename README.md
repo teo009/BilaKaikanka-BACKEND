@@ -46,5 +46,9 @@ $ docker-compose up -d
 # By running on console:
 $ npm run start:dev
 ```
+7. Run seed using your favorite tool there
+```bash
+# By running on tool:
+$ http://localhost:3000/api/seed
 
 If there is a problem with the project, please let me know at [👉🏻 my mail](mailto:teo.obando09@gmail.com). 
