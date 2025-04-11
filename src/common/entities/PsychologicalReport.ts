@@ -8,6 +8,9 @@ export class PsychologicalReport {
   @Column('text', { unique: true })
   title: string;
 
+  /*@Column('text', { unique: true })
+  fileUrl: string;*/
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

@@ -1,5 +1,5 @@
 import { DataSource, Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Case, CaseTracking } from '../entities';
@@ -13,18 +13,14 @@ import { TrackingStatus } from 'src/common/entities';
 @Injectable()
 export class CasePivotService {
   constructor(
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
+
     @InjectRepository(CaseTracking)
     private readonly CaseTrackingRepository: Repository<CaseTracking>,
 
     @InjectRepository(TrackingStatus)
     private readonly TrackingStatusRepository: Repository<TrackingStatus>,
-
-    @InjectRepository(Case)
-    private readonly CaseRepository: Repository<Case>,
-
-    private readonly commonService: CommonService,
-
-    private readonly dataSource: DataSource,
   ) {}
 
   async createCaseTracking(

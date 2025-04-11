@@ -18,6 +18,7 @@ class MaxFileSizeValidator extends FileValidator<{ maxSize: number }> {
 @Injectable()
 export class ParseFilePipe implements PipeTransform {
   transform(file: Express.Multer.File) {
+
     const maxSizeValidator = new MaxFileSizeValidator({ maxSize: 5000000 }); // 5MB
     if (!maxSizeValidator.isValid(file)) {
       throw new BadRequestException(maxSizeValidator.buildErrorMessage());

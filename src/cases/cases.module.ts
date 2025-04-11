@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Case, CasePerson, CaseTracking } from './entities/';
@@ -40,6 +40,8 @@ import {
     CasePivotService,
   ],
   imports: [
+    forwardRef(() => AuthModule),
+    forwardRef(() => CommonModule),
     TypeOrmModule.forFeature([
       Case,
       CasePerson,
@@ -58,8 +60,7 @@ import {
       TrackingStatus,
       PsychologicalReport,
     ]),
-    AuthModule,
-    CommonModule,
+    
   ],
   exports: [CasesService],
 })

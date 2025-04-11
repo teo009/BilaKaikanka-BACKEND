@@ -105,6 +105,30 @@ export class CommonController {
     );
   }
 
+  @Post('upload-psychological-report')
+  @UseInterceptors(
+    FileInterceptor('document', {
+      fileFilter: postDocumentFiler,
+      storage: diskStorage({
+        destination: './static/reports',
+        filename: documentNamer,
+      })
+    })
+  )
+  uploadPsychologicalReport(
+    @UploadedFile(ParseFilePipe)
+    document: Express.Multer.File,
+    @Param('caseId')
+    caseId: string
+  ) {
+    console.log({document, caseId});
+    return {
+      aaaaa: 'aaaa'
+    };
+  }
+
+  //createTrackingStats(@Body() trackingStatus: CreateTrackingStatusTypeDto) {}
+
   @Get('get-document/:documentName')
   getOneDocument(
     @Res() response: Response,

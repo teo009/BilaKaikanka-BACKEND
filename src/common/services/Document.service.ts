@@ -1,24 +1,40 @@
 import * as fs from 'fs';
 import { join } from 'path';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Document } from '../entities';
+import { Document, PsychologicalReport } from '../entities';
 import { CommonService } from './common.service';
+import { CasesService } from 'src/cases/services';
 
 @Injectable()
 export class DocumentService {
   constructor(
+    @Inject(forwardRef(() => CasesService))
+    private caseService: CasesService,
+    private readonly commonService: CommonService,
     @InjectRepository(Document)
     private readonly DocumentRepository: Repository<Document>,
-    private readonly commonService: CommonService,
+    @InjectRepository(PsychologicalReport)
+    private readonly ReportRepository: Repository<PsychologicalReport>,
   ) {}
 
   async createDocument(documentName: string): Promise<Document> {
     try {
       const response = this.DocumentRepository.create({ name: documentName });
       return await this.DocumentRepository.save(response);
+    } catch (error) {
+      this.commonService.handleDBExceptions(error);
+    }
+  }
+
+  async createCaseReport(reportName: string, caseId: string): Promise<PsychologicalReport> {
+    try {
+      const response = this.ReportRepository.create({ title: reportName });
+      const savedDoc = await this.ReportRepository.save(response);
+      this.caseService.update(caseId, { psychologicalReport: response.id });
+      return savedDoc;
     } catch (error) {
       this.commonService.handleDBExceptions(error);
     }

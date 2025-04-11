@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -27,7 +27,8 @@ export class CasesService {
 
     private readonly trackingStatusService: TrackingStatusService,
     private readonly caseTrackingservice: CasePivotService,
-    private readonly commonService: CommonService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 

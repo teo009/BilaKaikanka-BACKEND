@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 
 import { CommonController } from './common.controller';
 
@@ -35,6 +35,7 @@ import {
 } from './entities/';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CasesModule } from 'src/cases/cases.module';
 
 @Module({
   controllers: [CommonController],
@@ -54,6 +55,7 @@ import { join } from 'path';
     TrackingStatusService,
   ],
   imports: [
+    forwardRef(() => CasesModule),
     TypeOrmModule.forFeature([
       RoleInCase,
       VictimRelationship,

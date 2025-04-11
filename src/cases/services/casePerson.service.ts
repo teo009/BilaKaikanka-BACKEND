@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -19,17 +19,13 @@ import { CommonService } from 'src/common/services';
 @Injectable()
 export class CasePersonService {
   constructor(
-    @InjectRepository(CasePerson)
-    private readonly CasePersonRepository: Repository<CasePerson>,
+    private readonly dataSource: DataSource,
+
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
 
     @InjectRepository(Person)
     private readonly PersonRepository: Repository<Person>,
-
-    @InjectRepository(RoleInCase)
-    private readonly RoleInCaseRepository: Repository<RoleInCase>,
-
-    @InjectRepository(VictimRelationship)
-    private readonly VictimRelationshipRepository: Repository<VictimRelationship>,
 
     @InjectRepository(Career)
     private readonly CareerRepository: Repository<Career>,
@@ -37,14 +33,20 @@ export class CasePersonService {
     @InjectRepository(Workplace)
     private readonly WorkplaceRepository: Repository<Workplace>,
 
+    @InjectRepository(RoleInCase)
+    private readonly RoleInCaseRepository: Repository<RoleInCase>,
+
+    @InjectRepository(CasePerson)
+    private readonly CasePersonRepository: Repository<CasePerson>,
+
     @InjectRepository(JobPosition)
     private readonly JobPositionRepository: Repository<JobPosition>,
 
     @InjectRepository(AcademicLevel)
     private readonly AcademicLevelRepository: Repository<AcademicLevel>,
 
-    private readonly dataSource: DataSource,
-    private readonly commonService: CommonService,
+    @InjectRepository(VictimRelationship)
+    private readonly VictimRelationshipRepository: Repository<VictimRelationship>,
   ) {}
 
   async createCasePerson(
